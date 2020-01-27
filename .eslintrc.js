@@ -12,11 +12,10 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: "module"
   },
-  rules: {
-    globals: {
-      describe: true,
-      it: true,
-      expect: true
-    }
+  rules: {},
+  globals: {
+    describe: true,
+    it: true,
+    expect: true
   }
 };
