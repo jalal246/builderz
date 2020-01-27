@@ -9,8 +9,10 @@
     "test": "mocha -require @babel/register"
   },
   "dependencies": {
+    "camelize": "^1.0.0",
     "chalk": "^3.0.0",
     "glob": "^7.1.6",
+    "rimraf": "^3.0.0",
     "rollup": "^1.29.1"
   },
   "devDependencies": {
