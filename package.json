@@ -9,11 +9,20 @@
     "test": "mocha -require @babel/register"
   },
   "dependencies": {
+    "@rollup/plugin-auto-install": "^2.0.0",
+    "@rollup/plugin-beep": "^0.1.2",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-replace": "^2.3.0",
     "camelize": "^1.0.0",
     "chalk": "^3.0.0",
     "glob": "^7.1.6",
     "rimraf": "^3.0.0",
-    "rollup": "^1.29.1"
+    "rollup": "^1.29.1",
+    "rollup-plugin-analyzer": "^3.2.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-terser": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
