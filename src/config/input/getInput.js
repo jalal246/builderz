@@ -1,4 +1,4 @@
-import { UMD } from "../../formats";
+import { UMD } from "../../constants";
 import getPlugins from "./getInputPlugins";
 
 /**
