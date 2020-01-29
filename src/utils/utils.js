@@ -13,7 +13,7 @@ import { msg, success, warning, error } from "./print";
  * @param {string} input.path  packages path [path="./packages/*"]
  * @returns Array contains packages directory
  */
-function getPackagesPath({ path = "./packages/*" }) {
+function getPackagesPath({ path = "./packages/*" } = {}) {
   msg("Getting packages path...");
 
   let folders = [];
@@ -45,12 +45,12 @@ function getPackagesPath({ path = "./packages/*" }) {
  * @returns {string} packInfo[].peerDependencies
  * @returns {string} packInfo[].dependencies
  */
-function extractPackagesInfo(
+function extractPackagesInfo({
   packages = [],
   buildFileName = "dist",
 
   srcFileName = "src"
-) {
+}) {
   msg("Reading package.json and setting packages paths");
 
   if (packages.length === 0) {

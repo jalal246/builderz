@@ -83,14 +83,16 @@ async function start() {
   const allPackages = getPackagesPath();
 
   // array of packages info according to package.json
-  const packagesInfo = extractPackagesInfo(allPackages);
+  const packagesInfo = extractPackagesInfo({
+    packages: allPackages,
 
-  // this array will be empty if there's no specfic package is targeted
-  const selectedPackages = [];
+    buildFileName: "dist",
+    srcFileName: "src"
+  });
 
   cleanBuildDir({
-    packages: selectedPackages.length === 0 ? allPackages : selectedPackages,
-    filenames: ["dist"]
+    packages: allPackages,
+    buildFilesName: ["dist"]
   });
 
   const sorted = packageSorter({ packages: packagesInfo });
