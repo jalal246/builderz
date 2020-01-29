@@ -1,7 +1,7 @@
 import path from "path";
 import camelize from "camelize";
 
-import { UMD, CJS, ES } from "../../formats";
+import { UMD, CJS, ES, PROD } from "../../constants";
 import { camelizeOutputBuild } from "../../utils";
 
 /**
@@ -37,14 +37,14 @@ function getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV }) {
     ext = "esm.js";
   }
 
-  const fname = `${bundleName}.${
-    BABEL_ENV === "production" ? `min.${ext}` : `${ext}`
-  }`;
+  const fname = `${bundleName}.${BABEL_ENV === PROD ? `min.${ext}` : `${ext}`}`;
 
   return fname;
 }
 
-function getOutput({ packageName, distPath, BABEL_ENV, BUILD_FORMAT }) {
+function getOutput({ packageName, distPath, flags }) {
+  const { BABEL_ENV, BUILD_FORMAT } = flags;
+
   const name = getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV });
 
   const output = {
@@ -58,7 +58,7 @@ function getOutput({ packageName, distPath, BABEL_ENV, BUILD_FORMAT }) {
     output.globals = getGlobal();
   }
 
-  if (BABEL_ENV === "production" || BUILD_FORMAT === UMD) {
+  if (BABEL_ENV === PROD || BUILD_FORMAT === UMD) {
     output.sourcemap = true;
   }
 

@@ -9,7 +9,7 @@ import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
-import { UMD, CJS, ES } from "../../formats";
+import { UMD, CJS, ES, PROD } from "../../constants";
 
 /**
  * Returns plugins according to passed flags.
@@ -70,7 +70,7 @@ function getPlugins(presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV) {
     );
   }
 
-  if (BABEL_ENV === "production") {
+  if (BABEL_ENV === PROD) {
     plugins.push(
       /**
        * Minify generated es bundle.
