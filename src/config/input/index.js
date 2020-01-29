@@ -1,1 +1,1 @@
-module.exports = require("./genInput.js");
+module.exports = require("./getInput.js");
