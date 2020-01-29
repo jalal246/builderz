@@ -140,5 +140,10 @@ module.exports = {
   getPackagesPath,
   extractPackagesInfo,
   cleanBuildDir,
-  camelizeOutputBuild
+  camelizeOutputBuild,
+
+  msg,
+  success,
+  warning,
+  error
 };
