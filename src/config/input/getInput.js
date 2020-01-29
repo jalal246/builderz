@@ -1,5 +1,5 @@
 import { UMD } from "../../formats";
-import getPlugins from "./getPlugins";
+import getPlugins from "./getInputPlugins";
 
 /**
  * Resolves external dependencies and peerDependencies for package input
