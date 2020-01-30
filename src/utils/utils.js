@@ -21,10 +21,12 @@ function getPackagesPath({ path = "./packages/*" } = {}) {
   folders = glob.sync(path);
 
   if (folders.length === 0) {
-    error(`unable to detect any package in ${path}`);
-  } else {
-    success(`> found ${folders.length} packages`);
+    msg(`nothing found in given path: ${path}`);
+
+    return [];
   }
+
+  success(`> found ${folders.length} packages`);
 
   return folders;
 }
@@ -46,15 +48,23 @@ function getPackagesPath({ path = "./packages/*" } = {}) {
  * @returns {string} packInfo[].dependencies
  */
 function extractPackagesInfo({
-  packages = [],
+  packages = getPackagesPath(),
   buildFileName = "dist",
 
   srcFileName = "src"
-}) {
+} = {}) {
   msg("Reading package.json and setting packages paths");
 
   if (packages.length === 0) {
-    error("packages array is empty");
+    warning("packages array is empty try looking into src");
+
+    try {
+      fs.accessSync("./src", fs.constants.R_OK);
+    } catch (e) {
+      error(e);
+    }
+
+    packages.push(".");
   }
 
   const packagesInfo = packages.map(pkg => {
@@ -83,7 +93,7 @@ function extractPackagesInfo({
         dependencies
       };
     } catch (e) {
-      warning(`${e}`);
+      error(`${e}`);
       return false;
     }
   });
@@ -105,7 +115,15 @@ function cleanBuildDir({
   msg("Clearing if there is any...");
 
   if (packages.length === 0) {
-    error("packages array is empty");
+    warning("packages array is empty try looking into src");
+
+    try {
+      fs.accessSync(buildFilesName[0], fs.constants.R_OK);
+    } catch (e) {
+      error(e);
+    }
+
+    packages.push("./dist");
   }
 
   // for each package
