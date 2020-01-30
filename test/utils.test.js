@@ -1,5 +1,10 @@
 import { expect } from "chai";
-import { getPackagesPath, extractPackagesInfo } from "../src/utils";
+import {
+  getPackagesPath,
+  extractPackagesInfo,
+  cleanBuildDir,
+  camelizeOutputBuild
+} from "../src/utils";
 
 describe("utils", () => {
   describe("getPackagesPath", () => {
@@ -50,6 +55,15 @@ describe("utils", () => {
   });
 
   describe("cleanBuildDir", () => {
-    it("works", () => {});
+    it("not throws if there is no dist", () => {
+      expect(cleanBuildDir).to.not.throw();
+    });
+  });
+
+  describe("camelizeOutputBuild", () => {
+    it("not throws if there is no dist", () => {
+      const camelized = camelizeOutputBuild("@folo/test");
+      expect(camelized).to.be.equal("foloTest");
+    });
   });
 });

@@ -111,7 +111,7 @@ function extractPackagesInfo({
 function cleanBuildDir({
   packages = [],
   buildFilesName = ["dist" /* "coverage" */]
-}) {
+} = {}) {
   msg("Clearing if there is any...");
 
   if (packages.length === 0) {
@@ -120,7 +120,7 @@ function cleanBuildDir({
     try {
       fs.accessSync(buildFilesName[0], fs.constants.R_OK);
     } catch (e) {
-      error(e);
+      warning("nothing to be removed");
     }
 
     packages.push("./dist");
