@@ -1,10 +1,14 @@
 import { expect } from "chai";
+
 import {
   getPackagesPath,
   extractPackagesInfo,
   cleanBuildDir,
-  camelizeOutputBuild
+  camelizeOutputBuild,
+  setIsSilent
 } from "../src/utils";
+
+setIsSilent(true);
 
 describe("utils", () => {
   describe("getPackagesPath", () => {
