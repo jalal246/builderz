@@ -5,7 +5,7 @@ import rimraf from "rimraf";
 
 import fs from "fs";
 
-import { msg, success, warning, error } from "./print";
+import { setIsSilent, msg, success, warning, error } from "./print";
 
 /**
  * @export
@@ -159,6 +159,8 @@ module.exports = {
   extractPackagesInfo,
   cleanBuildDir,
   camelizeOutputBuild,
+
+  setIsSilent,
 
   msg,
   success,

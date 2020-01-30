@@ -8,19 +8,31 @@ const {
   green: { bold: green }
 } = chalk;
 
+let isSilent = false;
+
+export function setIsSilent(bool) {
+  isSilent = bool;
+}
+
+export function log(clr, txt) {
+  if (isSilent) return;
+
+  console.log(clr(txt));
+}
 export function msg(txt) {
-  console.log(bgBlue(`\n${txt}`));
+  log(bgBlue, `\n${txt}`);
 }
 
 export function success(txt) {
-  console.log(green(`\n${txt}`));
+  log(green, `\n${txt}`);
 }
 
 export function warning(txt) {
-  console.log(yellow(`\nWarning: ${txt}`));
+  log(yellow, `\nWarning: ${txt}`);
 }
 
 export function error(txt) {
-  console.log(red(`\n${txt}\n\n`));
+  log(red, `\n${txt}\n\n`);
+
   process.exit(1);
 }
