@@ -112,9 +112,8 @@ function cleanBuildDir({
   packages = [],
   buildFilesName = ["dist" /* "coverage" */]
 } = {}) {
-  msg("Clearing if there is any...");
+  msg("Clearing build if there is any...");
 
-  console.log(packages);
   if (packages.length === 0) {
     warning("packages array is empty try looking into src");
 
