@@ -1,12 +1,10 @@
 import rollup from "rollup";
 import packageSorter from "package-sorter";
 
-import { UMD, CJS, ES } from "../constants";
+import { PROD, UMD, CJS, ES } from "../constants";
 
 import {
   error,
-  msg,
-  PROD,
   DEV,
   getPackagesPath,
   extractPackagesInfo,
