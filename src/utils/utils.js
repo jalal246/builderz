@@ -32,7 +32,8 @@ function getPackagesPath({ path = "./packages/*" } = {}) {
 }
 
 /**
- * Gets package json for each directories
+ * Gets package json for each directories. Returns packages that only contain
+ * valid src.
  *
  * @export
  * @param {Object} input
