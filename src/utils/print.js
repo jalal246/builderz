@@ -2,7 +2,7 @@
 const chalk = require("chalk");
 
 const {
-  bgBlue,
+  cyanBright,
   red: { bold: red },
   yellow: { bold: yellow },
   green: { bold: green }
@@ -20,7 +20,7 @@ function log(clr, txt) {
   console.log(clr(txt));
 }
 function msg(txt) {
-  log(bgBlue, `\n${txt}`);
+  log(cyanBright, `\n${txt}`);
 }
 
 function success(txt) {
