@@ -1,8 +1,8 @@
-import path from "path";
-import camelize from "camelize";
+const path = require("path");
+const camelize = require("camelize");
 
-import { UMD, CJS, ES, PROD } from "../../constants";
-import { camelizeOutputBuild } from "../../utils";
+const { UMD, CJS, ES, PROD } = require("../../constants");
+const { camelizeOutputBuild } = require("../../utils");
 
 /**
  * Don't include peerDependencies in a bundle.

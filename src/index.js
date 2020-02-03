@@ -1,1 +1,1 @@
-module.exports = require("./rollup.config.js");
+module.exports = require("./rollup.config");

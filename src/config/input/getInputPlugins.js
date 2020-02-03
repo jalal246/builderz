@@ -1,15 +1,15 @@
-import beep from "@rollup/plugin-beep";
-import auto from "@rollup/plugin-auto-install";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import json from "@rollup/plugin-json";
-import replace from "@rollup/plugin-replace";
+const beep = require("@rollup/plugin-beep");
+const auto = require("@rollup/plugin-auto-install");
+const resolve = require("@rollup/plugin-node-resolve");
+const commonjs = require("@rollup/plugin-commonjs");
+const json = require("@rollup/plugin-json");
+const replace = require("@rollup/plugin-replace");
 
-import babel from "rollup-plugin-babel";
-import { terser } from "rollup-plugin-terser";
-import analyze from "rollup-plugin-analyzer";
+const babel = require("rollup-plugin-babel");
+const { terser } = require("rollup-plugin-terser");
+const analyze = require("rollup-plugin-analyzer");
 
-import { UMD, CJS, ES, PROD } from "../../constants";
+const { UMD, CJS, ES, PROD } = require("../../constants");
 
 /**
  * Returns plugins according to passed flags.

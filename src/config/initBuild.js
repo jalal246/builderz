@@ -1,6 +1,10 @@
-import packageSorter from "package-sorter";
+const packageSorter = require("package-sorter");
 
-import { getPackagesPath, extractPackagesInfo, cleanBuildDir } from "../utils";
+const {
+  getPackagesPath,
+  extractPackagesInfo,
+  cleanBuildDir
+} = require("../utils");
 
 /**
  * initBuild packages for production:
