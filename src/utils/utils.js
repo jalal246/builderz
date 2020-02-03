@@ -20,13 +20,20 @@ function getPackagesPath({ path = "./packages/*" } = {}) {
 
   folders = glob.sync(path);
 
+  /**
+   * If length is zero, not monorepo.
+   */
   if (folders.length === 0) {
-    msg(`nothing found in given path: ${path}`);
+    try {
+      fs.accessSync("./src", fs.constants.R_OK);
+    } catch (e) {
+      error(e);
+    }
 
-    return [];
+    folders.push(".");
   }
 
-  success(`> found ${folders.length} packages`);
+  success(`> Found ${folders.length} packages`);
 
   return folders;
 }
@@ -55,18 +62,6 @@ function extractPackagesInfo({
   srcFileName = "src"
 } = {}) {
   msg("Reading package.json and setting packages paths");
-
-  if (packages.length === 0) {
-    warning("packages array is empty try looking into src");
-
-    try {
-      fs.accessSync("./src", fs.constants.R_OK);
-    } catch (e) {
-      error(e);
-    }
-
-    packages.push(".");
-  }
 
   const packagesInfo = packages.map(pkg => {
     const path = resolve(pkg, "package.json");
@@ -99,7 +94,11 @@ function extractPackagesInfo({
     }
   });
 
-  return packagesInfo.filter(Boolean);
+  const filtered = packagesInfo.filter(Boolean);
+
+  success(`> Done extracting ${filtered.length} packages`);
+
+  return filtered;
 }
 
 /**
@@ -115,6 +114,7 @@ function cleanBuildDir({
 } = {}) {
   msg("Clearing if there is any...");
 
+  console.log(packages);
   if (packages.length === 0) {
     warning("packages array is empty try looking into src");
 
