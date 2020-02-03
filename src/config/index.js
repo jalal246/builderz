@@ -1,1 +1,10 @@
-module.exports = require("./rollup.config");
+const initBuild = require("./initBuild");
+
+const getInput = require("./input");
+const getOutput = require("./output");
+
+module.exports = {
+  initBuild,
+  getInput,
+  getOutput
+};

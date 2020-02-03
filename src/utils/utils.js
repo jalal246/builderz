@@ -1,11 +1,11 @@
-import glob from "glob";
-import { resolve } from "path";
-import camelize from "camelize";
-import rimraf from "rimraf";
+const glob = require("glob");
+const { resolve } = require("path");
+const camelize = require("camelize");
+const rimraf = require("rimraf");
 
-import fs from "fs";
+const fs = require("fs");
 
-import { setIsSilent, msg, success, warning, error } from "./print";
+const { setIsSilent, msg, success, warning, error } = require("./print");
 
 /**
  * @export

@@ -1,4 +1,4 @@
-import { success, msg, error, ms } from "../utils";
+const { success, msg, error, ms } = require("../utils");
 
 /**
  * [onWatch function monitoring building prosses]

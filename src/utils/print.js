@@ -1,5 +1,5 @@
 /* eslint-disable import/no-dynamic-require, no-console */
-import chalk from "chalk";
+const chalk = require("chalk");
 
 const {
   bgBlue,
@@ -10,29 +10,38 @@ const {
 
 let isSilent = false;
 
-export function setIsSilent(bool) {
+function setIsSilent(bool) {
   isSilent = bool;
 }
 
-export function log(clr, txt) {
+function log(clr, txt) {
   if (isSilent) return;
 
   console.log(clr(txt));
 }
-export function msg(txt) {
+function msg(txt) {
   log(bgBlue, `\n${txt}`);
 }
 
-export function success(txt) {
+function success(txt) {
   log(green, `\n${txt}`);
 }
 
-export function warning(txt) {
+function warning(txt) {
   log(yellow, `\nWarning: ${txt}`);
 }
 
-export function error(txt) {
+function error(txt) {
   log(red, `\n${txt}\n\n`);
 
   process.exit(1);
 }
+
+module.exports = {
+  setIsSilent,
+
+  msg,
+  success,
+  warning,
+  error
+};

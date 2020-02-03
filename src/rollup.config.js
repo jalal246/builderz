@@ -1,13 +1,10 @@
-import rollup from "rollup";
+const rollup = require("rollup");
 
-import { PROD, DEV, UMD, CJS, ES } from "../constants";
+const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
-import initBuild from "./initBuild";
+const { error } = require("./utils");
 
-import { error } from "../utils";
-
-import getInput from "./input";
-import getOutput from "./output";
+const { initBuild, getInput, getOutput } = require("./config");
 
 const defaultBundleOpt = [
   { format: UMD, isProd: false },
@@ -53,7 +50,8 @@ async function bundlePackage({
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
   // babel presets according to env
-  const presets = [];
+  const presets = ["@babel/preset-env"];
+
   const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: false };
 
   const input = getInput({

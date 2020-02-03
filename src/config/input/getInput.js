@@ -1,5 +1,5 @@
-import { UMD } from "../../constants";
-import getPlugins from "./getInputPlugins";
+const { UMD } = require("../../constants");
+const getPlugins = require("./getInputPlugins");
 
 /**
  * Resolves external dependencies and peerDependencies for package input
