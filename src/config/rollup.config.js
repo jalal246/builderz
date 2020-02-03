@@ -1,15 +1,10 @@
 import rollup from "rollup";
-import packageSorter from "package-sorter";
 
-import { PROD, UMD, CJS, ES } from "../constants";
+import { PROD, DEV, UMD, CJS, ES } from "../constants";
 
-import {
-  error,
-  DEV,
-  getPackagesPath,
-  extractPackagesInfo,
-  cleanBuildDir
-} from "../utils";
+import initBuild from "./initBuild";
+
+import { error } from "../utils";
 
 import getInput from "./input";
 import getOutput from "./output";
@@ -77,25 +72,9 @@ async function bundlePackage({
 }
 
 async function start() {
-  // array of packages with paths
-  const allPackages = getPackagesPath();
+  const sortedPackages = initBuild();
 
-  // array of packages info according to package.json
-  const packagesInfo = extractPackagesInfo({
-    packages: allPackages,
-
-    buildFileName: "dist",
-    srcFileName: "src"
-  });
-
-  cleanBuildDir({
-    packages: allPackages,
-    buildFilesName: ["dist"]
-  });
-
-  const sorted = packageSorter({ packages: packagesInfo });
-
-  sorted.forEach(pkg => {
+  sortedPackages.forEach(pkg => {
     const { name: packageName, sourcePath, distPath } = pkg;
 
     defaultBundleOpt.forEach(({ isProd, format }) => {
