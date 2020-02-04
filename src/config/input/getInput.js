@@ -12,7 +12,7 @@ const getPlugins = require("./getInputPlugins");
  *
  * @returns {function} - function resolver
  */
-function getExternal({ peerDependencies, dependencies }, BUILD_FORMAT) {
+function getExternal({ peerDependencies, dependencies, BUILD_FORMAT }) {
   const external = [];
 
   /**
@@ -47,12 +47,21 @@ function getExternal({ peerDependencies, dependencies }, BUILD_FORMAT) {
  *
  * @returns {Object} contains input option for the package.
  */
-function genInput({ sourcePath, presets, flags, ...advancedOpt }) {
-  const external = getExternal();
+function genInput({
+  flags: { IS_SILENT, BUILD_FORMAT, BABEL_ENV },
+  peerDependencies,
+  dependencies,
+  sourcePath,
+  presets,
+  ...advancedOpt
+}) {
+  const external = getExternal({
+    peerDependencies,
+    dependencies,
+    BUILD_FORMAT
+  });
 
-  const { IS_SILENT, BUILD_FORMAT, BABEL_ENV } = flags;
-
-  const plugins = getPlugins(presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV);
+  const plugins = getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV });
 
   return {
     input: sourcePath,
