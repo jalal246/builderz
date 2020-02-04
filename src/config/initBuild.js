@@ -3,7 +3,8 @@ const packageSorter = require("package-sorter");
 const {
   getPackagesPath,
   extractPackagesInfo,
-  cleanBuildDir
+  cleanBuildDir,
+  msg
 } = require("../utils");
 
 /**
@@ -43,7 +44,9 @@ function initBuild() {
   /**
    * Sort packages before bump to production.
    */
-  const sorted = packageSorter({ packages: packagesInfo });
+  const sorted = packageSorter(packagesInfo);
+
+  msg("Done initiating build");
 
   return sorted;
 }
