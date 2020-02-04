@@ -15,7 +15,7 @@ const defaultBundleOpt = [
   { format: ES, isProd: true }
 ];
 
-async function build(isWatch, onWatch, inputOptions, outputOptions) {
+async function build(inputOptions, outputOptions, isWatch, onWatch) {
   try {
     if (isWatch) {
       const watcher = rollup.watch({
@@ -39,13 +39,7 @@ async function build(isWatch, onWatch, inputOptions, outputOptions) {
   }
 }
 
-async function bundlePackage({
-  isProd,
-  format,
-  packageName,
-  sourcePath,
-  distPath
-}) {
+async function bundlePackage({ isProd, format, pkg }) {
   const BUILD_FORMAT = format;
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
@@ -54,7 +48,17 @@ async function bundlePackage({
 
   const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: false };
 
+  const {
+    name: packageName,
+    distPath,
+    peerDependencies,
+    dependencies,
+    sourcePath
+  } = pkg;
+
   const input = getInput({
+    peerDependencies,
+    dependencies,
     sourcePath,
     presets,
     flags
@@ -63,6 +67,7 @@ async function bundlePackage({
   const output = getOutput({
     packageName,
     distPath,
+    peerDependencies,
     flags
   });
 
@@ -73,15 +78,12 @@ async function start() {
   const sortedPackages = initBuild();
 
   sortedPackages.forEach(pkg => {
-    const { name: packageName, sourcePath, distPath } = pkg;
-
     defaultBundleOpt.forEach(({ isProd, format }) => {
+      console.log(isProd, format);
       bundlePackage({
         isProd,
         format,
-        packageName,
-        sourcePath,
-        distPath
+        pkg
       });
     });
   });

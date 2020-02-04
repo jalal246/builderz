@@ -20,7 +20,7 @@ const { UMD, CJS, ES, PROD } = require("../../constants");
  * @param {string} BABEL_ENV
  * @returns {Array} plugins
  */
-function getPlugins(presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV) {
+function getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV }) {
   const plugins = [
     /**
      * Beeps when a build ends with errors.

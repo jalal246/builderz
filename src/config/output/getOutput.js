@@ -10,7 +10,7 @@ const { camelizeOutputBuild } = require("../../utils");
  * @param {Object} peerDependencies
  * @returns Array of external deps not included in bundle.
  */
-function getGlobal(peerDependencies) {
+function getGlobal(peerDependencies = {}) {
   return Object.keys(peerDependencies).reduce((deps, dep) => {
     // eslint-disable-next-line
     deps[dep] = camelize(dep);
@@ -42,7 +42,7 @@ function getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV }) {
   return fname;
 }
 
-function getOutput({ packageName, distPath, flags }) {
+function getOutput({ packageName, peerDependencies, distPath, flags }) {
   const { BABEL_ENV, BUILD_FORMAT } = flags;
 
   const name = getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV });
@@ -55,7 +55,7 @@ function getOutput({ packageName, distPath, flags }) {
   };
 
   if (BUILD_FORMAT === UMD) {
-    output.globals = getGlobal();
+    output.globals = getGlobal(peerDependencies);
   }
 
   if (BABEL_ENV === PROD || BUILD_FORMAT === UMD) {
