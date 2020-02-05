@@ -1,19 +1,56 @@
 const rollup = require("rollup");
+const args = require("commander");
 
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
-const { error } = require("./utils");
+const { error, setIsSilent } = require("./utils");
 
 const { initBuild, getInput, getOutput } = require("./config");
 
-const defaultBundleOpt = [
-  { format: UMD, isProd: false },
-  { format: UMD, isProd: true },
-  { format: CJS, isProd: false },
-  { format: CJS, isProd: true },
-  { format: ES, isProd: false },
-  { format: ES, isProd: true }
-];
+/**
+ * Get args pass to build command
+ * @return {Object} contains flags and array of packages name
+ */
+function getArgs() {
+  return args
+    .option("-s, --silent", "silent mode, mutes build massages")
+    .option("-w, --watch", "watch mode")
+    .option("--format [format]", "specific build format")
+    .option("-m, --minify", "minify bundle works only if format is provided")
+    .option("PACKAGE_NAME", "building specific package[s], in monorepo")
+    .parse(process.argv);
+}
+
+const {
+  silent: isSilent,
+  // TODO: watch: isWatch,
+  format: argFormat,
+  minify: isMinify
+  // TODO:  args: argListOfPackages
+} = getArgs();
+
+setIsSilent(isSilent);
+
+/**
+ * @returns {Object[]} bundleOpt
+ */
+function getBundleOpt() {
+  const defaultBundleOpt = [
+    { format: UMD, isProd: false },
+    { format: UMD, isProd: true },
+    { format: CJS, isProd: false },
+    { format: CJS, isProd: true },
+    { format: ES, isProd: false },
+    { format: ES, isProd: true }
+  ];
+
+  /**
+   * TODO: validate argFormat.
+   */
+  return argFormat
+    ? [{ format: argFormat, isProd: isMinify }]
+    : defaultBundleOpt;
+}
 
 async function build(inputOptions, outputOptions, isWatch, onWatch) {
   try {
@@ -77,9 +114,10 @@ async function bundlePackage({ isProd, format, pkg }) {
 async function start() {
   const sortedPackages = initBuild();
 
+  const bundleOpt = getBundleOpt();
+
   sortedPackages.forEach(pkg => {
-    defaultBundleOpt.forEach(({ isProd, format }) => {
-      console.log(isProd, format);
+    bundleOpt.forEach(({ isProd, format }) => {
       bundlePackage({
         isProd,
         format,

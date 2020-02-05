@@ -2,7 +2,6 @@ const glob = require("glob");
 const { resolve } = require("path");
 const camelize = require("camelize");
 const rimraf = require("rimraf");
-const args = require("commander");
 
 const fs = require("fs");
 
@@ -155,20 +154,6 @@ function camelizeOutputBuild(name) {
   return camelize(name.replace("@", "").replace("/", "-"));
 }
 
-/**
- * Get args pass to build command
- * @return {Object} contains flags and array of packages name
- */
-function getArgs() {
-  return args
-    .option("-s, --silent", "silent mode, mutes build massages")
-    .option("-w, --watch", "watch mode")
-    .option("--format [format]", "specific build format")
-    .option("-m, --minify", "minify bundle works only if format is provided")
-    .option("PACKAGE_NAME", "for building specific package[s]")
-    .parse(process.argv);
-}
-
 module.exports = {
   getPackagesPath,
   extractPackagesInfo,
@@ -180,7 +165,5 @@ module.exports = {
   msg,
   success,
   warning,
-  error,
-
-  getArgs
+  error
 };
