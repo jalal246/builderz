@@ -1,7 +1,7 @@
 {
   "name": "builderz",
   "version": "1.0.0",
-  "main": "./src/index.js",
+  "main": "./dist/builderz.cjs",
   "repository": "https://github.com/jalal246/builderz.git",
   "author": "Jalal Maskoun <jimmy002020@gmail.com>",
   "license": "LGPL-3.0",
@@ -10,6 +10,22 @@
     "args": "node src -h",
     "build": "node src --format=cjs"
   },
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "builderz",
+    "build",
+    "scripts",
+    "monorepo",
+    "rollup",
+    "production",
+    "utility",
+    "tools",
+    "package-sorter"
+  ],
   "dependencies": {
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
@@ -39,5 +55,9 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
     "mocha": "^7.0.1"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   }
 }
