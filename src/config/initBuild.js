@@ -1,10 +1,10 @@
 const packageSorter = require("package-sorter");
 
+const { msg } = require("@mytools/print");
 const {
   getPackagesPath,
   extractPackagesInfo,
-  cleanBuildDir,
-  msg
+  cleanBuildDir
 } = require("../utils");
 
 /**

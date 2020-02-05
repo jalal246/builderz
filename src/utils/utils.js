@@ -5,7 +5,7 @@ const rimraf = require("rimraf");
 
 const fs = require("fs");
 
-const { setIsSilent, msg, success, warning, error } = require("./print");
+const { msg, success, warning, error } = require("@mytools/print");
 
 /**
  * @export
@@ -158,12 +158,5 @@ module.exports = {
   getPackagesPath,
   extractPackagesInfo,
   cleanBuildDir,
-  camelizeOutputBuild,
-
-  setIsSilent,
-
-  msg,
-  success,
-  warning,
-  error
+  camelizeOutputBuild
 };

@@ -1,9 +1,8 @@
 const rollup = require("rollup");
 const args = require("commander");
+const { setIsSilent, error } = require("@mytools/print");
 
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
-
-const { error, setIsSilent } = require("./utils");
 
 const { initBuild, getInput, getOutput } = require("./config");
 
