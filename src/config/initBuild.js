@@ -24,7 +24,7 @@ function initBuild() {
   const allPackages = getPackagesPath();
 
   /**
-   * extract jso form each package.
+   * extract json form each package.
    */
   const packagesInfo = extractPackagesInfo({
     packages: allPackages,
