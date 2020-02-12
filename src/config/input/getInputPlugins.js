@@ -30,7 +30,7 @@ function getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV }) {
     babel({
       runtimeHelpers: true,
       presets,
-      babelrc: false
+      babelrc: true
     }),
 
     /**
