@@ -1,7 +1,8 @@
 const rollup = require("rollup");
 const args = require("commander");
-const { setIsSilent, error } = require("@mytools/print");
+const { setIsSilent, msg, error } = require("@mytools/print");
 
+const { camelizeOutputBuild } = require("./utils");
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
 const { initBuild, getInput, getOutput } = require("./config");
@@ -75,7 +76,7 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
   }
 }
 
-async function bundlePackage({ isProd, format, pkg }) {
+async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   const BUILD_FORMAT = format;
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
@@ -84,13 +85,7 @@ async function bundlePackage({ isProd, format, pkg }) {
 
   const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: false };
 
-  const {
-    name: packageName,
-    distPath,
-    peerDependencies,
-    dependencies,
-    sourcePath
-  } = pkg;
+  const { distPath, peerDependencies, dependencies, sourcePath } = pkg;
 
   const input = getInput({
     peerDependencies,
@@ -101,7 +96,7 @@ async function bundlePackage({ isProd, format, pkg }) {
   });
 
   const output = getOutput({
-    packageName,
+    camelizedName,
     distPath,
     peerDependencies,
     flags
@@ -116,10 +111,18 @@ async function start() {
   const bundleOpt = getBundleOpt();
 
   sortedPackages.forEach(pkg => {
+    const { name: packageName } = pkg;
+    const camelizedName = camelizeOutputBuild(packageName);
+
+    if (camelizedName !== packageName) {
+      msg(`bundle ${packageName} as ${camelizedName}`);
+    }
+
     bundleOpt.forEach(({ isProd, format }) => {
       bundlePackage({
         isProd,
         format,
+        camelizedName,
         pkg
       });
     });
