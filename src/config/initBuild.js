@@ -7,17 +7,7 @@ const {
   cleanBuildDir
 } = require("../utils");
 
-/**
- * initBuild packages for production:
- *
- * 1- get path.
- * 2- validate and extract info.
- * 3- clean previous build.
- * 4- sort packages.
- *
- * @returns {Array} sorted packages
- */
-function initBuild() {
+function extractJson(packages, buildName = "dist", srcName = "src") {
   /**
    * get all packages.
    */
@@ -29,15 +19,46 @@ function initBuild() {
   const packagesInfo = extractPackagesInfo({
     packages: allPackages,
 
-    buildFileName: "dist",
-    srcFileName: "src"
+    buildFileName: buildName,
+    srcFileName: srcName
   });
 
+  if (packages.length === 0) {
+    return {
+      isFiltered: false,
+      filteredPackages: packages
+    };
+  }
+
+  const filteredPackages = packagesInfo.filter(({ name }) => {
+    return packages.includes(name);
+  });
+
+  const isFiltered = filteredPackages.length > 0;
+
+  return {
+    isFiltered,
+    filteredPackages: isFiltered ? filteredPackages : packages
+  };
+}
+
+/**
+ * initBuild packages for production:
+ *
+ * 1- get path.
+ * 2- validate and extract info.
+ * 3- clean previous build.
+ * 4- sort packages.
+ *
+ * @returns {Array} sorted packages
+ */
+function initBuild(targetedPackages) {
+  const { packagesPath, packagesInfo } = extractJson(targetedPackages);
   /**
    * Clean build if any.
    */
   cleanBuildDir({
-    packages: allPackages,
+    packages: packagesPath,
     buildFilesName: ["dist"]
   });
 

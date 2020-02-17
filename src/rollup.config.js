@@ -2,7 +2,7 @@ const rollup = require("rollup");
 const args = require("commander");
 const { setIsSilent, msg, error } = require("@mytools/print");
 
-const { camelizeOutputBuild } = require("./utils");
+const { camelizeOutputBuild, getPackagesPath } = require("./utils");
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
 const { initBuild, getInput, getOutput } = require("./config");
@@ -25,8 +25,8 @@ const {
   silent: isSilent,
   // TODO: watch: isWatch,
   format: argFormat,
-  minify: isMinify
-  // TODO:  args: argListOfPackages
+  minify: isMinify,
+  args: listOfPackages
 } = getArgs();
 
 setIsSilent(isSilent);
@@ -50,6 +50,24 @@ function getBundleOpt() {
   return argFormat
     ? [{ format: argFormat, isProd: isMinify }]
     : defaultBundleOpt;
+}
+
+function getpackages() {
+  const { length } = listOfPackages;
+
+  let packages;
+
+  if (length > 0) {
+    msg(`building ${length} packages.`);
+    packages = "";
+  } else {
+    msg("building all packages");
+    packages = getPackagesPath();
+  }
+
+  const initiatedPackages = initBuild(packages);
+
+  return initiatedPackages;
 }
 
 async function build(inputOptions, outputOptions, isWatch, onWatch) {

@@ -18,7 +18,7 @@ function getGlobal(peerDependencies = {}) {
 }
 
 /**
- * Gets full bundle Name camelize with extension
+ * Gets full bundle name camelized with extension
  *
  * @param {*} { packageName, BUILD_FORMAT, BABEL_ENV }
  * @returns
