@@ -30,6 +30,7 @@ function getArgs() {
     .option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode")
     .option("--format [format]", "specific build format")
+    .option("--buildName [format]", "specific build name")
     .option("-m, --minify", "minify bundle works only if format is provided")
     .option("PACKAGE_NAME", "building specific package[s], in monorepo")
     .parse(process.argv);
@@ -40,6 +41,7 @@ const {
   // TODO: watch: isWatch,
   format: argFormat,
   minify: isMinify,
+  buildName,
   args: listOfPackages
 } = getArgs();
 
@@ -64,24 +66,6 @@ function getBundleOpt() {
   return argFormat
     ? [{ format: argFormat, isProd: isMinify }]
     : defaultBundleOpt;
-}
-
-function getpackages() {
-  const { length } = listOfPackages;
-
-  let packages;
-
-  if (length > 0) {
-    msg(`building ${length} packages.`);
-    packages = "";
-  } else {
-    msg("building all packages");
-    packages = getPackagesPath();
-  }
-
-  const initiatedPackages = initBuild(packages);
-
-  return initiatedPackages;
 }
 
 async function build(inputOptions, outputOptions, isWatch, onWatch) {
@@ -138,7 +122,7 @@ async function bundlePackage({ isProd, format, camelizedName, pkg }) {
 }
 
 async function start() {
-  const sortedPackages = initBuild();
+  const sortedPackages = initBuild(buildName, listOfPackages);
 
   const bundleOpt = getBundleOpt();
 
