@@ -1,11 +1,25 @@
 const rollup = require("rollup");
 const args = require("commander");
+const camelize = require("camelize");
+
 const { setIsSilent, msg, error } = require("@mytools/print");
 
-const { camelizeOutputBuild, getPackagesPath } = require("./utils");
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
 const { initBuild, getInput, getOutput } = require("./config");
+
+/**
+ * Modify package name in package.json to name the output build correctly.
+ * remove @
+ * replace / with -
+ * remove - and capitalize the first letter after it
+ *
+ * @param {string} name - package name in package.json
+ * @returns {string} modified name for bundle
+ */
+function camelizeOutputBuild(name) {
+  return camelize(name.replace("@", "").replace("/", "-"));
+}
 
 /**
  * Get args pass to build command

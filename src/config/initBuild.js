@@ -1,11 +1,6 @@
 const packageSorter = require("package-sorter");
 
 const { msg } = require("@mytools/print");
-const {
-  getPackagesPath,
-  extractPackagesInfo,
-  cleanBuildDir
-} = require("../utils");
 
 function extractJson(packages, buildName = "dist", srcName = "src") {
   /**

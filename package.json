@@ -39,6 +39,8 @@
     "camelize": "^1.0.0",
     "chalk": "^3.0.0",
     "commander": "^4.1.1",
+    "del": "^5.1.0",
+    "get-info": "^1.0.0",
     "glob": "^7.1.6",
     "ms": "^2.1.2",
     "package-sorter": "^0.2.0",
