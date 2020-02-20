@@ -16,7 +16,7 @@ const { msg } = require("@mytools/print");
  * @returns {Array} sortedJson
  */
 function initBuild(buildName = "dist", ...targetedPackages) {
-  const { json, path } = getPackagesInfo()(targetedPackages);
+  const { json, path } = getPackagesInfo({ buildName })(targetedPackages);
 
   /**
    * Clean build if any.

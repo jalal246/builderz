@@ -29,8 +29,8 @@ function getArgs() {
   return args
     .option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode")
-    .option("--format [format]", "specific build format")
-    .option("--buildName [format]", "specific build name")
+    .option("-f --format [format]", "specific build format")
+    .option("-b --buildName [format]", "specific build name")
     .option("-m, --minify", "minify bundle works only if format is provided")
     .option("PACKAGE_NAME", "building specific package[s], in monorepo")
     .parse(process.argv);
