@@ -1,70 +1,38 @@
+const { resolve } = require("path");
 const packageSorter = require("package-sorter");
+const { getPackagesInfo } = require("get-info");
+const del = require("del");
 
 const { msg } = require("@mytools/print");
 
-function extractJson(packages, buildName = "dist", srcName = "src") {
-  /**
-   * get all packages.
-   */
-  const allPackages = getPackagesPath();
-
-  /**
-   * extract json form each package.
-   */
-  const packagesInfo = extractPackagesInfo({
-    packages: allPackages,
-
-    buildFileName: buildName,
-    srcFileName: srcName
-  });
-
-  if (packages.length === 0) {
-    return {
-      isFiltered: false,
-      filteredPackages: packages
-    };
-  }
-
-  const filteredPackages = packagesInfo.filter(({ name }) => {
-    return packages.includes(name);
-  });
-
-  const isFiltered = filteredPackages.length > 0;
-
-  return {
-    isFiltered,
-    filteredPackages: isFiltered ? filteredPackages : packages
-  };
-}
-
 /**
  * initBuild packages for production:
+ * gets path, json, ext.
+ * clean previous build.
+ * sort packages.
  *
- * 1- get path.
- * 2- validate and extract info.
- * 3- clean previous build.
- * 4- sort packages.
- *
- * @returns {Array} sorted packages
+ * @param {string} [buildName="dist"]
+ * @param {Array} targetedPackages - packages name to be built
+ * @returns {Array} sortedJson
  */
-function initBuild(targetedPackages) {
-  const { packagesPath, packagesInfo } = extractJson(targetedPackages);
+function initBuild(buildName = "dist", ...targetedPackages) {
+  const { json, path } = getPackagesInfo()(targetedPackages);
+
   /**
    * Clean build if any.
    */
-  cleanBuildDir({
-    packages: packagesPath,
-    buildFilesName: ["dist"]
-  });
+  const packagesPathDist = path.map(pkgPath => resolve(pkgPath, buildName));
+
+  del.sync(packagesPathDist);
 
   /**
    * Sort packages before bump to production.
    */
-  const sorted = packageSorter(packagesInfo);
+  const sortedJson = packageSorter(json);
 
   msg("Done initiating build");
 
-  return sorted;
+  return sortedJson;
 }
 
 module.exports = initBuild;
