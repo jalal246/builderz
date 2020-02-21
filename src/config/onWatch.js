@@ -1,4 +1,5 @@
-const { success, msg, error, ms } = require("../utils");
+const { msg, success, error } = require("@mytools/print");
+const ms = require("ms");
 
 /**
  * [onWatch function monitoring building prosses]

@@ -2,7 +2,6 @@ const path = require("path");
 const camelize = require("camelize");
 
 const { UMD, CJS, ES, PROD } = require("../../constants");
-const { camelizeOutputBuild } = require("../../utils");
 
 /**
  * Don't include peerDependencies in a bundle.
@@ -19,14 +18,12 @@ function getGlobal(peerDependencies = {}) {
 }
 
 /**
- * Gets full bundle Name camelize with extension
+ * Gets full bundle name camelized with extension
  *
  * @param {*} { packageName, BUILD_FORMAT, BABEL_ENV }
  * @returns
  */
-function getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV }) {
-  const bundleName = camelizeOutputBuild(packageName);
-
+function getBundleName({ camelizedName, BUILD_FORMAT, BABEL_ENV }) {
   let ext;
 
   if (BUILD_FORMAT === UMD) {
@@ -37,15 +34,17 @@ function getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV }) {
     ext = "esm.js";
   }
 
-  const fname = `${bundleName}.${BABEL_ENV === PROD ? `min.${ext}` : `${ext}`}`;
+  const fname = `${camelizedName}.${
+    BABEL_ENV === PROD ? `min.${ext}` : `${ext}`
+  }`;
 
   return fname;
 }
 
-function getOutput({ packageName, peerDependencies, distPath, flags }) {
+function getOutput({ camelizedName, peerDependencies, distPath, flags }) {
   const { BABEL_ENV, BUILD_FORMAT } = flags;
 
-  const name = getBundleName({ packageName, BUILD_FORMAT, BABEL_ENV });
+  const name = getBundleName({ camelizedName, BUILD_FORMAT, BABEL_ENV });
 
   const output = {
     file: path.join(distPath, name),

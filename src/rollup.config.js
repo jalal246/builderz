@@ -1,11 +1,25 @@
 const rollup = require("rollup");
 const args = require("commander");
+const camelize = require("camelize");
+
+const { msg, error, setIsSilent } = require("@mytools/print");
 
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
-const { error, setIsSilent } = require("./utils");
-
 const { initBuild, getInput, getOutput } = require("./config");
+
+/**
+ * Modify package name in package.json to name the output build correctly.
+ * remove @
+ * replace / with -
+ * remove - and capitalize the first letter after it
+ *
+ * @param {string} name - package name in package.json
+ * @returns {string} modified name for bundle
+ */
+function camelizeOutputBuild(name) {
+  return camelize(name.replace("@", "").replace("/", "-"));
+}
 
 /**
  * Get args pass to build command
@@ -15,7 +29,8 @@ function getArgs() {
   return args
     .option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode")
-    .option("--format [format]", "specific build format")
+    .option("-f --format [format]", "specific build format")
+    .option("-b --buildName [format]", "specific build name")
     .option("-m, --minify", "minify bundle works only if format is provided")
     .option("PACKAGE_NAME", "building specific package[s], in monorepo")
     .parse(process.argv);
@@ -25,8 +40,9 @@ const {
   silent: isSilent,
   // TODO: watch: isWatch,
   format: argFormat,
-  minify: isMinify
-  // TODO:  args: argListOfPackages
+  minify: isMinify,
+  buildName,
+  args: listOfPackages
 } = getArgs();
 
 setIsSilent(isSilent);
@@ -76,22 +92,16 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
   }
 }
 
-async function bundlePackage({ isProd, format, pkg }) {
+async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   const BUILD_FORMAT = format;
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
   // babel presets according to env
   const presets = ["@babel/preset-env"];
 
-  const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: false };
+  const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: isSilent };
 
-  const {
-    name: packageName,
-    distPath,
-    peerDependencies,
-    dependencies,
-    sourcePath
-  } = pkg;
+  const { distPath, peerDependencies, dependencies, sourcePath } = pkg;
 
   const input = getInput({
     peerDependencies,
@@ -102,7 +112,7 @@ async function bundlePackage({ isProd, format, pkg }) {
   });
 
   const output = getOutput({
-    packageName,
+    camelizedName,
     distPath,
     peerDependencies,
     flags
@@ -112,15 +122,23 @@ async function bundlePackage({ isProd, format, pkg }) {
 }
 
 async function start() {
-  const sortedPackages = initBuild();
+  const sortedPackages = initBuild(buildName, listOfPackages);
 
   const bundleOpt = getBundleOpt();
 
   sortedPackages.forEach(pkg => {
+    const { name: packageName } = pkg;
+    const camelizedName = camelizeOutputBuild(packageName);
+
+    if (camelizedName !== packageName) {
+      msg(`bundle ${packageName} as ${camelizedName}`);
+    }
+
     bundleOpt.forEach(({ isProd, format }) => {
       bundlePackage({
         isProd,
         format,
+        camelizedName,
         pkg
       });
     });

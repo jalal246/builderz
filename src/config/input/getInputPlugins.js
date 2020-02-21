@@ -30,7 +30,7 @@ function getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV }) {
     babel({
       runtimeHelpers: true,
       presets,
-      babelrc: false
+      babelrc: true
     }),
 
     /**
@@ -57,7 +57,7 @@ function getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV }) {
   ];
 
   if (!IS_SILENT) {
-    plugins.push(analyze());
+    plugins.push(analyze({ summaryOnly: true }));
   }
 
   if (BUILD_FORMAT === UMD) {
