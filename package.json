@@ -8,7 +8,7 @@
   "scripts": {
     "test": "mocha -require @babel/register",
     "args": "node src -h",
-    "build": "node src"
+    "build": "node src  --format=cjs"
   },
   "files": [
     "src",
