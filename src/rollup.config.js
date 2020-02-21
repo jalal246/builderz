@@ -2,7 +2,7 @@ const rollup = require("rollup");
 const args = require("commander");
 const camelize = require("camelize");
 
-const { setIsSilent, msg, error } = require("@mytools/print");
+const { msg, error, setIsSilent } = require("@mytools/print");
 
 const { PROD, DEV, UMD, CJS, ES } = require("./constants");
 
@@ -99,7 +99,7 @@ async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   // babel presets according to env
   const presets = ["@babel/preset-env"];
 
-  const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: false };
+  const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: isSilent };
 
   const { distPath, peerDependencies, dependencies, sourcePath } = pkg;
 
