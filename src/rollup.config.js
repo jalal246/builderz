@@ -4,7 +4,7 @@ const camelize = require("camelize");
 
 const { msg, error, setIsSilent } = require("@mytools/print");
 
-const { PROD, DEV, UMD, CJS, ES } = require("./constants");
+const { UMD, CJS, ES } = require("./constants");
 
 const { initBuild, getInput, getOutput } = require("./config");
 
