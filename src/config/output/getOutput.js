@@ -1,21 +1,7 @@
 const path = require("path");
-const camelize = require("camelize");
+const getGlobal = require("./getGlobalOutput");
 
 const { UMD, CJS, ES, PROD } = require("../../constants");
-
-/**
- * Don't include peerDependencies in a bundle.
- *
- * @param {Object} peerDependencies
- * @returns Array of external deps not included in bundle.
- */
-function getGlobal(peerDependencies = {}) {
-  return Object.keys(peerDependencies).reduce((deps, dep) => {
-    // eslint-disable-next-line
-    deps[dep] = camelize(dep);
-    return deps;
-  }, {});
-}
 
 /**
  * Gets full bundle name camelized with extension
