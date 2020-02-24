@@ -60,10 +60,9 @@ npm test
 - [packageSorter](https://github.com/jalal246/packageSorter) - Sorting packages
   for monorepos production.
 
-- [corename](https://github.com/jalal246/corename) - Extracts package name
-  zero config.
+- [corename](https://github.com/jalal246/corename) - Extracts package name.
 
-- [get-info](https://github.com/jalal246/get-info) - Utility functions for projects production
+- [get-info](https://github.com/jalal246/get-info) - Utility functions for projects production.
 
 ## License
 
