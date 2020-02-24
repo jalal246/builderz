@@ -30,6 +30,10 @@ npm install builderz
 In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required args.
 
+```json
+"build": "builderz --format=cjs --minify"
+```
+
 ### Example/API
 
 ```js
