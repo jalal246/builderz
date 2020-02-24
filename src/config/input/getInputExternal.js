@@ -4,10 +4,9 @@ const { UMD } = require("../../constants");
  * Resolves external dependencies and peerDependencies for package input
  * according to build format.
  *
- * @param {Object} packageJson
- * @param {Object} packageJson.peerDependencies
- * @param {Object} packageJson.dependencies
- * @param {string} - BUILD_FORMAT
+ * @param {Object} json.peerDependencies
+ * @param {Object} json.dependencies
+ * @param {string} BUILD_FORMAT
  *
  * @returns {function} - function resolver
  */
