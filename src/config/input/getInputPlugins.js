@@ -22,7 +22,7 @@ function getPlugins({
   IS_SILENT = true,
   IS_PROD = true,
   BUILD_FORMAT,
-  essentialPlugins: extraPlugins
+  plugins: extraPlugins
 }) {
   const essentialPlugins = [
     /**
