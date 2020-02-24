@@ -20,7 +20,13 @@ const { UMD, CJS, ES, PROD } = require("../../constants");
  * @param {string} BABEL_ENV
  * @returns {Array} plugins
  */
-function getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV }) {
+function getPlugins({
+  presets,
+  IS_SILENT,
+  BUILD_FORMAT,
+  BABEL_ENV,
+  ...advancedOpt
+}) {
   const plugins = [
     /**
      * Beeps when a build ends with errors.
@@ -53,7 +59,9 @@ function getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV }) {
     /**
      * Replaces strings in files while bundling.
      */
-    replace({ "process.env.NODE_ENV": JSON.stringify("BABEL_ENV") })
+    replace({ "process.env.NODE_ENV": JSON.stringify("BABEL_ENV") }),
+
+    ...advancedOpt
   ];
 
   if (!IS_SILENT) {

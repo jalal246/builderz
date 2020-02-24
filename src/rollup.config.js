@@ -92,7 +92,7 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
   }
 }
 
-async function bundlePackage({ isProd, format, camelizedName, pkg }) {
+async function bundlePackage({ isProd, format, camelizedName, pkg, plugins }) {
   const BUILD_FORMAT = format;
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
@@ -108,7 +108,8 @@ async function bundlePackage({ isProd, format, camelizedName, pkg }) {
     dependencies,
     sourcePath,
     presets,
-    flags
+    flags,
+    plugins
   });
 
   const output = getOutput({
@@ -121,7 +122,7 @@ async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   await build(input, output);
 }
 
-async function start() {
+async function start(plugins) {
   const sortedPackages = initBuild(buildName, listOfPackages);
 
   const bundleOpt = getBundleOpt();
@@ -139,7 +140,8 @@ async function start() {
         isProd,
         format,
         camelizedName,
-        pkg
+        pkg,
+        plugins
       });
     });
   });

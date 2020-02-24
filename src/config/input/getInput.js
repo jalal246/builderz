@@ -61,13 +61,18 @@ function genInput({
     BUILD_FORMAT
   });
 
-  const plugins = getPlugins({ presets, IS_SILENT, BUILD_FORMAT, BABEL_ENV });
+  const plugins = getPlugins({
+    presets,
+    IS_SILENT,
+    BUILD_FORMAT,
+    BABEL_ENV,
+    ...advancedOpt
+  });
 
   return {
     input: sourcePath,
     external,
-    plugins,
-    ...advancedOpt
+    plugins
   };
 }
 
