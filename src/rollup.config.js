@@ -71,7 +71,7 @@ function getBundleOpt() {
    * TODO: validate argFormat.
    */
   return argFormat
-    ? [{ BUILD_FORMAT: argFormat, IS_PROD: isMinify }]
+    ? [{ BUILD_FORMAT: argFormat, IS_PROD: isMinify || false }]
     : defaultBundleOpt;
 }
 

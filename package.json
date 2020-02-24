@@ -7,7 +7,7 @@
   "license": "LGPL-3.0",
   "scripts": {
     "args": "node src -h",
-    "build": "node src  --BUILD_FORMAT=cjs",
+    "build": "node src  --BUILD_FORMAT=cjs ",
     "prepublish": "yarn build",
     "test": "mocha -require @babel/register"
   },
