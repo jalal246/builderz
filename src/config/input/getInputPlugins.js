@@ -9,22 +9,22 @@ const babel = require("rollup-plugin-babel");
 const { terser } = require("rollup-plugin-terser");
 const analyze = require("rollup-plugin-analyzer");
 
-const { UMD, CJS, ES, PROD } = require("../../constants");
+const { UMD, CJS, ES } = require("../../constants");
 
 /**
  * Returns plugins according to passed flags.
  *
- * @param {Array} presets
- * @param {boolean} IS_SILENT
+ * @param {boolean} [IS_SILENT=true]
+ * @param {boolean} [IS_PROD=true]
  * @param {string} BUILD_FORMAT
- * @param {string} BABEL_ENV
+ * @param {Object} replaceStr for @rollup/plugin-replace
  * @returns {Array} plugins
  */
 function getPlugins({
-  presets,
-  IS_SILENT,
+  IS_SILENT = true,
+  IS_PROD = true,
   BUILD_FORMAT,
-  BABEL_ENV,
+  replaceStr,
   ...advancedOpt
 }) {
   const plugins = [
@@ -35,7 +35,6 @@ function getPlugins({
 
     babel({
       runtimeHelpers: true,
-      presets,
       babelrc: true
     }),
 
@@ -56,13 +55,15 @@ function getPlugins({
      */
     json(),
 
+    advancedOpt
+  ];
+
+  if (replaceStr) {
     /**
      * Replaces strings in files while bundling.
      */
-    replace({ "process.env.NODE_ENV": JSON.stringify("BABEL_ENV") }),
-
-    advancedOpt
-  ];
+    plugins.push(replace(replaceStr));
+  }
 
   if (!IS_SILENT) {
     plugins.push(analyze({ summaryOnly: true }));
@@ -78,7 +79,7 @@ function getPlugins({
     );
   }
 
-  if (BABEL_ENV === PROD) {
+  if (IS_PROD) {
     plugins.push(
       /**
        * Minify generated es bundle.
