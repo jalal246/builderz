@@ -31,10 +31,13 @@ function getArgs(params) {
   return args
     .option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode:TODO")
-    .option("-f, --format [format]", "specific build format")
+    .option("-f, --BUILD_FORMAT [BUILD_FORMAT]", "specific build BUILD_FORMAT")
     .option("-p, --plugins", "input custom plugins")
     .option("-b, --buildName", "specific build name")
-    .option("-m, --minify", "minify bundle works only if format is provided")
+    .option(
+      "-m, --minify",
+      "minify bundle works only if BUILD_FORMAT is provided"
+    )
     .option("PACKAGE_NAME", "building specific package[s], in monorepo")
     .parse(process.argv);
 }
@@ -42,7 +45,7 @@ function getArgs(params) {
 const {
   silent: isSilent,
   // TODO: watch: isWatch,
-  format: argFormat,
+  BUILD_FORMAT: argFormat,
   minify: isMinify,
   buildName,
   plugins,
@@ -56,19 +59,19 @@ setIsSilent(isSilent);
  */
 function getBundleOpt() {
   const defaultBundleOpt = [
-    { format: UMD, isProd: false },
-    { format: UMD, isProd: true },
-    { format: CJS, isProd: false },
-    { format: CJS, isProd: true },
-    { format: ES, isProd: false },
-    { format: ES, isProd: true }
+    { BUILD_FORMAT: UMD, IS_PROD: false },
+    { BUILD_FORMAT: UMD, IS_PROD: true },
+    { BUILD_FORMAT: CJS, IS_PROD: false },
+    { BUILD_FORMAT: CJS, IS_PROD: true },
+    { BUILD_FORMAT: ES, IS_PROD: false },
+    { BUILD_FORMAT: ES, IS_PROD: true }
   ];
 
   /**
    * TODO: validate argFormat.
    */
   return argFormat
-    ? [{ format: argFormat, isProd: isMinify }]
+    ? [{ BUILD_FORMAT: argFormat, IS_PROD: isMinify }]
     : defaultBundleOpt;
 }
 
@@ -96,16 +99,28 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
   }
 }
 
-async function bundlePackage({ isProd, format, camelizedName, pkg }) {
-  const BUILD_FORMAT = format;
-  const BABEL_ENV = `${isProd ? PROD : DEV}`;
-
-  const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: isSilent };
-
-  const { distPath, peerDependencies, dependencies, sourcePath } = pkg;
+/**
+ * build
+ *
+ * @param {Object} flags
+ * @param {boolean} flags.IS_SILENT
+ * @param {boolean} flags.IS_PROD
+ *
+ * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ * @param {string} camelizedName - camelized package name
+ *
+ * @param {Object} json
+ */
+async function bundlePackage({
+  flags: { IS_PROD, IS_SILENT },
+  BUILD_FORMAT,
+  camelizedName,
+  json
+}) {
+  const { distPath, peerDependencies, dependencies, sourcePath } = json;
 
   const input = getInput({
-    flags: { IS_SILENT: isSilent, IS_PROD: isProd },
+    flags: { IS_SILENT, IS_PROD },
     json: { peerDependencies, dependencies },
     sourcePath,
     BUILD_FORMAT,
@@ -113,10 +128,11 @@ async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   });
 
   const output = getOutput({
+    flags: { IS_PROD },
     camelizedName,
+    json: { peerDependencies },
     distPath,
-    peerDependencies,
-    flags
+    BUILD_FORMAT
   });
 
   await build(input, output);
@@ -137,12 +153,12 @@ async function start(params) {
       msg(`bundle ${packageName} as ${camelizedName}`);
     }
 
-    bundleOpt.forEach(({ isProd, format }) => {
+    bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
       bundlePackage({
-        isProd,
-        format,
+        flags: { IS_PROD, IS_SILENT: isSilent },
+        BUILD_FORMAT,
         camelizedName,
-        pkg
+        json: pkg
       });
     });
   });
