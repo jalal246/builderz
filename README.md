@@ -25,10 +25,25 @@ npm install builderz
   -h, --help         output usage information
 ```
 
-### Example
+### Example/cli
 
 In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required args.
+
+### Example/API
+
+```js
+const builderz = require("builderz");
+
+builderz({{
+  silent,
+  format,
+  minify,
+  buildName,
+  plugins,
+  ...listOfPackagesName
+});
+```
 
 ```json
 "build": "builderz --format=cjs --minify"
@@ -39,6 +54,16 @@ bundle just pass the required args.
 ```sh
 npm test
 ```
+
+### Related projects
+
+- [packageSorter](https://github.com/jalal246/packageSorter) - Sorting packages
+  for monorepos production.
+
+- [corename](https://github.com/jalal246/corename) - Extracts package name
+  zero config.
+
+- [get-info](https://github.com/jalal246/get-info) - Utility functions for projects production
 
 ## License
 
