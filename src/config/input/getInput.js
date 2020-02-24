@@ -2,24 +2,30 @@ const getPlugins = require("./getInputPlugins");
 const getExternal = require("./getInputExternal");
 
 /**
+ * Gets build input
  *
+ * @param {Object} flags
+ * @param {boolean} flags.IS_SILENT
+ * @param {boolean} flags.IS_PROD
  *
- * @param {Object} input
- * @param {string} input.sourcePath - where package is located
- * @param {Array} input.presets - babel presets
- * @param {Object} input.flags - babel presets
- * @param {boolean} input.flags.IS_SILENT - babel presets
- * @param {string} input.flags.BUILD_FORMAT - babel presets
- * @param {string} input.flags.BABEL_ENV - babel presets
+ * @param {Object} json
+ * @param {Object} json.peerDependencies
+ * @param {Object} json.dependencies
+ *
+ * @param {string} sourcePath - where package is located
+ * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ *
+ * @param {Array} plugins - extra plugins.
+ *
  *
  * @returns {Object} contains input option for the package.
  */
 function genInput({
-  flags: { IS_SILENT, BUILD_FORMAT, BABEL_ENV },
-  peerDependencies,
-  dependencies,
+  flags: { IS_SILENT, IS_PROD },
+  json: { peerDependencies, dependencies },
   sourcePath,
-  advancedOpt
+  BUILD_FORMAT,
+  plugins: extraPlugins
 }) {
   const external = getExternal({
     peerDependencies,
@@ -29,9 +35,9 @@ function genInput({
 
   const plugins = getPlugins({
     IS_SILENT,
+    IS_PROD,
     BUILD_FORMAT,
-    BABEL_ENV,
-    advancedOpt
+    plugins: extraPlugins
   });
 
   return {
