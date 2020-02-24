@@ -39,7 +39,7 @@ bundle just pass the required args.
 ```js
 const builderz = require("builderz");
 
-builderz({{
+builderz({
   silent,
   format,
   minify,
