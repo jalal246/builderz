@@ -18,14 +18,14 @@ npm install builderz
 ## Options
 
 ```bash
-  -s, --silent       silent mode, mutes build massages
-  -w, --watch        watch mode
-  --format [format]  specific build format
-  -p, --plugins      input custom plugins
-  -b, --buildName    specific build name
-  -m, --minify       minify bundle works only if format is provided
-  PACKAGE_NAME       building specific package[s], in monorepo
-  -h, --help         output usage information
+  -s, --silent          silent mode, mutes build massages
+  -w, --watch           watch mode
+  -f --format [format]  specific build format
+  -p, --plugins         input custom plugins
+  -b, --buildName       specific build name
+  -m, --minify          minify bundle works only if format is provided
+  PACKAGE_NAME          building specific package[s], in monorepo
+  -h, --help            output usage information
 ```
 
 ### Example/cli
