@@ -3,7 +3,6 @@ const auto = require("@rollup/plugin-auto-install");
 const resolve = require("@rollup/plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
 const json = require("@rollup/plugin-json");
-const replace = require("@rollup/plugin-replace");
 
 const babel = require("rollup-plugin-babel");
 const { terser } = require("rollup-plugin-terser");
@@ -17,17 +16,15 @@ const { UMD, CJS, ES } = require("../../constants");
  * @param {boolean} [IS_SILENT=true]
  * @param {boolean} [IS_PROD=true]
  * @param {string} BUILD_FORMAT
- * @param {Object} replaceStr for @rollup/plugin-replace
  * @returns {Array} plugins
  */
 function getPlugins({
   IS_SILENT = true,
   IS_PROD = true,
   BUILD_FORMAT,
-  replaceStr,
-  ...advancedOpt
+  essentialPlugins: extraPlugins
 }) {
-  const plugins = [
+  const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
      */
@@ -53,24 +50,21 @@ function getPlugins({
     /**
      * Converts .json files to ES6 modules.
      */
-    json(),
-
-    advancedOpt
+    json()
   ];
 
-  if (replaceStr) {
-    /**
-     * Replaces strings in files while bundling.
-     */
-    plugins.push(replace(replaceStr));
+  if (extraPlugins) {
+    extraPlugins.forEach(plg => {
+      essentialPlugins.push(plg);
+    });
   }
 
   if (!IS_SILENT) {
-    plugins.push(analyze({ summaryOnly: true }));
+    essentialPlugins.push(analyze({ summaryOnly: true }));
   }
 
   if (BUILD_FORMAT === UMD) {
-    plugins.push(
+    essentialPlugins.push(
       /**
        * Locates modules using the Node resolution algorithm, for using third
        * party modules in node_modules.
@@ -80,7 +74,7 @@ function getPlugins({
   }
 
   if (IS_PROD) {
-    plugins.push(
+    essentialPlugins.push(
       /**
        * Minify generated es bundle.
        */
@@ -121,7 +115,7 @@ function getPlugins({
     );
   }
 
-  return plugins;
+  return essentialPlugins;
 }
 
 module.exports = getPlugins;
