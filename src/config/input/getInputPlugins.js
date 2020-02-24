@@ -61,7 +61,7 @@ function getPlugins({
      */
     replace({ "process.env.NODE_ENV": JSON.stringify("BABEL_ENV") }),
 
-    ...advancedOpt
+    advancedOpt
   ];
 
   if (!IS_SILENT) {

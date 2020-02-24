@@ -146,8 +146,7 @@ async function start(params) {
         isProd,
         format,
         camelizedName,
-        pkg,
-        plugins
+        pkg
       });
     });
   });

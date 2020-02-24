@@ -53,7 +53,7 @@ function genInput({
   dependencies,
   sourcePath,
   presets,
-  ...advancedOpt
+  advancedOpt
 }) {
   const external = getExternal({
     peerDependencies,
@@ -66,7 +66,7 @@ function genInput({
     IS_SILENT,
     BUILD_FORMAT,
     BABEL_ENV,
-    ...advancedOpt
+    advancedOpt
   });
 
   return {
