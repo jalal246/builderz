@@ -25,12 +25,15 @@ function camelizeOutputBuild(name) {
  * Get args pass to build command
  * @return {Object} contains flags and array of packages name
  */
-function getArgs() {
+function getArgs(params) {
+  if (params) return params;
+
   return args
     .option("-s, --silent", "silent mode, mutes build massages")
-    .option("-w, --watch", "watch mode")
-    .option("-f --format [format]", "specific build format")
-    .option("-b --buildName [format]", "specific build name")
+    .option("-w, --watch", "watch mode:TODO")
+    .option("-f, --format [format]", "specific build format")
+    .option("-p, --plugins", "input custom plugins")
+    .option("-b, --buildName", "specific build name")
     .option("-m, --minify", "minify bundle works only if format is provided")
     .option("PACKAGE_NAME", "building specific package[s], in monorepo")
     .parse(process.argv);
@@ -42,6 +45,7 @@ const {
   format: argFormat,
   minify: isMinify,
   buildName,
+  plugins,
   args: listOfPackages
 } = getArgs();
 
@@ -92,7 +96,7 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
   }
 }
 
-async function bundlePackage({ isProd, format, camelizedName, pkg, plugins }) {
+async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   const BUILD_FORMAT = format;
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
@@ -122,7 +126,9 @@ async function bundlePackage({ isProd, format, camelizedName, pkg, plugins }) {
   await build(input, output);
 }
 
-async function start(plugins) {
+async function start(params) {
+  if (params) getArgs(params);
+
   const sortedPackages = initBuild(buildName, listOfPackages);
 
   const bundleOpt = getBundleOpt();
