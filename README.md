@@ -49,10 +49,6 @@ builderz({{
 });
 ```
 
-```json
-"build": "builderz --format=cjs --minify"
-```
-
 ## Tests
 
 ```sh
