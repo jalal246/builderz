@@ -1,5 +1,5 @@
 const getPlugins = require("./getInputPlugins");
-const getExternal = require("./getExternal");
+const getExternal = require("./getInputExternal");
 
 /**
  *
