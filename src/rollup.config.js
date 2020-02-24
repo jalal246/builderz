@@ -100,19 +100,15 @@ async function bundlePackage({ isProd, format, camelizedName, pkg }) {
   const BUILD_FORMAT = format;
   const BABEL_ENV = `${isProd ? PROD : DEV}`;
 
-  // babel presets according to env
-  const presets = ["@babel/preset-env"];
-
   const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: isSilent };
 
   const { distPath, peerDependencies, dependencies, sourcePath } = pkg;
 
   const input = getInput({
-    peerDependencies,
-    dependencies,
+    flags: { IS_SILENT: isSilent, IS_PROD: isProd },
+    json: { peerDependencies, dependencies },
     sourcePath,
-    presets,
-    flags,
+    BUILD_FORMAT,
     plugins
   });
 
