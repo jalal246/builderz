@@ -160,8 +160,4 @@ async function start(params) {
   });
 }
 
-start().catch(err => {
-  error(err);
-});
-
 export default start;
