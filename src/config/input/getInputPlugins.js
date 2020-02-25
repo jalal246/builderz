@@ -1,14 +1,14 @@
-const beep = require("@rollup/plugin-beep");
-const auto = require("@rollup/plugin-auto-install");
-const resolve = require("@rollup/plugin-node-resolve");
-const commonjs = require("@rollup/plugin-commonjs");
-const json = require("@rollup/plugin-json");
+import beep from "@rollup/plugin-beep";
+import auto from "@rollup/plugin-auto-install";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 
-const babel = require("rollup-plugin-babel");
-const { terser } = require("rollup-plugin-terser");
-const analyze = require("rollup-plugin-analyzer");
+import babel from "rollup-plugin-babel";
+import { terser } from "rollup-plugin-terser";
+import analyze from "rollup-plugin-analyzer";
 
-const { UMD, CJS, ES } = require("../../constants");
+import { UMD, CJS, ES } from "../../constants";
 
 /**
  * Returns plugins according to passed flags.
@@ -118,4 +118,4 @@ function getPlugins({
   return essentialPlugins;
 }
 
-module.exports = getPlugins;
+export default getPlugins;

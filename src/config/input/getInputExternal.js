@@ -1,4 +1,4 @@
-const { UMD } = require("../../constants");
+import { UMD } from "../../constants";
 
 /**
  * Resolves external dependencies and peerDependencies for package input
@@ -32,4 +32,4 @@ function getExternal({ peerDependencies, dependencies, BUILD_FORMAT }) {
     : id => new RegExp(`^(${external.join("|")})($|/)`).test(id);
 }
 
-module.exports = getExternal;
+export default getExternal;

@@ -1,5 +1,5 @@
-const { msg, success, error } = require("@mytools/print");
-const ms = require("ms");
+import { msg, success, error } from "@mytools/print";
+import ms from "ms";
 
 /**
  * [onWatch function monitoring building prosses]
@@ -45,4 +45,4 @@ function onWatch(watcher) {
   });
 }
 
-module.exports = { onWatch };
+export default { onWatch };
