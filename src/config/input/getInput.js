@@ -1,5 +1,5 @@
-const getPlugins = require("./getInputPlugins");
-const getExternal = require("./getInputExternal");
+import getPlugins from "./getInputPlugins";
+import getExternal from "./getInputExternal";
 
 /**
  * Gets build input
@@ -47,4 +47,4 @@ function genInput({
   };
 }
 
-module.exports = genInput;
+export default genInput;

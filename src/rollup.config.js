@@ -1,12 +1,12 @@
-const rollup = require("rollup");
-const args = require("commander");
-const camelize = require("camelize");
+import rollup from "rollup";
+import { option } from "commander";
+import camelize from "camelize";
 
-const { msg, error, setIsSilent } = require("@mytools/print");
+import { msg, error, setIsSilent } from "@mytools/print";
 
-const { UMD, CJS, ES } = require("./constants");
+import { UMD, CJS, ES } from "./constants";
 
-const { initBuild, getInput, getOutput } = require("./config");
+import { initBuild, getInput, getOutput } from "./config/index";
 
 /**
  * Modify package name in package.json to name the output build correctly.
@@ -28,8 +28,7 @@ function camelizeOutputBuild(name) {
 function getArgs(params) {
   if (params) return params;
 
-  return args
-    .option("-s, --silent", "silent mode, mutes build massages")
+  return option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode:TODO")
     .option("-f, --format", "specific build format")
     .option("-p, --plugins", "input custom plugins")
@@ -164,3 +163,5 @@ async function start(params) {
 start().catch(err => {
   error(err);
 });
+
+export default start;

@@ -1,1 +1,1 @@
-module.exports = require("./getInput.js");
+export { default } from "./getInput";

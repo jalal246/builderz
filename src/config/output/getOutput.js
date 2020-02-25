@@ -1,7 +1,7 @@
-const path = require("path");
-const getGlobal = require("./getGlobalOutput");
+import { join } from "path";
+import getGlobal from "./getGlobalOutput";
 
-const { UMD, CJS, ES } = require("../../constants");
+import { UMD, CJS, ES } from "../../constants";
 
 /**
  * Gets full bundle name camelized with extension
@@ -62,7 +62,7 @@ function getOutput({
   });
 
   const output = {
-    file: path.join(distPath, name),
+    file: join(distPath, name),
     format: BUILD_FORMAT,
     name,
     interop: false
@@ -79,4 +79,4 @@ function getOutput({
   return output;
 }
 
-module.exports = getOutput;
+export default getOutput;

@@ -1,4 +1,4 @@
-const camelize = require("camelize");
+import camelize from "camelize";
 
 /**
  * Don't include peerDependencies in a bundle.
@@ -15,4 +15,4 @@ function getGlobal(peerDependencies = {}) {
   }, {});
 }
 
-module.exports = getGlobal;
+export default getGlobal;
