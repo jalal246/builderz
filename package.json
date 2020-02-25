@@ -1,6 +1,6 @@
 {
   "name": "builderz",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "./dist/builderz.cjs",
   "repository": "https://github.com/jalal246/builderz.git",
   "author": "Jalal Maskoun <jimmy002020@gmail.com>",
