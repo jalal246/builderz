@@ -1,9 +1,9 @@
-const { resolve } = require("path");
-const packageSorter = require("package-sorter");
-const { getPackagesInfo } = require("get-info");
-const del = require("del");
+import { resolve } from "path";
+import packageSorter from "package-sorter";
+import { getPackagesInfo } from "get-info";
+import { sync } from "del";
 
-const { msg } = require("@mytools/print");
+import { msg } from "@mytools/print";
 
 /**
  * initBuild packages for production:
@@ -23,7 +23,7 @@ function initBuild(buildName = "dist", ...targetedPackages) {
    */
   const packagesPathDist = path.map(pkgPath => resolve(pkgPath, buildName));
 
-  del.sync(packagesPathDist);
+  sync(packagesPathDist);
 
   /**
    * Sort packages before bump to production.
@@ -35,4 +35,4 @@ function initBuild(buildName = "dist", ...targetedPackages) {
   return sortedJson;
 }
 
-module.exports = initBuild;
+export default initBuild;

@@ -1,10 +1,6 @@
-const initBuild = require("./initBuild");
+import initBuild from "./initBuild";
 
-const getInput = require("./input");
-const getOutput = require("./output");
+import getInput from "./input/index";
+import getOutput from "./output/index";
 
-module.exports = {
-  initBuild,
-  getInput,
-  getOutput
-};
+export { initBuild, getInput, getOutput };

@@ -1,12 +1,12 @@
-const rollup = require("rollup");
-const args = require("commander");
-const camelize = require("camelize");
+import rollup from "rollup";
+import { option } from "commander";
+import camelize from "camelize";
 
-const { msg, error, setIsSilent } = require("@mytools/print");
+import { msg, error, setIsSilent } from "@mytools/print";
 
-const { PROD, DEV, UMD, CJS, ES } = require("./constants");
+import { UMD, CJS, ES } from "./constants";
 
-const { initBuild, getInput, getOutput } = require("./config");
+import { initBuild, getInput, getOutput } from "./config/index";
 
 /**
  * Modify package name in package.json to name the output build correctly.
@@ -28,10 +28,9 @@ function camelizeOutputBuild(name) {
 function getArgs(params) {
   if (params) return params;
 
-  return args
-    .option("-s, --silent", "silent mode, mutes build massages")
+  return option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode:TODO")
-    .option("-f, --format [format]", "specific build format")
+    .option("-f, --format", "specific build format")
     .option("-p, --plugins", "input custom plugins")
     .option("-b, --buildName", "specific build name")
     .option("-m, --minify", "minify bundle works only if format is provided")
@@ -56,19 +55,19 @@ setIsSilent(isSilent);
  */
 function getBundleOpt() {
   const defaultBundleOpt = [
-    { format: UMD, isProd: false },
-    { format: UMD, isProd: true },
-    { format: CJS, isProd: false },
-    { format: CJS, isProd: true },
-    { format: ES, isProd: false },
-    { format: ES, isProd: true }
+    { BUILD_FORMAT: UMD, IS_PROD: false },
+    { BUILD_FORMAT: UMD, IS_PROD: true },
+    { BUILD_FORMAT: CJS, IS_PROD: false },
+    { BUILD_FORMAT: CJS, IS_PROD: true },
+    { BUILD_FORMAT: ES, IS_PROD: false },
+    { BUILD_FORMAT: ES, IS_PROD: true }
   ];
 
   /**
    * TODO: validate argFormat.
    */
   return argFormat
-    ? [{ format: argFormat, isProd: isMinify }]
+    ? [{ BUILD_FORMAT: argFormat, IS_PROD: isMinify || false }]
     : defaultBundleOpt;
 }
 
@@ -96,31 +95,40 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
   }
 }
 
-async function bundlePackage({ isProd, format, camelizedName, pkg }) {
-  const BUILD_FORMAT = format;
-  const BABEL_ENV = `${isProd ? PROD : DEV}`;
-
-  // babel presets according to env
-  const presets = ["@babel/preset-env"];
-
-  const flags = { BUILD_FORMAT, BABEL_ENV, IS_SILENT: isSilent };
-
-  const { distPath, peerDependencies, dependencies, sourcePath } = pkg;
+/**
+ * build
+ *
+ * @param {Object} flags
+ * @param {boolean} flags.IS_SILENT
+ * @param {boolean} flags.IS_PROD
+ *
+ * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ * @param {string} camelizedName - camelized package name
+ *
+ * @param {Object} json
+ */
+async function bundlePackage({
+  flags: { IS_PROD, IS_SILENT },
+  BUILD_FORMAT,
+  camelizedName,
+  json
+}) {
+  const { distPath, peerDependencies, dependencies, sourcePath } = json;
 
   const input = getInput({
-    peerDependencies,
-    dependencies,
+    flags: { IS_SILENT, IS_PROD },
+    json: { peerDependencies, dependencies },
     sourcePath,
-    presets,
-    flags,
+    BUILD_FORMAT,
     plugins
   });
 
   const output = getOutput({
+    flags: { IS_PROD },
     camelizedName,
+    json: { peerDependencies },
     distPath,
-    peerDependencies,
-    flags
+    BUILD_FORMAT
   });
 
   await build(input, output);
@@ -141,12 +149,12 @@ async function start(params) {
       msg(`bundle ${packageName} as ${camelizedName}`);
     }
 
-    bundleOpt.forEach(({ isProd, format }) => {
+    bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
       bundlePackage({
-        isProd,
-        format,
+        flags: { IS_PROD, IS_SILENT: isSilent },
+        BUILD_FORMAT,
         camelizedName,
-        pkg
+        json: pkg
       });
     });
   });
@@ -155,3 +163,5 @@ async function start(params) {
 start().catch(err => {
   error(err);
 });
+
+export default start;

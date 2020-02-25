@@ -1,33 +1,30 @@
-const beep = require("@rollup/plugin-beep");
-const auto = require("@rollup/plugin-auto-install");
-const resolve = require("@rollup/plugin-node-resolve");
-const commonjs = require("@rollup/plugin-commonjs");
-const json = require("@rollup/plugin-json");
-const replace = require("@rollup/plugin-replace");
+import beep from "@rollup/plugin-beep";
+import auto from "@rollup/plugin-auto-install";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 
-const babel = require("rollup-plugin-babel");
-const { terser } = require("rollup-plugin-terser");
-const analyze = require("rollup-plugin-analyzer");
+import babel from "rollup-plugin-babel";
+import { terser } from "rollup-plugin-terser";
+import analyze from "rollup-plugin-analyzer";
 
-const { UMD, CJS, ES, PROD } = require("../../constants");
+import { UMD, CJS, ES } from "../../constants";
 
 /**
  * Returns plugins according to passed flags.
  *
- * @param {Array} presets
- * @param {boolean} IS_SILENT
+ * @param {boolean} [IS_SILENT=true]
+ * @param {boolean} [IS_PROD=true]
  * @param {string} BUILD_FORMAT
- * @param {string} BABEL_ENV
  * @returns {Array} plugins
  */
 function getPlugins({
-  presets,
-  IS_SILENT,
+  IS_SILENT = true,
+  IS_PROD = true,
   BUILD_FORMAT,
-  BABEL_ENV,
-  ...advancedOpt
+  plugins: extraPlugins
 }) {
-  const plugins = [
+  const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
      */
@@ -35,7 +32,6 @@ function getPlugins({
 
     babel({
       runtimeHelpers: true,
-      presets,
       babelrc: true
     }),
 
@@ -54,22 +50,21 @@ function getPlugins({
     /**
      * Converts .json files to ES6 modules.
      */
-    json(),
-
-    /**
-     * Replaces strings in files while bundling.
-     */
-    replace({ "process.env.NODE_ENV": JSON.stringify("BABEL_ENV") }),
-
-    advancedOpt
+    json()
   ];
 
+  if (extraPlugins) {
+    extraPlugins.forEach(plg => {
+      essentialPlugins.push(plg);
+    });
+  }
+
   if (!IS_SILENT) {
-    plugins.push(analyze({ summaryOnly: true }));
+    essentialPlugins.push(analyze({ summaryOnly: true }));
   }
 
   if (BUILD_FORMAT === UMD) {
-    plugins.push(
+    essentialPlugins.push(
       /**
        * Locates modules using the Node resolution algorithm, for using third
        * party modules in node_modules.
@@ -78,8 +73,8 @@ function getPlugins({
     );
   }
 
-  if (BABEL_ENV === PROD) {
-    plugins.push(
+  if (IS_PROD) {
+    essentialPlugins.push(
       /**
        * Minify generated es bundle.
        */
@@ -120,7 +115,7 @@ function getPlugins({
     );
   }
 
-  return plugins;
+  return essentialPlugins;
 }
 
-module.exports = getPlugins;
+export default getPlugins;

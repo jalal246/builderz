@@ -1,29 +1,20 @@
-const path = require("path");
-const camelize = require("camelize");
+import { join } from "path";
+import getGlobal from "./getGlobalOutput";
 
-const { UMD, CJS, ES, PROD } = require("../../constants");
-
-/**
- * Don't include peerDependencies in a bundle.
- *
- * @param {Object} peerDependencies
- * @returns Array of external deps not included in bundle.
- */
-function getGlobal(peerDependencies = {}) {
-  return Object.keys(peerDependencies).reduce((deps, dep) => {
-    // eslint-disable-next-line
-    deps[dep] = camelize(dep);
-    return deps;
-  }, {});
-}
+import { UMD, CJS, ES } from "../../constants";
 
 /**
  * Gets full bundle name camelized with extension
  *
- * @param {*} { packageName, BUILD_FORMAT, BABEL_ENV }
- * @returns
+ * @param {Object} flags
+ * @param {boolean} flags.IS_PROD
+ *
+ * @param {string} camelizedName - camelized package name
+ * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ *
+ * @returns {string} name with full extension
  */
-function getBundleName({ camelizedName, BUILD_FORMAT, BABEL_ENV }) {
+function getBundleName({ camelizedName, BUILD_FORMAT, flags: { IS_PROD } }) {
   let ext;
 
   if (BUILD_FORMAT === UMD) {
@@ -34,20 +25,44 @@ function getBundleName({ camelizedName, BUILD_FORMAT, BABEL_ENV }) {
     ext = "esm.js";
   }
 
-  const fname = `${camelizedName}.${
-    BABEL_ENV === PROD ? `min.${ext}` : `${ext}`
-  }`;
+  const fname = `${camelizedName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
 
   return fname;
 }
 
-function getOutput({ camelizedName, peerDependencies, distPath, flags }) {
-  const { BABEL_ENV, BUILD_FORMAT } = flags;
+/**
+ * Gets build
+ *
+ * @param {Object} flags
+ * @param {boolean} flags.IS_PROD
+ *
+ * @param {string} camelizedName - camelized package name
+ *
+ * @param {Object} json
+ * @param {Object} json.peerDependencies
+ *
+ * @param {string} distPath - where bundle will be located
+ * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ *
+ * @returns {Object} contains input option for the package.
+ */
+function getOutput({
+  flags,
+  camelizedName,
+  json: { peerDependencies },
+  distPath,
+  BUILD_FORMAT
+}) {
+  const { IS_PROD } = flags;
 
-  const name = getBundleName({ camelizedName, BUILD_FORMAT, BABEL_ENV });
+  const name = getBundleName({
+    camelizedName,
+    BUILD_FORMAT,
+    flags: { IS_PROD }
+  });
 
   const output = {
-    file: path.join(distPath, name),
+    file: join(distPath, name),
     format: BUILD_FORMAT,
     name,
     interop: false
@@ -57,11 +72,11 @@ function getOutput({ camelizedName, peerDependencies, distPath, flags }) {
     output.globals = getGlobal(peerDependencies);
   }
 
-  if (BABEL_ENV === PROD || BUILD_FORMAT === UMD) {
+  if (IS_PROD || BUILD_FORMAT === UMD) {
     output.sourcemap = true;
   }
 
   return output;
 }
 
-module.exports = getOutput;
+export default getOutput;

@@ -1,1 +1,1 @@
-module.exports = require("./getOutput.js");
+export { default } from "./getOutput";

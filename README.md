@@ -3,8 +3,9 @@
 > Helps you to build your project with zero config :bowtie:
 
 `builderz` is smart. Works for regular repo with single package and monorepo. It
-gets all packages path, extracts json from each package, cleans build folders if
-there is any, sorts packages using [packageSorter](https://github.com/jalal246/packageSorter),
+gets all packages path using [get-info](https://github.com/jalal246/get-info),
+extracts json from each package, cleans build folders if there is any, sorts
+packages using [packageSorter](https://github.com/jalal246/packageSorter),
 sets distention paths and pass them accordingly to rollup for production.
 
 _There's is a huge room for enhancement but i keep it this way which satisfies
@@ -17,12 +18,14 @@ npm install builderz
 ## Options
 
 ```bash
-  -s, --silent       silent mode, mutes build massages
-  -w, --watch        watch mode
-  --format [format]  specific build format
-  -m, --minify       minify bundle works only if format is provided
-  PACKAGE_NAME       building specific package[s], in monorepo
-  -h, --help         output usage information
+  -s, --silent     silent mode, mutes build massages
+  -w, --watch      watch mode
+  -f --format      specific build format
+  -p, --plugins    input custom plugins
+  -b, --buildName  specific build name
+  -m, --minify     minify bundle works only if format is provided
+  PACKAGE_NAME     building specific package[s], in monorepo
+  -h, --help       output usage information
 ```
 
 ### Example/cli

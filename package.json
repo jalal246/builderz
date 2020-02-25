@@ -7,7 +7,7 @@
   "license": "LGPL-3.0",
   "scripts": {
     "args": "node src -h",
-    "build": "node src  --format=cjs",
+    "build": "rollup src/rollup.config.js  --file dist/builderz.cjs.js --format=cjs",
     "prepublish": "yarn build",
     "test": "mocha -require @babel/register"
   },
@@ -36,7 +36,6 @@
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-json": "^4.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
-    "@rollup/plugin-replace": "^2.3.0",
     "camelize": "^1.0.0",
     "chalk": "^3.0.0",
     "commander": "^4.1.1",
