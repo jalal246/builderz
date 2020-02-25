@@ -48,6 +48,12 @@ function getPlugins({
     commonjs(),
 
     /**
+     * Locates modules using the Node resolution algorithm, for using third
+     * party modules in node_modules.
+     */
+    resolve({ extensions: [".mjs", ".js", ".jsx", ".json", ".node"] }),
+
+    /**
      * Converts .json files to ES6 modules.
      */
     json()
@@ -61,16 +67,6 @@ function getPlugins({
 
   if (!IS_SILENT) {
     essentialPlugins.push(analyze({ summaryOnly: true }));
-  }
-
-  if (BUILD_FORMAT === UMD) {
-    essentialPlugins.push(
-      /**
-       * Locates modules using the Node resolution algorithm, for using third
-       * party modules in node_modules.
-       */
-      resolve({ extensions: [".mjs", ".js", ".json", ".node"] })
-    );
   }
 
   if (IS_PROD) {
