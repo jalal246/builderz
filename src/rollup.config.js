@@ -31,13 +31,10 @@ function getArgs(params) {
   return args
     .option("-s, --silent", "silent mode, mutes build massages")
     .option("-w, --watch", "watch mode:TODO")
-    .option("-f, --BUILD_FORMAT [BUILD_FORMAT]", "specific build BUILD_FORMAT")
+    .option("-f, --format", "specific build format")
     .option("-p, --plugins", "input custom plugins")
     .option("-b, --buildName", "specific build name")
-    .option(
-      "-m, --minify",
-      "minify bundle works only if BUILD_FORMAT is provided"
-    )
+    .option("-m, --minify", "minify bundle works only if format is provided")
     .option("PACKAGE_NAME", "building specific package[s], in monorepo")
     .parse(process.argv);
 }
@@ -45,7 +42,7 @@ function getArgs(params) {
 const {
   silent: isSilent,
   // TODO: watch: isWatch,
-  BUILD_FORMAT: argFormat,
+  format: argFormat,
   minify: isMinify,
   buildName,
   plugins,
