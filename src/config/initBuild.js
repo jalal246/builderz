@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import packageSorter from "package-sorter";
-import { getPackagesInfo } from "get-info";
+import { getJsonByName } from "get-info";
 import { sync } from "del";
 
 import { msg } from "@mytools/print";
@@ -16,7 +16,7 @@ import { msg } from "@mytools/print";
  * @returns {Array} sortedJson
  */
 function initBuild(buildName = "dist", ...targetedPackages) {
-  const { json, path } = getPackagesInfo({ buildName })(targetedPackages);
+  const { json, path } = getJsonByName(buildName)(...targetedPackages);
 
   /**
    * Clean build if any.
