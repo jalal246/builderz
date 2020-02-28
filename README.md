@@ -2,7 +2,7 @@
 
 > Helps you to build your project with zero config :bowtie:
 
-`builderz` is smart. Works for regular repo with single package and monorepo. It
+`build/er/z` is smart. Works for regular repo with single package and monorepo. It
 gets all packages path using [get-info](https://github.com/jalal246/get-info),
 extracts json from each package, cleans build folders if there is any, sorts
 packages using [packageSorter](https://github.com/jalal246/packageSorter),
