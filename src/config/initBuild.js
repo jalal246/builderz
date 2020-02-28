@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import { resolve } from "path";
 import packageSorter from "package-sorter";
 import { getJsonByName } from "get-info";
@@ -15,24 +16,26 @@ import { msg } from "@mytools/print";
  * @param {Array} targetedPackages - packages name to be built
  * @returns {Array} sortedJson
  */
-function initBuild(buildName = "dist", ...targetedPackages) {
-  const { json, path } = getJsonByName(buildName)(...targetedPackages);
+function initBuild(buildName = "dist") {
+  return function(...targetedPackages) {
+    const { json, path } = getJsonByName(buildName)(targetedPackages);
 
-  /**
-   * Clean build if any.
-   */
-  const packagesPathDist = path.map(pkgPath => resolve(pkgPath, buildName));
+    /**
+     * Clean build if any.
+     */
+    const packagesPathDist = path.map(pkgPath => resolve(pkgPath, buildName));
 
-  sync(packagesPathDist);
+    sync(packagesPathDist);
 
-  /**
-   * Sort packages before bump to production.
-   */
-  const sortedJson = packageSorter(json);
+    /**
+     * Sort packages before bump to production.
+     */
+    const sortedJson = packageSorter(json);
 
-  msg("Done initiating build");
+    msg("Done initiating build");
 
-  return sortedJson;
+    return sortedJson;
+  };
 }
 
 export default initBuild;

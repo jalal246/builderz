@@ -137,7 +137,7 @@ async function bundlePackage({
 async function start(params) {
   if (params) getArgs(params);
 
-  const sortedPackages = initBuild(buildName, listOfPackages);
+  const sortedPackages = initBuild(buildName)(...listOfPackages);
 
   const bundleOpt = getBundleOpt();
 
