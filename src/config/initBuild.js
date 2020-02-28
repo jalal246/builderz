@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
-import { resolve } from "path";
+
 import packageSorter from "package-sorter";
 import { getJsonByName } from "get-info";
-import { sync } from "del";
+import { sync as delSync } from "del";
 
 import { msg } from "@mytools/print";
 
@@ -18,14 +18,12 @@ import { msg } from "@mytools/print";
  */
 function initBuild(buildName = "dist") {
   return function(...targetedPackages) {
-    const { json, path } = getJsonByName(buildName)(targetedPackages);
+    const { json, distPath } = getJsonByName(buildName)(targetedPackages);
 
     /**
      * Clean build if any.
      */
-    const packagesPathDist = path.map(pkgPath => resolve(pkgPath, buildName));
-
-    sync(packagesPathDist);
+    delSync(distPath);
 
     /**
      * Sort packages before bump to production.
