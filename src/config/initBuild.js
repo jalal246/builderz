@@ -16,19 +16,24 @@ import { msg } from "@mytools/print";
  * @param {Array} targetedPackages - packages name to be built
  * @returns {Array} sortedJson
  */
-function initBuild(buildName = "dist") {
+function initBuild(buildName = "dist", ...path) {
   return function(...targetedPackages) {
-    const { json, distPath } = getJsonByName(buildName)(targetedPackages);
+    const { json, distPath } = getJsonByName(
+      buildName,
+      ...path
+    )(...targetedPackages);
 
     /**
      * Clean build if any.
      */
     delSync(distPath);
 
+    const jsonWithDist = { ...json, distPath };
+
     /**
      * Sort packages before bump to production.
      */
-    const sortedJson = packageSorter(json);
+    const sortedJson = packageSorter(jsonWithDist);
 
     msg("Done initiating build");
 

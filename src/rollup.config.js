@@ -1,11 +1,10 @@
 import rollup from "rollup";
-import { option } from "commander";
 
 import { msg, error, setIsSilent } from "@mytools/print";
 
 import { initBuild, getInput, getOutput } from "./config/index";
 
-import { camelizeOutputBuild } from "./utils";
+import { camelizeOutputBuild, getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
 
 async function build(inputOptions, outputOptions, isWatch, onWatch) {
@@ -45,6 +44,7 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
  * @param {Object} json
  */
 async function bundlePackage({
+  plugins,
   flags: { IS_PROD, IS_SILENT },
   BUILD_FORMAT,
   camelizedName,
@@ -74,19 +74,19 @@ async function bundlePackage({
 async function start(...params) {
   const {
     silent: isSilent,
-    format: argFormat,
+    format,
     minify: isMinify,
     buildName,
     plugins,
     paths,
-    args: listOfPackages
+    args: packagesNames
   } = params || resolveArgs();
 
   setIsSilent(isSilent);
 
-  const sortedPackages = initBuild(buildName)(...listOfPackages);
+  const sortedPackages = initBuild(buildName, ...paths)(...packagesNames);
 
-  const bundleOpt = getBundleOpt();
+  const bundleOpt = getBundleOpt(format, isMinify);
 
   sortedPackages.forEach(pkg => {
     const { name: packageName } = pkg;
@@ -98,6 +98,7 @@ async function start(...params) {
 
     bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
       bundlePackage({
+        plugins,
         flags: { IS_PROD, IS_SILENT: isSilent },
         BUILD_FORMAT,
         camelizedName,
