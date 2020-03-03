@@ -1,75 +1,12 @@
 import rollup from "rollup";
 import { option } from "commander";
-import camelize from "camelize";
 
 import { msg, error, setIsSilent } from "@mytools/print";
 
-import { UMD, CJS, ES } from "./constants";
-
 import { initBuild, getInput, getOutput } from "./config/index";
 
-/**
- * Modify package name in package.json to name the output build correctly.
- * remove @
- * replace / with -
- * remove - and capitalize the first letter after it
- *
- * @param {string} name - package name in package.json
- * @returns {string} modified name for bundle
- */
-function camelizeOutputBuild(name) {
-  return camelize(name.replace("@", "").replace("/", "-"));
-}
-
-/**
- * Get args pass to build command
- * @return {Object} contains flags and array of packages name
- */
-function getArgs(params) {
-  if (params) return params;
-
-  return option("-s, --silent", "silent mode, mutes build massages")
-    .option("-w, --watch", "watch mode:TODO")
-    .option("-f, --format", "specific build format")
-    .option("-p, --plugins", "input custom plugins")
-    .option("-b, --buildName", "specific build name")
-    .option("-m, --minify", "minify bundle works only if format is provided")
-    .option("PACKAGE_NAME", "building specific package[s], in monorepo")
-    .parse(process.argv);
-}
-
-const {
-  silent: isSilent,
-  // TODO: watch: isWatch,
-  format: argFormat,
-  minify: isMinify,
-  buildName,
-  plugins,
-  args: listOfPackages
-} = getArgs();
-
-setIsSilent(isSilent);
-
-/**
- * @returns {Object[]} bundleOpt
- */
-function getBundleOpt() {
-  const defaultBundleOpt = [
-    { BUILD_FORMAT: UMD, IS_PROD: false },
-    { BUILD_FORMAT: UMD, IS_PROD: true },
-    { BUILD_FORMAT: CJS, IS_PROD: false },
-    { BUILD_FORMAT: CJS, IS_PROD: true },
-    { BUILD_FORMAT: ES, IS_PROD: false },
-    { BUILD_FORMAT: ES, IS_PROD: true }
-  ];
-
-  /**
-   * TODO: validate argFormat.
-   */
-  return argFormat
-    ? [{ BUILD_FORMAT: argFormat, IS_PROD: isMinify || false }]
-    : defaultBundleOpt;
-}
+import { camelizeOutputBuild } from "./utils";
+import resolveArgs from "./resolveArgs";
 
 async function build(inputOptions, outputOptions, isWatch, onWatch) {
   try {
@@ -134,8 +71,18 @@ async function bundlePackage({
   await build(input, output);
 }
 
-async function start(params) {
-  if (params) getArgs(params);
+async function start(...params) {
+  const {
+    silent: isSilent,
+    format: argFormat,
+    minify: isMinify,
+    buildName,
+    plugins,
+    paths,
+    args: listOfPackages
+  } = params || resolveArgs();
+
+  setIsSilent(isSilent);
 
   const sortedPackages = initBuild(buildName)(...listOfPackages);
 
