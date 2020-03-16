@@ -13,22 +13,27 @@ import { msg } from "@mytools/print";
  * sort packages.
  *
  * @param {string} [buildName="dist"]
- * @param {Array} targetedPackages - packages name to be built
+ * @param {Array} packagesNames - packages name to be built
  * @returns {Array} sortedJson
  */
 function initBuild(buildName = "dist", ...path) {
-  return function(...targetedPackages) {
+  return function(...packagesNames) {
     const { json, distPath } = getJsonByName(
       buildName,
       ...path
-    )(...targetedPackages);
+    )(...packagesNames);
 
     /**
      * Clean build if any.
      */
     delSync(distPath);
 
-    const jsonWithDist = { ...json, distPath };
+    const jsonWithDist = json.map((pkg, i) => {
+      // eslint-disable-next-line no-param-reassign
+      pkg.distPath = distPath[i];
+
+      return pkg;
+    });
 
     /**
      * Sort packages before bump to production.
