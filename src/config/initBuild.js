@@ -1,10 +1,11 @@
 /* eslint-disable func-names */
 
 import packageSorter from "package-sorter";
+import { move } from "move-position";
 import { getJsonByName } from "get-info";
 import { sync as delSync } from "del";
 
-import { msg } from "@mytools/print";
+import { msg, error } from "@mytools/print";
 
 /**
  * initBuild packages for production:
@@ -18,7 +19,7 @@ import { msg } from "@mytools/print";
  */
 function initBuild(buildName = "dist", ...path) {
   return function(...packagesNames) {
-    const { json, distPath } = getJsonByName(
+    const { json, pkgInfo } = getJsonByName(
       buildName,
       ...path
     )(...packagesNames);
@@ -26,23 +27,24 @@ function initBuild(buildName = "dist", ...path) {
     /**
      * Clean build if any.
      */
-    delSync(distPath);
+    Object.keys(pkgInfo).forEach(pkgName => {
+      const { dist } = pkgInfo[pkgName];
 
-    const jsonWithDist = json.map((pkg, i) => {
-      // eslint-disable-next-line no-param-reassign
-      pkg.distPath = distPath[i];
-
-      return pkg;
+      delSync(dist);
     });
 
     /**
      * Sort packages before bump to production.
      */
-    const sortedJson = packageSorter(jsonWithDist);
+    const { sorted, unSorted } = packageSorter(json);
+
+    if (unSorted.length > 0) {
+      error(`Unable to sort packages: ${unSorted}`);
+    }
 
     msg("Done initiating build");
 
-    return sortedJson;
+    return { sorted, pkgInfo };
   };
 }
 

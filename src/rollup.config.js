@@ -84,11 +84,11 @@ async function start(...params) {
 
   setIsSilent(isSilent);
 
-  const sortedPackages = initBuild(buildName, ...paths)(...packagesNames);
+  const { sorted, distPath } = initBuild(buildName, ...paths)(...packagesNames);
 
   const bundleOpt = getBundleOpt(format, isMinify);
 
-  sortedPackages.forEach(pkg => {
+  sorted.forEach(pkg => {
     const { name: packageName } = pkg;
     const camelizedName = camelizeOutputBuild(packageName);
 
