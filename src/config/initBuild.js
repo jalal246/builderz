@@ -1,7 +1,6 @@
 /* eslint-disable func-names */
 
 import packageSorter from "package-sorter";
-import { move } from "move-position";
 import { getJsonByName } from "get-info";
 import { sync as delSync } from "del";
 

@@ -1,11 +1,9 @@
-import { expect } from "chai";
-
 import { camelizeOutputBuild, getBundleOpt } from "../src/utils";
 
 describe("utils function", () => {
   it("camelizeOutputBuild", () => {
     const result = camelizeOutputBuild("@hello/darkness");
-    expect(result).to.be.equal("helloDarkness");
+    expect(result).toEqual("helloDarkness");
   });
 
   it("Default: getBundleOpt", () => {
@@ -20,7 +18,7 @@ describe("utils function", () => {
       { BUILD_FORMAT: "es", IS_PROD: false }
     ];
 
-    expect(result).to.be.deep.equal(expected);
+    expect(result).toEqual(expected);
   });
 
   it("getBundleOpt with param", () => {
@@ -28,6 +26,6 @@ describe("utils function", () => {
 
     const expected = [{ BUILD_FORMAT: "es", IS_PROD: false }];
 
-    expect(result).to.be.deep.equal(expected);
+    expect(result).toEqual(expected);
   });
 });

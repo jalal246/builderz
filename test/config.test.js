@@ -1,17 +1,15 @@
-import { expect } from "chai";
 import { resolve } from "path";
-
 import { initBuild } from "../src/config";
 
-describe.only("config function", () => {
+describe("config function", () => {
   it("initBuild default", () => {
-    const { sorted, distPath } = initBuild()();
+    const { sorted, pkgInfo } = initBuild()();
 
-    expect(sorted.length).to.be.equal(1);
-    expect(distPath.length).to.be.equal(1);
+    expect(sorted).toMatchSnapshot();
+    expect(pkgInfo).toMatchSnapshot();
   });
 
-  it.only("initBuild given path", () => {
+  it("initBuild given path", () => {
     const packagesPath = resolve(__dirname, "packages-valid");
 
     const foloForms = resolve(packagesPath, "folo-forms");
@@ -19,7 +17,7 @@ describe.only("config function", () => {
     const foloUtils = resolve(packagesPath, "folo-utils");
     const foloWithcontext = resolve(packagesPath, "folo-withcontext");
 
-    const { sorted, distPath } = initBuild(
+    const { sorted, pkgInfo } = initBuild(
       "dist",
       foloForms,
       foloLayout,
@@ -27,11 +25,7 @@ describe.only("config function", () => {
       foloWithcontext
     )();
 
-    // console.log("distPath", distPath);
-    // console.log("sorted", sorted);
-
-    // expect(sorted).to.matchSnapshot();
-
-    // expect(distPath.length).to.be.equal(1);
+    expect(sorted).toMatchSnapshot();
+    expect(pkgInfo).toMatchSnapshot();
   });
 });
