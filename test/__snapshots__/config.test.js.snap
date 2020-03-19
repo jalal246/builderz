@@ -28,15 +28,12 @@ Array [
       "rollup-plugin-terser": "^5.2.0",
     },
     "devDependencies": Object {
-      "@babel/register": "^7.8.3",
       "babel-eslint": "^10.0.3",
-      "chai": "^4.2.0",
       "eslint": "^6.8.0",
       "eslint-config-airbnb-base": "^14.0.0",
       "eslint-config-prettier": "^6.9.0",
       "eslint-plugin-import": "^2.20.0",
       "jest": "^25.1.0",
-      "mocha": "^7.0.1",
     },
     "files": Array [
       "src",
@@ -79,6 +76,7 @@ Array [
 exports[`config function initBuild default 2`] = `
 Object {
   "builderz": Object {
+    "camelizedName": "builderz",
     "dist": "D:\\\\projects\\\\js\\\\published\\\\builderz\\\\dist",
     "ext": "js",
   },
@@ -270,18 +268,22 @@ Array [
 exports[`config function initBuild given path 2`] = `
 Object {
   "@folo/forms": Object {
+    "camelizedName": "foloForms",
     "dist": "D:\\\\projects\\\\js\\\\published\\\\builderz\\\\test\\\\packages-valid\\\\folo-forms\\\\dist",
     "ext": "js",
   },
   "@folo/layout": Object {
+    "camelizedName": "foloLayout",
     "dist": "D:\\\\projects\\\\js\\\\published\\\\builderz\\\\test\\\\packages-valid\\\\folo-layout\\\\dist",
     "ext": "js",
   },
   "@folo/utils": Object {
+    "camelizedName": "foloUtils",
     "dist": "D:\\\\projects\\\\js\\\\published\\\\builderz\\\\test\\\\packages-valid\\\\folo-utils\\\\dist",
     "ext": "js",
   },
   "@folo/withcontext": Object {
+    "camelizedName": "foloWithcontext",
     "dist": "D:\\\\projects\\\\js\\\\published\\\\builderz\\\\test\\\\packages-valid\\\\folo-withcontext\\\\dist",
     "ext": "js",
   },

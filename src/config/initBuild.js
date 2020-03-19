@@ -6,6 +6,8 @@ import { sync as delSync } from "del";
 
 import { msg, error } from "@mytools/print";
 
+import { camelizeOutputBuild } from "../utils";
+
 /**
  * initBuild packages for production:
  * gets path, json, ext.
@@ -24,12 +26,22 @@ function initBuild(buildName = "dist", ...path) {
     )(...packagesNames);
 
     /**
-     * Clean build if any.
+     * Loop, clean build if any, then camelize the name for production.
      */
     Object.keys(pkgInfo).forEach(pkgName => {
       const { dist } = pkgInfo[pkgName];
 
       delSync(dist);
+
+      const camelizedName = camelizeOutputBuild(pkgName);
+
+      pkgInfo[pkgName].camelizedName = camelizedName;
+
+      msg(
+        camelizedName !== pkgName
+          ? `bundle ${pkgName} as ${camelizedName}`
+          : `bundle  ${camelizedName}`
+      );
     });
 
     /**

@@ -1,10 +1,10 @@
 import rollup from "rollup";
 
-import { msg, error, setIsSilent } from "@mytools/print";
+import { error, setIsSilent } from "@mytools/print";
 
 import { initBuild, getInput, getOutput } from "./config/index";
 
-import { camelizeOutputBuild, getBundleOpt } from "./utils";
+import { getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
 
 async function build(inputOptions, outputOptions, isWatch, onWatch) {
@@ -47,10 +47,10 @@ async function bundlePackage({
   plugins,
   flags: { IS_PROD, IS_SILENT },
   BUILD_FORMAT,
-  camelizedName,
-  json
+  json,
+  pkgInfo: { dist, camelizedName }
 }) {
-  const { distPath, peerDependencies, dependencies, sourcePath } = json;
+  const { peerDependencies, dependencies, sourcePath } = json;
 
   const input = getInput({
     flags: { IS_SILENT, IS_PROD },
@@ -64,7 +64,7 @@ async function bundlePackage({
     flags: { IS_PROD },
     camelizedName,
     json: { peerDependencies },
-    distPath,
+    dist,
     BUILD_FORMAT
   });
 
@@ -84,25 +84,20 @@ async function start(...params) {
 
   setIsSilent(isSilent);
 
-  const { sorted, distPath } = initBuild(buildName, ...paths)(...packagesNames);
+  const { sorted, pkgInfo } = initBuild(buildName, ...paths)(...packagesNames);
 
   const bundleOpt = getBundleOpt(format, isMinify);
 
-  sorted.forEach(pkg => {
-    const { name: packageName } = pkg;
-    const camelizedName = camelizeOutputBuild(packageName);
-
-    if (camelizedName !== packageName) {
-      msg(`bundle ${packageName} as ${camelizedName}`);
-    }
+  sorted.forEach(json => {
+    const { name } = json;
 
     bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
       bundlePackage({
         plugins,
         flags: { IS_PROD, IS_SILENT: isSilent },
         BUILD_FORMAT,
-        camelizedName,
-        json: pkg
+        json,
+        pkgInfo: pkgInfo[name]
       });
     });
   });
