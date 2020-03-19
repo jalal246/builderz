@@ -72,6 +72,7 @@ async function bundlePackage({
 }
 
 async function start(...params) {
+  console.log("start -> params", ...params);
   const {
     silent: isSilent,
     format,
@@ -84,23 +85,30 @@ async function start(...params) {
 
   setIsSilent(isSilent);
 
-  const { sorted, pkgInfo } = initBuild(buildName, ...paths)(...packagesNames);
+  try {
+    const { sorted, pkgInfo } = initBuild(
+      buildName,
+      ...paths
+    )(...packagesNames);
 
-  const bundleOpt = getBundleOpt(format, isMinify);
+    const bundleOpt = getBundleOpt(format, isMinify);
 
-  sorted.forEach(json => {
-    const { name } = json;
+    await sorted.forEach(json => {
+      const { name } = json;
 
-    bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
-      bundlePackage({
-        plugins,
-        flags: { IS_PROD, IS_SILENT: isSilent },
-        BUILD_FORMAT,
-        json,
-        pkgInfo: pkgInfo[name]
+      bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
+        bundlePackage({
+          plugins,
+          flags: { IS_PROD, IS_SILENT: isSilent },
+          BUILD_FORMAT,
+          json,
+          pkgInfo: pkgInfo[name]
+        });
       });
     });
-  });
+  } catch (err) {
+    error(err);
+  }
 }
 
 export default start;
