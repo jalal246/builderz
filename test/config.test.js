@@ -5,7 +5,8 @@ describe("config function", () => {
   it("initBuild default", () => {
     const { sorted, pkgInfo } = initBuild()();
 
-    expect(sorted).toMatchSnapshot();
+    // snapshot the name cause everything else is changeable.
+    expect(sorted[0].name).toMatchSnapshot();
     expect(pkgInfo).toMatchSnapshot();
   });
 
