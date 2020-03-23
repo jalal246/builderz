@@ -20,6 +20,15 @@
   ],
   "keywords": [
     "builderz",
+    "get-info",
+    "package-sorter",
+    "corename",
+    "mytools",
+    "move-position",
+    "folo",
+    "dflex",
+    "textics",
+    "textics-stream",
     "build",
     "scripts",
     "monorepo",
@@ -27,7 +36,15 @@
     "production",
     "utility",
     "tools",
-    "package-sorter"
+    "bundle",
+    "fs",
+    "json",
+    "file",
+    "directory",
+    "recursive",
+    "read",
+    "fileSystem",
+    "filter"
   ],
   "dependencies": {
     "@babel/core": "^7.9.0",

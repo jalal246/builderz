@@ -67,6 +67,11 @@ npm test
 
 - [get-info](https://github.com/jalal246/get-info) - Utility functions for projects production.
 
+- [move-position](https://github.com/jalal246/move-position) - Moves element
+  index in an array.
+
+- [textics](https://github.com/jalal246/textics) & [textics-stream](https://github.com/jalal246/textics-stream) - Counts lines, words, chars and spaces for a given string.
+
 ## License
 
 This project is licensed under the [GPL-3.0 License](https://github.com/jalal246/builderz/blob/master/LICENSE)
