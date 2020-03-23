@@ -53,8 +53,6 @@ function initBuild(buildName = "dist", ...path) {
       error(`Unable to sort packages: ${unSorted}`);
     }
 
-    msg("Done initiating build");
-
     return { sorted, pkgInfo };
   };
 }

@@ -5,7 +5,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 
 import babel from "rollup-plugin-babel";
-// import { terser } from "rollup-plugin-terser";
+import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
 import { CJS, ES } from "../../constants";
@@ -18,7 +18,7 @@ import { CJS, ES } from "../../constants";
  * @param {string} BUILD_FORMAT
  * @returns {Array} plugins
  */
-function getPlugins({
+async function getPlugins({
   IS_SILENT = true,
   IS_PROD = true,
   BUILD_FORMAT,
@@ -30,7 +30,10 @@ function getPlugins({
      */
     beep(),
 
-    // babel(),
+    babel({
+      runtimeHelpers: true,
+      babelrc: true
+    }),
 
     /**
      * Automatically installs dependencies that are imported by a bundle, even
@@ -67,46 +70,45 @@ function getPlugins({
   }
 
   if (IS_PROD) {
-    essentialPlugins
-      .push
+    essentialPlugins.push(
       /**
        * Minify generated es bundle.
        */
-      // terser({
-      //   // default undefined
-      //   ecma: 5,
+      terser({
+        // default undefined
+        ecma: 5,
 
-      //   // default false
-      //   sourcemap: true,
+        // default false
+        sourcemap: true,
 
-      //   // display warnings when dropping unreachable code or unused declarations etc
-      //   warnings: true,
+        // display warnings when dropping unreachable code or unused declarations etc
+        warnings: true,
 
-      //   compress: {
-      //     // default: false
-      //     // true to discard calls to console.* functions.
-      //     drop_console: true,
+        compress: {
+          // default: false
+          // true to discard calls to console.* functions.
+          drop_console: true,
 
-      //     // default: false
-      //     // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
-      //     keep_infinity: true
-      //   },
+          // default: false
+          // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
+          keep_infinity: true
+        },
 
-      //   // pass an empty object {} or a previously used nameCache object
-      //   // if you wish to cache mangled variable
-      //   // and property names across multiple invocations of minify
-      //   nameCache: {},
+        // pass an empty object {} or a previously used nameCache object
+        // if you wish to cache mangled variable
+        // and property names across multiple invocations of minify
+        nameCache: {},
 
-      //   mangle: {
-      //     properties: false
-      //   },
+        mangle: {
+          properties: false
+        },
 
-      //   // true if to enable top level variable
-      //   // and function name mangling
-      //   // and to drop unused variables and functions.
-      //   toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES
-      // })
-      ();
+        // true if to enable top level variable
+        // and function name mangling
+        // and to drop unused variables and functions.
+        toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES
+      })
+    );
   }
 
   return essentialPlugins;

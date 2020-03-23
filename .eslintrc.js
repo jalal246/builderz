@@ -16,6 +16,7 @@ module.exports = {
   globals: {
     describe: true,
     it: true,
-    expect: true
+    expect: true,
+    jest: true
   }
 };

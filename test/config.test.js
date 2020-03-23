@@ -1,5 +1,8 @@
 import { resolve } from "path";
+import { setIsSilent } from "@mytools/print";
 import { initBuild } from "../src/config";
+
+setIsSilent(true);
 
 describe("config function", () => {
   it("initBuild default", () => {

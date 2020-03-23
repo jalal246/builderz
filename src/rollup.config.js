@@ -1,31 +1,22 @@
-import rollup from "rollup";
+import { rollup } from "rollup";
 
-import { error, setIsSilent } from "@mytools/print";
+import { error } from "@mytools/print";
 
 import { initBuild, getInput, getOutput } from "./config/index";
-
 import { getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
 
-async function build(inputOptions, outputOptions, isWatch, onWatch) {
+async function build(inputOptions, outputOptions) {
   try {
-    if (isWatch) {
-      const watcher = rollup.watch({
-        ...inputOptions,
-        output: [outputOptions]
-      });
-      onWatch(watcher);
-    } else {
-      /**
-       * create a bundle
-       */
-      const bundle = await rollup.rollup(inputOptions);
+    /**
+     * create a bundle
+     */
+    const bundle = await rollup(inputOptions);
 
-      /**
-       * write the bundle to disk
-       */
-      await bundle.write(outputOptions);
-    }
+    /**
+     * write the bundle to disk
+     */
+    await bundle.write(outputOptions);
   } catch (e) {
     error(e);
   }
@@ -50,9 +41,9 @@ async function bundlePackage({
   json,
   pkgInfo: { dist, camelizedName }
 }) {
-  const { peerDependencies, dependencies, sourcePath } = json;
+  const { peerDependencies = {}, dependencies = {}, sourcePath } = json;
 
-  const input = getInput({
+  const input = await getInput({
     flags: { IS_SILENT, IS_PROD },
     json: { peerDependencies, dependencies },
     sourcePath,
@@ -60,10 +51,10 @@ async function bundlePackage({
     plugins
   });
 
-  const output = getOutput({
+  const output = await getOutput({
     flags: { IS_PROD },
     camelizedName,
-    json: { peerDependencies },
+    json: {},
     dist,
     BUILD_FORMAT
   });
@@ -71,8 +62,7 @@ async function bundlePackage({
   await build(input, output);
 }
 
-async function start(...params) {
-  console.log("start -> params", ...params);
+async function start(params) {
   const {
     silent: isSilent,
     format,
@@ -83,23 +73,21 @@ async function start(...params) {
     args: packagesNames
   } = params || resolveArgs();
 
-  setIsSilent(isSilent);
-
   try {
-    const { sorted, pkgInfo } = initBuild(
-      buildName,
-      ...paths
-    )(...packagesNames);
+    const { sorted, pkgInfo } = initBuild(buildName, ...paths)();
 
     const bundleOpt = getBundleOpt(format, isMinify);
 
-    await sorted.forEach(json => {
+    await sorted.forEach(async json => {
       const { name } = json;
 
-      bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
-        bundlePackage({
+      await bundleOpt.forEach(async ({ IS_PROD, BUILD_FORMAT }) => {
+        await bundlePackage({
           plugins,
-          flags: { IS_PROD, IS_SILENT: isSilent },
+          flags: {
+            IS_PROD,
+            IS_SILENT: isSilent
+          },
           BUILD_FORMAT,
           json,
           pkgInfo: pkgInfo[name]
