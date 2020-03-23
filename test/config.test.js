@@ -14,7 +14,7 @@ describe("config function", () => {
   });
 
   it("initBuild given path", () => {
-    const packagesPath = resolve(__dirname, "packages-valid");
+    const packagesPath = resolve(__dirname, "samples", "packages-valid");
 
     const foloForms = resolve(packagesPath, "folo-forms");
     const foloLayout = resolve(packagesPath, "folo-layout");
