@@ -69,19 +69,19 @@ async function start(params) {
     minify: isMinify,
     buildName,
     plugins,
-    paths,
-    args: packagesNames
+    paths
+    // args: packagesNames
   } = params || resolveArgs();
 
   try {
-    const { sorted, pkgInfo } = initBuild(buildName, ...paths)();
+    const { sorted, pkgInfo } = await initBuild(buildName, paths);
 
     const bundleOpt = getBundleOpt(format, isMinify);
 
     await sorted.forEach(async json => {
       const { name } = json;
 
-      await bundleOpt.forEach(async ({ IS_PROD, BUILD_FORMAT }) => {
+      bundleOpt.forEach(async ({ IS_PROD, BUILD_FORMAT }) => {
         await bundlePackage({
           plugins,
           flags: {

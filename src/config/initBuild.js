@@ -2,7 +2,7 @@
 
 import packageSorter from "package-sorter";
 import { getJsonByName } from "get-info";
-import { sync as delSync } from "del";
+import del from "del";
 
 import { msg, error } from "@mytools/print";
 
@@ -18,42 +18,50 @@ import { camelizeOutputBuild } from "../utils";
  * @param {Array} packagesNames - packages name to be built
  * @returns {Array} sortedJson
  */
-function initBuild(buildName = "dist", ...path) {
-  return function(...packagesNames) {
-    const { json, pkgInfo } = getJsonByName(
-      buildName,
-      ...path
-    )(...packagesNames);
+async function initBuild(buildName = "dist", paths = [], packagesNames = []) {
+  const { json, pkgInfo } = getJsonByName(
+    buildName,
+    ...paths
+  )(...packagesNames);
 
+  /**
+   * Async Loop.
+   * Cleans build if any, then camelize the name for production.
+   *
+   * {@link  https://stackoverflow.com/a/49499491/6348157}
+   */
+  await Object.keys(pkgInfo).reduce(async (ignore, pkgName) => {
     /**
-     * Loop, clean build if any, then camelize the name for production.
+     * initialValue is resolved Promise, which means starts immediately. But,
+     * next value will await until the whole process is finished.
      */
-    Object.keys(pkgInfo).forEach(pkgName => {
-      const { dist } = pkgInfo[pkgName];
+    const { dist } = pkgInfo[pkgName];
 
-      delSync(dist);
+    await del(dist);
 
-      const camelizedName = camelizeOutputBuild(pkgName);
+    const camelizedName = camelizeOutputBuild(pkgName);
 
-      pkgInfo[pkgName].camelizedName = camelizedName;
+    pkgInfo[pkgName].camelizedName = camelizedName;
 
-      msg(
-        camelizedName !== pkgName
-          ? `bundle ${pkgName} as ${camelizedName}`
-          : `bundle  ${camelizedName}`
-      );
-    });
+    msg(
+      camelizedName !== pkgName
+        ? `bundle ${pkgName} as ${camelizedName}`
+        : `bundle  ${camelizedName}`
+    );
+  }, Promise.resolve());
 
-    /**
-     * Sort packages before bump to production.
-     */
-    const { sorted, unSorted } = packageSorter(json);
+  /**
+   * Sort packages before bump to production.
+   */
+  const { sorted, unSorted } = packageSorter(json);
 
-    if (unSorted.length > 0) {
-      error(`Unable to sort packages: ${unSorted}`);
-    }
+  if (unSorted.length > 0) {
+    error(`Unable to sort packages: ${unSorted}`);
+  }
 
-    return { sorted, pkgInfo };
+  return {
+    sorted,
+    pkgInfo
   };
 }
 
