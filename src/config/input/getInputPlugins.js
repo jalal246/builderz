@@ -18,7 +18,7 @@ import { CJS, ES } from "../../constants";
  * @param {string} BUILD_FORMAT
  * @returns {Array} plugins
  */
-async function getPlugins({
+function getPlugins({
   IS_SILENT = true,
   IS_PROD = true,
   BUILD_FORMAT,
