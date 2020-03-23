@@ -1,3 +1,107 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`production tests pure js 1`] = `10`;
+
+exports[`production tests pure js 2`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+// this is currently broken because of a bug in terser
+// https://github.com/terser-js/terser/issues/353
+/** @__PURE__ */
+function foo() {
+	return 'hello world';
+}
+
+exports.foo = foo;
+"
+`;
+
+exports[`production tests pure js 3`] = `
+"// this is currently broken because of a bug in terser
+// https://github.com/terser-js/terser/issues/353
+/** @__PURE__ */
+function foo() {
+	return 'hello world';
+}
+
+export { foo };
+"
+`;
+
+exports[`production tests pure js 4`] = `
+"'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+// this is currently broken because of a bug in terser
+// https://github.com/terser-js/terser/issues/353
+/** @__PURE__ */
+function foo() {
+	return 'hello world';
+}
+
+exports.foo = foo;
+//# sourceMappingURL=pure.min.cjs.js.map
+"
+`;
+
+exports[`production tests pure js 5`] = `
+"// this is currently broken because of a bug in terser
+// https://github.com/terser-js/terser/issues/353
+/** @__PURE__ */
+function foo() {
+	return 'hello world';
+}
+
+export { foo };
+//# sourceMappingURL=pure.min.esm.js.map
+"
+`;
+
+exports[`production tests pure js 6`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(global = global || self, factory((global.pure = global.pure || {}, global.pure.min = global.pure.min || {}, global.pure.min.umd = global.pure.min.umd || {}, global.pure.min.umd.js = {})));
+}(this, (function (exports) { 'use strict';
+
+	// this is currently broken because of a bug in terser
+	// https://github.com/terser-js/terser/issues/353
+	/** @__PURE__ */
+	function foo() {
+		return 'hello world';
+	}
+
+	exports.foo = foo;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
+//# sourceMappingURL=pure.min.umd.js.map
+"
+`;
+
+exports[`production tests pure js 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(global = global || self, factory((global.pure = global.pure || {}, global.pure.umd = global.pure.umd || {}, global.pure.umd.js = {})));
+}(this, (function (exports) { 'use strict';
+
+	// this is currently broken because of a bug in terser
+	// https://github.com/terser-js/terser/issues/353
+	/** @__PURE__ */
+	function foo() {
+		return 'hello world';
+	}
+
+	exports.foo = foo;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
+//# sourceMappingURL=pure.umd.js.map
+"
+`;

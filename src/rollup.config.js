@@ -78,22 +78,29 @@ async function start(params) {
 
     const bundleOpt = getBundleOpt(format, isMinify);
 
-    await sorted.forEach(async json => {
+    await sorted.reduce(async (sortedPromise, json) => {
+      await sortedPromise;
+
       const { name } = json;
 
-      bundleOpt.forEach(async ({ IS_PROD, BUILD_FORMAT }) => {
-        await bundlePackage({
-          plugins,
-          flags: {
-            IS_PROD,
-            IS_SILENT: isSilent
-          },
-          BUILD_FORMAT,
-          json,
-          pkgInfo: pkgInfo[name]
-        });
-      });
-    });
+      await bundleOpt.reduce(
+        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
+          await bundleOptPromise;
+
+          await bundlePackage({
+            plugins,
+            flags: {
+              IS_PROD,
+              IS_SILENT: isSilent
+            },
+            BUILD_FORMAT,
+            json,
+            pkgInfo: pkgInfo[name]
+          });
+        },
+        Promise.resolve()
+      );
+    }, Promise.resolve());
   } catch (err) {
     error(err);
   }

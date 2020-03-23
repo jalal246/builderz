@@ -30,11 +30,13 @@ async function initBuild(buildName = "dist", paths = [], packagesNames = []) {
    *
    * {@link  https://stackoverflow.com/a/49499491/6348157}
    */
-  await Object.keys(pkgInfo).reduce(async (ignore, pkgName) => {
+  await Object.keys(pkgInfo).reduce(async (promise, pkgName) => {
     /**
      * initialValue is resolved Promise, which means starts immediately. But,
      * next value will await until the whole process is finished.
      */
+    await promise;
+
     const { dist } = pkgInfo[pkgName];
 
     await del(dist);
