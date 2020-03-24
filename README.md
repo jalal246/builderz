@@ -1,13 +1,14 @@
 # Builderz
 
-> Build your project(s) with zero config :bowtie:
+> Build your project(s) with zero configuration :bowtie:
 
-`build/er/z` is smart. Works for regular repo with single package and monorepo.
-It doest multiple thing to save you some time:
+`build/er/z` is a smart bundler. Works for regular repo with a single package and monorepo.
+It does multiple things to save you some time and lets you focus on developing,
+that includes:
 
-1. Gets all packages path by looking into workplace, including monorepo.
+1. Gets all packages path by looking into the workplace, including monorepo.
 
-2. Extracts json from each package found in the root.
+2. Extract JSON from each package found in the root.
 
 3. Cleans build folders if there is any.
 
@@ -16,10 +17,10 @@ It doest multiple thing to save you some time:
 5. If monorepo, sorts packages according to core/decency, so core comes first
    and so on.
 
-6. Creates distension path for each project found.
+6. Creates a distension path for each project found.
 
-7. If there's no targeted format, it generates default formats (cjs, umd, es)
-   one cycle minified with map and the second is not.
+7. If there's no targeted format, it generates default formats (CJS, UMD, ES)
+   one cycle minified with a map and the second is not.
 
 ```bash
 npm install builderz
@@ -50,11 +51,6 @@ builderz({
 
 ## Using CLI
 
-In your `packages.json` to compile to a CommonJS module (cjs) and minify the
-bundle just pass the required args.
-
-### Options
-
 ```bash
   -s, --silent     silent mode, mutes build massages
   -w, --watch      watch mode
@@ -65,6 +61,9 @@ bundle just pass the required args.
   PACKAGE_NAME     building specific package[s], in monorepo
   -h, --help       output usage information
 ```
+
+In your `packages.json` to compile to a CommonJS module (cjs) and minify the
+bundle just pass the required args.
 
 ```json
 "build": "builderz --format=cjs --minify"
@@ -77,7 +76,7 @@ npm test
 ```
 
 > Disclaimer: I am aware of existence bugs but keep working to enhance the next
-> versions that's include adding more tests.
+> versions that include adding more tests.
 
 ### Related projects
 
@@ -88,8 +87,8 @@ npm test
 
 - [get-info](https://github.com/jalal246/get-info) - Utility functions for projects production.
 
-- [move-position](https://github.com/jalal246/move-position) - Moves element
-  index in an array.
+- [move-position](https://github.com/jalal246/move-position) - Moves element in
+  an array from index to another.
 
 - [textics](https://github.com/jalal246/textics) & [textics-stream](https://github.com/jalal246/textics-stream) - Counts lines, words, chars and spaces for a given string.
 
