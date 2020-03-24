@@ -21,9 +21,6 @@ It doest multiple thing to save you some time:
 7. If there's no targeted format, it generates default formats (cjs, umd, es)
    one cycle minified with map and the second is not.
 
-> Note: I am aware of existence bugs but keep working to enhance the next
-> versions that's include adding more tests.
-
 ```bash
 npm install builderz
 ```
@@ -78,6 +75,9 @@ bundle just pass the required args.
 ```sh
 npm test
 ```
+
+> Disclaimer: I am aware of existence bugs but keep working to enhance the next
+> versions that's include adding more tests.
 
 ### Related projects
 
