@@ -70,7 +70,6 @@ async function start(params) {
     buildName,
     plugins,
     paths
-    // args: packagesNames
   } = params || resolveArgs();
 
   try {

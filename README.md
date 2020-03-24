@@ -1,21 +1,62 @@
 # Builderz
 
-> Helps you to build your project with zero config :bowtie:
+> Build your project(s) with zero config :bowtie:
 
-`build/er/z` is smart. Works for regular repo with single package and monorepo. It
-gets all packages path using [get-info](https://github.com/jalal246/get-info),
-extracts json from each package, cleans build folders if there is any, sorts
-packages using [packageSorter](https://github.com/jalal246/packageSorter),
-sets distention paths and pass them accordingly to rollup for production.
+`build/er/z` is smart. Works for regular repo with single package and monorepo.
+It doest multiple thing to save you some time:
 
-_There's is a huge room for enhancement but i keep it this way which satisfies
-my build requirements. PRs welcome._
+1. Gets all packages path by looking into workplace, including monorepo.
+
+2. Extracts json from each package found in the root.
+
+3. Cleans build folders if there is any.
+
+4. Creates camelize name for your package if it's not camelized.
+
+5. If monorepo, sorts packages according to core/decency, so core comes first
+   and so on.
+
+6. Creates distension path for each project found.
+
+7. If there's no targeted format, it generates default formats (cjs, umd, es)
+   one cycle minified with map and the second is not.
+
+> Note: I am aware of existence bugs but keep working to enhance the next
+> versions that's include adding more tests.
 
 ```bash
 npm install builderz
 ```
 
-## Options
+## Using API
+
+```js
+const builderz = require("builderz");
+
+/**
+ * @param {boolean} [isSilent=true] - Silent mode, mutes build massages
+ * @param {boolean} isMinify - Minify bundle, works only if format is provided
+ * @param {string} format - Specific build format
+ * @param {string} [buildName="dist"] - Specific build name
+ * @param {Array} plugins - Custom plugins
+ * @param {Array} paths - Provide custom paths not in the root/src
+ */
+builderz({
+  isSilent,
+  isMinify,
+  format,
+  buildName,
+  plugins,
+  paths
+});
+```
+
+## Using CLI
+
+In your `packages.json` to compile to a CommonJS module (cjs) and minify the
+bundle just pass the required args.
+
+### Options
 
 ```bash
   -s, --silent     silent mode, mutes build massages
@@ -28,28 +69,8 @@ npm install builderz
   -h, --help       output usage information
 ```
 
-### Example/cli
-
-In your `packages.json` to compile to a CommonJS module (cjs) and minify the
-bundle just pass the required args.
-
 ```json
 "build": "builderz --format=cjs --minify"
-```
-
-### Example/API
-
-```js
-const builderz = require("builderz");
-
-builderz({
-  silent,
-  format,
-  minify,
-  buildName,
-  plugins,
-  ...listOfPackagesName
-});
 ```
 
 ## Tests
