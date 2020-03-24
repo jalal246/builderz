@@ -1,5 +1,7 @@
+/* eslint-disable no-console */
 import { resolve } from "path";
 import { readdirSync, readFileSync } from "fs";
+import del from "del";
 import builderz from "../src";
 
 describe("production", () => {
@@ -13,7 +15,7 @@ describe("production", () => {
         paths: [resolve(__dirname, pathPure)]
       });
 
-      const files = readdirSync(resolve(distPath));
+      const files = readdirSync(distPath);
       expect(files.length).toMatchSnapshot();
 
       files
@@ -24,6 +26,8 @@ describe("production", () => {
             readFileSync(resolve(distPath, file)).toString("utf8")
           ).toMatchSnapshot();
         });
+
+      await del(distPath);
     } catch (err) {
       console.error(err);
     }
