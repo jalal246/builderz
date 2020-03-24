@@ -10,8 +10,8 @@ function string2Arr(value) {
  */
 function resolveArgs() {
   program
-    .option("-s, --silent", "Silent mode, mutes build massages")
-    .option("--format <list>", "Specific build format", string2Arr)
+    .option("-s, --silent", "Silent mode, mutes build massages", true)
+    .option("--formats <list>", "Specific build format", string2Arr)
     .option("-m, --minify", "Minify bundle works only if format is provided")
     .option("-b, --build-name <string>", "Specific build name", "dist")
     .option(

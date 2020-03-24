@@ -64,26 +64,23 @@ async function bundlePackage({
   await build(input, output);
 }
 
-async function start(params) {
-  const {
-    silent: isSilent,
-    format,
-    minify: isMinify,
-    buildName,
-    plugins = [],
-    paths = [],
-    packagesNames = [],
-    alias = []
-  } = params || resolveArgs();
+async function start(params = {}) {
+  const args = resolveArgs();
+
+  const isSilent = args.isSilent || params.isSilent;
+  const isMinify = args.isMinify || params.isMinify;
+  const buildName = args.buildName || params.buildName;
+
+  const formats = args.format || params.format || [];
+  const plugins = args.plugins || params.plugins || [];
+  const paths = args.paths || params.paths || [];
+  const packageNames = args.packageNames || params.packageNames || [];
+  const alias = args.alias || params.alias || [];
 
   try {
-    const { sorted, pkgInfo } = await initBuild(
-      buildName,
-      paths,
-      packagesNames
-    );
+    const { sorted, pkgInfo } = await initBuild(buildName, paths, packageNames);
 
-    const bundleOpt = getBundleOpt(format, isMinify);
+    const bundleOpt = getBundleOpt(formats, isMinify);
 
     await sorted.reduce(async (sortedPromise, json) => {
       await sortedPromise;
