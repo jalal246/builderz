@@ -9,7 +9,9 @@
     "args": "node src -h",
     "build": "rollup src/rollup.config.js  --file dist/builderz.cjs.js --format=cjs",
     "prepublish": "yarn build",
-    "test": "mocha -require @babel/register"
+    "test": "jest",
+    "test22": "node test/production.test.js",
+    "test2": "mocha -require @babel/register"
   },
   "files": [
     "src",
@@ -18,6 +20,15 @@
   ],
   "keywords": [
     "builderz",
+    "get-info",
+    "package-sorter",
+    "corename",
+    "mytools",
+    "move-position",
+    "folo",
+    "dflex",
+    "textics",
+    "textics-stream",
     "build",
     "scripts",
     "monorepo",
@@ -25,10 +36,18 @@
     "production",
     "utility",
     "tools",
-    "package-sorter"
+    "bundle",
+    "fs",
+    "json",
+    "file",
+    "directory",
+    "recursive",
+    "read",
+    "fileSystem",
+    "filter"
   ],
   "dependencies": {
-    "@babel/core": "^7.8.3",
+    "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.8.3",
     "@mytools/print": "^0.1.3",
     "@rollup/plugin-auto-install": "^2.0.0",
@@ -37,13 +56,15 @@
     "@rollup/plugin-json": "^4.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
     "camelize": "^1.0.0",
+    "chai": "^4.2.0",
     "chalk": "^3.0.0",
     "commander": "^4.1.1",
     "del": "^5.1.0",
-    "get-info": "^1.0.1",
+    "get-info": "^2.2.0",
     "glob": "^7.1.6",
+    "mocha": "^7.1.1",
     "ms": "^2.1.2",
-    "package-sorter": "^0.2.0",
+    "package-sorter": "^1.1.1",
     "rimraf": "^3.0.0",
     "rollup": "^1.29.1",
     "rollup-plugin-analyzer": "^3.2.2",
@@ -51,14 +72,13 @@
     "rollup-plugin-terser": "^5.2.0"
   },
   "devDependencies": {
-    "@babel/register": "^7.8.3",
     "babel-eslint": "^10.0.3",
-    "chai": "^4.2.0",
+    "babel-jest": "^25.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.20.0",
-    "mocha": "^7.0.1"
+    "jest": "^25.1.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

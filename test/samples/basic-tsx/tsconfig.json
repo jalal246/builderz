@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"jsxFactory": "h",
+		"jsx": "react",
+		"baseUrl": "."
+	},
+	"files": ["src/index.tsx"]
+}

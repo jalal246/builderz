@@ -1,95 +1,22 @@
-import rollup from "rollup";
-import { option } from "commander";
-import camelize from "camelize";
+import { rollup } from "rollup";
 
-import { msg, error, setIsSilent } from "@mytools/print";
-
-import { UMD, CJS, ES } from "./constants";
+import { error } from "@mytools/print";
 
 import { initBuild, getInput, getOutput } from "./config/index";
+import { getBundleOpt } from "./utils";
+import resolveArgs from "./resolveArgs";
 
-/**
- * Modify package name in package.json to name the output build correctly.
- * remove @
- * replace / with -
- * remove - and capitalize the first letter after it
- *
- * @param {string} name - package name in package.json
- * @returns {string} modified name for bundle
- */
-function camelizeOutputBuild(name) {
-  return camelize(name.replace("@", "").replace("/", "-"));
-}
-
-/**
- * Get args pass to build command
- * @return {Object} contains flags and array of packages name
- */
-function getArgs(params) {
-  if (params) return params;
-
-  return option("-s, --silent", "silent mode, mutes build massages")
-    .option("-w, --watch", "watch mode:TODO")
-    .option("-f, --format", "specific build format")
-    .option("-p, --plugins", "input custom plugins")
-    .option("-b, --buildName", "specific build name")
-    .option("-m, --minify", "minify bundle works only if format is provided")
-    .option("PACKAGE_NAME", "building specific package[s], in monorepo")
-    .parse(process.argv);
-}
-
-const {
-  silent: isSilent,
-  // TODO: watch: isWatch,
-  format: argFormat,
-  minify: isMinify,
-  buildName,
-  plugins,
-  args: listOfPackages
-} = getArgs();
-
-setIsSilent(isSilent);
-
-/**
- * @returns {Object[]} bundleOpt
- */
-function getBundleOpt() {
-  const defaultBundleOpt = [
-    { BUILD_FORMAT: UMD, IS_PROD: false },
-    { BUILD_FORMAT: UMD, IS_PROD: true },
-    { BUILD_FORMAT: CJS, IS_PROD: false },
-    { BUILD_FORMAT: CJS, IS_PROD: true },
-    { BUILD_FORMAT: ES, IS_PROD: false },
-    { BUILD_FORMAT: ES, IS_PROD: true }
-  ];
-
-  /**
-   * TODO: validate argFormat.
-   */
-  return argFormat
-    ? [{ BUILD_FORMAT: argFormat, IS_PROD: isMinify || false }]
-    : defaultBundleOpt;
-}
-
-async function build(inputOptions, outputOptions, isWatch, onWatch) {
+async function build(inputOptions, outputOptions) {
   try {
-    if (isWatch) {
-      const watcher = rollup.watch({
-        ...inputOptions,
-        output: [outputOptions]
-      });
-      onWatch(watcher);
-    } else {
-      /**
-       * create a bundle
-       */
-      const bundle = await rollup.rollup(inputOptions);
+    /**
+     * create a bundle
+     */
+    const bundle = await rollup(inputOptions);
 
-      /**
-       * write the bundle to disk
-       */
-      await bundle.write(outputOptions);
-    }
+    /**
+     * write the bundle to disk
+     */
+    await bundle.write(outputOptions);
   } catch (e) {
     error(e);
   }
@@ -108,14 +35,15 @@ async function build(inputOptions, outputOptions, isWatch, onWatch) {
  * @param {Object} json
  */
 async function bundlePackage({
+  plugins,
   flags: { IS_PROD, IS_SILENT },
   BUILD_FORMAT,
-  camelizedName,
-  json
+  json,
+  pkgInfo: { dist, camelizedName }
 }) {
-  const { distPath, peerDependencies, dependencies, sourcePath } = json;
+  const { peerDependencies = {}, dependencies = {}, sourcePath } = json;
 
-  const input = getInput({
+  const input = await getInput({
     flags: { IS_SILENT, IS_PROD },
     json: { peerDependencies, dependencies },
     sourcePath,
@@ -123,11 +51,11 @@ async function bundlePackage({
     plugins
   });
 
-  const output = getOutput({
+  const output = await getOutput({
     flags: { IS_PROD },
     camelizedName,
-    json: { peerDependencies },
-    distPath,
+    json: {},
+    dist,
     BUILD_FORMAT
   });
 
@@ -135,29 +63,46 @@ async function bundlePackage({
 }
 
 async function start(params) {
-  if (params) getArgs(params);
+  const {
+    silent: isSilent,
+    format,
+    minify: isMinify,
+    buildName,
+    plugins,
+    paths
+  } = params || resolveArgs();
 
-  const sortedPackages = initBuild(buildName, listOfPackages);
+  try {
+    const { sorted, pkgInfo } = await initBuild(buildName, paths);
 
-  const bundleOpt = getBundleOpt();
+    const bundleOpt = getBundleOpt(format, isMinify);
 
-  sortedPackages.forEach(pkg => {
-    const { name: packageName } = pkg;
-    const camelizedName = camelizeOutputBuild(packageName);
+    await sorted.reduce(async (sortedPromise, json) => {
+      await sortedPromise;
 
-    if (camelizedName !== packageName) {
-      msg(`bundle ${packageName} as ${camelizedName}`);
-    }
+      const { name } = json;
 
-    bundleOpt.forEach(({ IS_PROD, BUILD_FORMAT }) => {
-      bundlePackage({
-        flags: { IS_PROD, IS_SILENT: isSilent },
-        BUILD_FORMAT,
-        camelizedName,
-        json: pkg
-      });
-    });
-  });
+      await bundleOpt.reduce(
+        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
+          await bundleOptPromise;
+
+          await bundlePackage({
+            plugins,
+            flags: {
+              IS_PROD,
+              IS_SILENT: isSilent
+            },
+            BUILD_FORMAT,
+            json,
+            pkgInfo: pkgInfo[name]
+          });
+        },
+        Promise.resolve()
+      );
+    }, Promise.resolve());
+  } catch (err) {
+    error(err);
+  }
 }
 
 export default start;

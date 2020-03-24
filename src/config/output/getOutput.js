@@ -50,7 +50,7 @@ function getOutput({
   flags,
   camelizedName,
   json: { peerDependencies },
-  distPath,
+  dist,
   BUILD_FORMAT
 }) {
   const { IS_PROD } = flags;
@@ -62,7 +62,7 @@ function getOutput({
   });
 
   const output = {
-    file: join(distPath, name),
+    file: join(dist, name),
     format: BUILD_FORMAT,
     name,
     interop: false

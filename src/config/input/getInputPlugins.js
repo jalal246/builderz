@@ -8,7 +8,7 @@ import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
-import { UMD, CJS, ES } from "../../constants";
+import { CJS, ES } from "../../constants";
 
 /**
  * Returns plugins according to passed flags.
