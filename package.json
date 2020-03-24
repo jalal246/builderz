@@ -9,9 +9,7 @@
     "args": "node src -h",
     "build": "rollup src/rollup.config.js  --file dist/builderz.cjs.js --format=cjs",
     "prepublish": "yarn build",
-    "test": "jest",
-    "test22": "node test/production.test.js",
-    "test2": "mocha -require @babel/register"
+    "test": "jest"
   },
   "files": [
     "src",
@@ -56,16 +54,13 @@
     "@rollup/plugin-json": "^4.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
     "camelize": "^1.0.0",
-    "chai": "^4.2.0",
     "chalk": "^3.0.0",
     "commander": "^4.1.1",
     "del": "^5.1.0",
     "get-info": "^2.2.0",
     "glob": "^7.1.6",
-    "mocha": "^7.1.1",
     "ms": "^2.1.2",
     "package-sorter": "^1.1.1",
-    "rimraf": "^3.0.0",
     "rollup": "^1.29.1",
     "rollup-plugin-analyzer": "^3.2.2",
     "rollup-plugin-babel": "^4.3.3",
