@@ -25,7 +25,8 @@ function genInput({
   json: { peerDependencies, dependencies },
   sourcePath,
   BUILD_FORMAT,
-  plugins: extraPlugins
+  plugins: extraPlugins,
+  alias
 }) {
   const external = getExternal({
     peerDependencies,
@@ -37,7 +38,8 @@ function genInput({
     IS_SILENT,
     IS_PROD,
     BUILD_FORMAT,
-    plugins: extraPlugins
+    plugins: extraPlugins,
+    alias
   });
 
   return {

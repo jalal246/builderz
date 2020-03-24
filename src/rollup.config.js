@@ -36,6 +36,7 @@ async function build(inputOptions, outputOptions) {
  */
 async function bundlePackage({
   plugins,
+  alias,
   flags: { IS_PROD, IS_SILENT },
   BUILD_FORMAT,
   json,
@@ -48,7 +49,8 @@ async function bundlePackage({
     json: { peerDependencies, dependencies },
     sourcePath,
     BUILD_FORMAT,
-    plugins
+    plugins,
+    alias
   });
 
   const output = await getOutput({
@@ -68,12 +70,18 @@ async function start(params) {
     format,
     minify: isMinify,
     buildName,
-    plugins,
-    paths
+    plugins = [],
+    paths = [],
+    packagesNames = [],
+    alias = []
   } = params || resolveArgs();
 
   try {
-    const { sorted, pkgInfo } = await initBuild(buildName, paths);
+    const { sorted, pkgInfo } = await initBuild(
+      buildName,
+      paths,
+      packagesNames
+    );
 
     const bundleOpt = getBundleOpt(format, isMinify);
 
@@ -88,6 +96,7 @@ async function start(params) {
 
           await bundlePackage({
             plugins,
+            alias,
             flags: {
               IS_PROD,
               IS_SILENT: isSilent

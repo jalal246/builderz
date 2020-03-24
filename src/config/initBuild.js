@@ -18,7 +18,7 @@ import { camelizeOutputBuild } from "../utils";
  * @param {Array} packagesNames - packages name to be built
  * @returns {Array} sortedJson
  */
-async function initBuild(buildName = "dist", paths = [], packagesNames = []) {
+async function initBuild(buildName = "dist", paths, packagesNames) {
   const { json, pkgInfo } = getJsonByName(
     buildName,
     ...paths
