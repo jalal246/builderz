@@ -6,7 +6,7 @@ setIsSilent(true);
 
 describe("config function", () => {
   it("initBuild default", async () => {
-    const { sorted, pkgInfo } = await initBuild();
+    const { sorted, pkgInfo } = await initBuild(undefined, [], []);
 
     // snapshot the name cause everything else is changeable.
     expect(sorted[0].name).toMatchSnapshot();
@@ -23,7 +23,7 @@ describe("config function", () => {
 
     const paths = [foloForms, foloLayout, foloUtils, foloWithcontext];
 
-    const { sorted, pkgInfo } = await initBuild("dist", paths);
+    const { sorted, pkgInfo } = await initBuild("dist", paths, []);
 
     expect(sorted).toMatchSnapshot();
     expect(pkgInfo).toMatchSnapshot();
