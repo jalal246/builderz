@@ -11,19 +11,15 @@ import analyze from "rollup-plugin-analyzer";
 
 import { CJS, ES } from "../../constants";
 
-/**
- * Extracts string to suit plugins entries
- * {@link https://www.npmjs.com/package/@rollup/plugin-alias}
- *
- * @param {string[]} alias - batman=../../../batman
- * @returns {Object[]} - {find, replacement}
- */
-function extractAlias(alias) {
-  return alias.map(str => {
-    const [key, value] = str.split("=");
-    return { find: key, replacement: value };
-  });
-}
+// function isInExternalPlugins(extraPlugins, plugins) {
+//   const found = false;
+
+//   if (extraPlugins.length > 0) {
+//     extraPlugins.find(extraPlugin => extraPlugin.match(plugins));
+//   }
+
+//   return found;
+// }
 
 /**
  * Returns plugins according to passed flags.
@@ -75,11 +71,12 @@ function getPlugins({
     json()
   ];
 
-  if (alias.length > 0) {
-    const extractedAlias = extractAlias(alias);
+  // if (alias.length > 0) {
+  //   console.log("alias", alias);
+  //   const extractedAlias = extractAlias(alias);
 
-    essentialPlugins.push(aliasPlugin({ entries: extractedAlias }));
-  }
+  //   essentialPlugins.push(aliasPlugin({ entries: extractedAlias }));
+  // }
 
   if (extraPlugins.length > 0) {
     extraPlugins.forEach(plg => {

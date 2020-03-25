@@ -65,7 +65,7 @@ async function bundlePackage({
 }
 
 async function start(params = {}) {
-  const args = resolveArgs();
+  const args = resolveArgs;
 
   const isSilent = args.isSilent || params.isSilent;
   const isMinify = args.isMinify || params.isMinify;
