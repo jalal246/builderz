@@ -1,4 +1,4 @@
-import { program } from "commander";
+const { program } = require("commander");
 
 function string2Arr(value) {
   return value.split(",");
@@ -9,11 +9,11 @@ function string2Arr(value) {
  * @return {Object} contains flags and array of packages name
  */
 function resolveArgs() {
-  program
-    .option("-s, --silent", "Silent mode, mutes build massages", true)
+  return program
+    .option("-s, --silent", "Silent mode, mutes build massages")
     .option("--formats <list>", "Specific build format", string2Arr)
     .option("-m, --minify", "Minify bundle works only if format is provided")
-    .option("-b, --build-name <string>", "Specific build name", "dist")
+    .option("-b, --build-name <string>", "Specific build name")
     .option(
       "--plugins <list>",
       "Custom plugins works as additional ones",
@@ -30,6 +30,7 @@ function resolveArgs() {
       string2Arr
     )
     .option("-a, --alias <list>", "package alias", string2Arr)
+    .option("-h, --help", "output usage information")
     .parse(process.argv);
 }
 
