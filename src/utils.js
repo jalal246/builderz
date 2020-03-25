@@ -28,7 +28,11 @@ function getBundleOpt(customFormats, isMinify) {
 
   const buildFormat =
     customFormats.length > 0 ? customFormats : DEFAULT_FORMATS;
-  const minifyingProcess = isMinify ? [isMinify] : [true, false];
+
+  const minifyingProcess =
+    customFormats.length > 0 && isMinify !== undefined
+      ? [isMinify]
+      : [true, false];
 
   buildFormat.forEach(format => {
     minifyingProcess.forEach(bool => {
