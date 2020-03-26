@@ -25,6 +25,15 @@ async function initBuild(buildName = "dist", paths, packagesNames) {
   )(...packagesNames);
 
   /**
+   * Sort packages before bump to production.
+   */
+  const { sorted, unSorted } = packageSorter(json);
+
+  if (unSorted.length > 0) {
+    error(`Unable to sort packages: ${unSorted}`);
+  }
+
+  /**
    * Async Loop.
    * Cleans build if any, then camelize the name for production.
    *
@@ -50,16 +59,9 @@ async function initBuild(buildName = "dist", paths, packagesNames) {
         ? `bundle ${pkgName} as ${camelizedName}`
         : `bundle  ${camelizedName}`
     );
+
+    //
   }, Promise.resolve());
-
-  /**
-   * Sort packages before bump to production.
-   */
-  const { sorted, unSorted } = packageSorter(json);
-
-  if (unSorted.length > 0) {
-    error(`Unable to sort packages: ${unSorted}`);
-  }
 
   return {
     sorted,
