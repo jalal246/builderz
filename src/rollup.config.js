@@ -2,9 +2,12 @@ import { rollup } from "rollup";
 
 import { error } from "@mytools/print";
 
+import { parse } from "shell-quote";
 import { initBuild, getInput, getOutput } from "./config/index";
 import { getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
+
+const globalArgs = resolveArgs();
 
 async function build(inputOptions, outputOptions) {
   try {
@@ -64,28 +67,54 @@ async function bundlePackage({
   await build(input, output);
 }
 
+function initOpts(opt1, opt2) {
+  const options = {
+    isSilent: undefined,
+    formats: undefined,
+    isMinify: undefined,
+    buildName: undefined,
+    plugins: undefined,
+    paths: undefined,
+    packageNames: undefined,
+    alias: undefined
+  };
+
+  Object.keys(options).forEach(option => {
+    const value = opt1[option] || opt2[option] || options[option];
+
+    options[option] = value;
+  });
+
+  return options;
+}
+
 async function start(params = {}) {
-  const args = resolveArgs;
-
-  const isSilent = args.isSilent || params.isSilent;
-  const isMinify = args.isMinify || params.isMinify;
-  const buildName = args.buildName || params.buildName;
-
-  const formats = args.format || params.format || [];
-  const plugins = args.plugins || params.plugins || [];
-  const paths = args.paths || params.paths || [];
-  const packageNames = args.packageNames || params.packageNames || [];
-  const alias = args.alias || params.alias || [];
+  let options = initOpts(params, globalArgs);
 
   try {
-    const { sorted, pkgInfo } = await initBuild(buildName, paths, packageNames);
+    const { buildName, paths, packageNames } = options;
 
-    const bundleOpt = getBundleOpt(formats, isMinify);
+    const { sorted, pkgInfo } = await initBuild(buildName, paths, packageNames);
 
     await sorted.reduce(async (sortedPromise, json) => {
       await sortedPromise;
 
-      const { name } = json;
+      const { name, scripts: { build: buildArgs } = {} } = json;
+
+      if (buildArgs) {
+        const parsedBuildArgs = parse(buildArgs);
+
+        if (parsedBuildArgs.length > 0) {
+          const localArgs = resolveArgs(parsedBuildArgs);
+
+          options = initOpts(localArgs, options);
+        }
+      }
+
+      const { isSilent, formats, isMinify, plugins, alias } = options;
+      console.log("start -> options", options);
+
+      const bundleOpt = getBundleOpt(formats, isMinify);
 
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
@@ -107,7 +136,7 @@ async function start(params = {}) {
       );
     }, Promise.resolve());
   } catch (err) {
-    error(err);
+    console.error(err);
   }
 }
 

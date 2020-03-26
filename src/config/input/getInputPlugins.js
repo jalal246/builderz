@@ -71,12 +71,9 @@ function getPlugins({
     json()
   ];
 
-  // if (alias.length > 0) {
-  //   console.log("alias", alias);
-  //   const extractedAlias = extractAlias(alias);
-
-  //   essentialPlugins.push(aliasPlugin({ entries: extractedAlias }));
-  // }
+  if (alias.length > 0) {
+    aliasPlugin({ entries: alias });
+  }
 
   if (extraPlugins.length > 0) {
     extraPlugins.forEach(plg => {

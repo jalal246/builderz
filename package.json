@@ -56,7 +56,7 @@
     "@rollup/plugin-node-resolve": "^7.0.0",
     "camelize": "^1.0.0",
     "chalk": "^3.0.0",
-    "commander": "^4.1.1",
+    "commander": "^5.0.0",
     "del": "^5.1.0",
     "get-info": "^2.2.0",
     "glob": "^7.1.6",
@@ -65,7 +65,8 @@
     "rollup": "^1.29.1",
     "rollup-plugin-analyzer": "^3.2.2",
     "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-terser": "^5.2.0"
+    "rollup-plugin-terser": "^5.2.0",
+    "shell-quote": "^1.7.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

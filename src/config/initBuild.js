@@ -59,8 +59,6 @@ async function initBuild(buildName = "dist", paths, packagesNames) {
         ? `bundle ${pkgName} as ${camelizedName}`
         : `bundle  ${camelizedName}`
     );
-
-    //
   }, Promise.resolve());
 
   return {
