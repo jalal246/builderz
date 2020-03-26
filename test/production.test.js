@@ -5,8 +5,8 @@ import del from "del";
 import builderz from "../src";
 
 describe("production", () => {
-  it("tests pure js", async () => {
-    const pathPure = resolve(__dirname, "samples", "pure");
+  it.each(["pure", "alias"])("tests %s)", async pkgName => {
+    const pathPure = resolve(__dirname, "samples", pkgName);
     const distPath = resolve(pathPure, "dist");
 
     try {
@@ -27,7 +27,7 @@ describe("production", () => {
           ).toMatchSnapshot();
         });
 
-      await del(distPath);
+      // await del(distPath);
     } catch (err) {
       console.error(err);
     }

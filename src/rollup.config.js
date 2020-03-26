@@ -69,14 +69,14 @@ async function bundlePackage({
 
 function initOpts(opt1, opt2) {
   const options = {
-    isSilent: undefined,
-    formats: undefined,
+    isSilent: true,
+    formats: [],
     isMinify: undefined,
-    buildName: undefined,
-    plugins: undefined,
-    paths: undefined,
-    packageNames: undefined,
-    alias: undefined
+    buildName: "dist",
+    plugins: [],
+    paths: [],
+    packageNames: [],
+    alias: []
   };
 
   Object.keys(options).forEach(option => {
@@ -112,7 +112,6 @@ async function start(params = {}) {
       }
 
       const { isSilent, formats, isMinify, plugins, alias } = options;
-      console.log("start -> options", options);
 
       const bundleOpt = getBundleOpt(formats, isMinify);
 

@@ -27,31 +27,36 @@ function extractAlias(aliasStr) {
 }
 
 function resolveArgs(argv) {
-  return program
-    .option("-s, --silent", "Silent mode, mutes build massages")
-    .option("--formats <list>", "Specific build format", string2Arr, [])
-    .option("-m, --minify", "Minify bundle works only if format is provided")
-    .option("-b, --build-name <string>", "Specific build name", "dist")
+  program
+    .option("-s, --silent <boolean>", "Silent mode, mutes build massages")
+    .option("-f, --formats <list>", "Specific build format", string2Arr)
     .option(
-      "--plugins <list>",
+      "-m, --minify <boolean>",
+      "Minify bundle works only if format is provided"
+    )
+    .option("-b, --build-name <string>", "Specific build name")
+    .option(
+      "-p, --plugins <list>",
       "Custom plugins works as additional ones",
-      string2Arr,
-      []
+      string2Arr
     )
     .option(
       "--paths <list>",
       "Provide custom paths not in the root/src",
-      string2Arr,
-      []
+      string2Arr
     )
     .option(
-      "--package-names <list>",
+      "-n, --package-names <list>",
       "Building specific package[s], in monorepo",
-      string2Arr,
-      []
+      string2Arr
     )
-    .option("-a, --alias <list>", "package alias", extractAlias, [])
-    .parse(argv || process.argv);
+    .option("-a, --alias <list>", "package alias", extractAlias, "");
+
+  if (argv) {
+    program.allowUnknownOption();
+  }
+
+  return program.parse(argv || process.argv);
 }
 
 export default resolveArgs;
