@@ -66,14 +66,16 @@ function initOpts(opt1, opt2) {
     formats: [],
     isMinify: undefined,
     buildName: "dist",
-    plugins: [],
-    paths: [],
-    packageNames: [],
+    pkgPaths: [],
+    pkgNames: [],
     alias: []
   };
 
   Object.keys(options).forEach(option => {
-    const value = opt1[option] || opt2[option] || options[option];
+    // eslint-disable-next-line no-underscore-dangle
+    const _default = options[option];
+
+    const value = opt1[option] || opt2[option] || _default;
 
     options[option] = value;
   });
@@ -82,42 +84,47 @@ function initOpts(opt1, opt2) {
 }
 
 async function start(params = {}) {
-  let options = initOpts(params, globalArgs);
+  const generalOpts = initOpts(params, globalArgs);
 
   try {
-    const { buildName, paths, packageNames } = options;
+    const { buildName, pkgPaths, pkgNames } = generalOpts;
 
-    const { sorted, pkgInfo } = await initBuild(buildName, paths, packageNames);
+    const { sorted, pkgInfo } = await initBuild(buildName, pkgPaths, pkgNames);
 
     await sorted.reduce(async (sortedPromise, json) => {
       await sortedPromise;
 
       const { name, scripts: { build: buildArgs } = {} } = json;
 
+      let localOpts = {};
+
       if (buildArgs) {
         const parsedBuildArgs = parse(buildArgs);
 
         if (parsedBuildArgs.length > 0) {
-          const localArgs = resolveArgs(parsedBuildArgs);
-
-          options = initOpts(localArgs, options);
+          localOpts = resolveArgs(parsedBuildArgs);
         }
       }
 
-      const { isSilent, formats, isMinify, alias } = options;
+      const { isSilent, formats, isMinify, alias } = generalOpts;
 
-      const bundleOpt = getBundleOpt(formats, isMinify);
+      const bundleOpt = getBundleOpt(
+        localOpts.formats || formats,
+        localOpts.isMinify || isMinify
+      );
 
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
           await bundleOptPromise;
 
+          const flags = {
+            IS_PROD,
+            IS_SILENT: isSilent
+          };
+
           await bundlePackage({
-            alias,
-            flags: {
-              IS_PROD,
-              IS_SILENT: isSilent
-            },
+            alias: localOpts.alias || alias,
+            flags,
             BUILD_FORMAT,
             json,
             pkgInfo: pkgInfo[name]

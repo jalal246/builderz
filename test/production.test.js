@@ -12,7 +12,7 @@ describe("production", () => {
     try {
       await builderz({
         isSilent: true,
-        paths: [resolve(__dirname, pathPure)]
+        pkgPaths: [resolve(__dirname, pathPure)]
       });
 
       const files = readdirSync(distPath);

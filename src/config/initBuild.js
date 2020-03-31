@@ -1,5 +1,5 @@
 /* eslint-disable func-names */
-import { resolve } from "fs";
+import { resolve } from "path";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
 import del from "del";

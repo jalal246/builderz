@@ -36,12 +36,12 @@ function resolveArgs(argv) {
     )
     .option("-b, --build-name <string>", "Specific build name")
     .option(
-      "--paths <list>",
+      "--pkg-paths <list>",
       "Provide custom paths not in the root/src",
       string2Arr
     )
     .option(
-      "-n, --package-names <list>",
+      "-n, --pkg-names <list>",
       "Building specific package[s], in monorepo",
       string2Arr
     )
