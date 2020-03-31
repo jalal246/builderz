@@ -36,14 +36,7 @@ async function build(inputOptions, outputOptions) {
  *
  * @param {Object} json
  */
-async function bundlePackage({
-  plugins,
-  alias,
-  flags,
-  BUILD_FORMAT,
-  json,
-  pkgInfo
-}) {
+async function bundlePackage({ alias, flags, BUILD_FORMAT, json, pkgInfo }) {
   const { IS_PROD, IS_SILENT } = flags;
   const { peerDependencies = {}, dependencies = {} } = json;
   const { buildPath, srcPath, camelizedName } = pkgInfo;
@@ -53,7 +46,6 @@ async function bundlePackage({
     json: { peerDependencies, dependencies },
     srcPath,
     BUILD_FORMAT,
-    plugins,
     alias
   });
 
@@ -112,7 +104,7 @@ async function start(params = {}) {
         }
       }
 
-      const { isSilent, formats, isMinify, plugins, alias } = options;
+      const { isSilent, formats, isMinify, alias } = options;
 
       const bundleOpt = getBundleOpt(formats, isMinify);
 
@@ -121,7 +113,6 @@ async function start(params = {}) {
           await bundleOptPromise;
 
           await bundlePackage({
-            plugins,
             alias,
             flags: {
               IS_PROD,

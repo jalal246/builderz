@@ -36,11 +36,6 @@ function resolveArgs(argv) {
     )
     .option("-b, --build-name <string>", "Specific build name")
     .option(
-      "-p, --plugins <list>",
-      "Custom plugins works as additional ones",
-      string2Arr
-    )
-    .option(
       "--paths <list>",
       "Provide custom paths not in the root/src",
       string2Arr

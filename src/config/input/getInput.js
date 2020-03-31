@@ -15,9 +15,6 @@ import getExternal from "./getInputExternal";
  * @param {string} sourcePath - where package is located
  * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
  *
- * @param {Array} plugins - extra plugins.
- *
- *
  * @returns {Object} contains input option for the package.
  */
 function genInput({
@@ -25,7 +22,6 @@ function genInput({
   json: { peerDependencies, dependencies },
   sourcePath,
   BUILD_FORMAT,
-  plugins: extraPlugins,
   alias
 }) {
   const external = getExternal({
@@ -38,7 +34,6 @@ function genInput({
     IS_SILENT,
     IS_PROD,
     BUILD_FORMAT,
-    plugins: extraPlugins,
     sourcePath,
     alias
   });

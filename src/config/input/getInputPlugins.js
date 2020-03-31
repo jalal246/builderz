@@ -29,13 +29,7 @@ import { CJS, ES } from "../../constants";
  * @param {string} BUILD_FORMAT
  * @returns {Array} plugins
  */
-function getPlugins({
-  IS_SILENT = true,
-  IS_PROD = true,
-  BUILD_FORMAT,
-  plugins: extraPlugins,
-  alias
-}) {
+function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
   const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
@@ -69,12 +63,6 @@ function getPlugins({
 
   if (alias.length > 0) {
     essentialPlugins.push(aliasPlugin({ entries: alias }));
-  }
-
-  if (extraPlugins.length > 0) {
-    extraPlugins.forEach(plg => {
-      essentialPlugins.push(plg);
-    });
   }
 
   if (!IS_SILENT) {
