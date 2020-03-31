@@ -5,7 +5,7 @@ import del from "del";
 import builderz from "../src";
 
 describe("production", () => {
-  it.each(["pure", "alias"])("tests %s)", async pkgName => {
+  it.each(["alias"])("tests %s)", async pkgName => {
     const pathPure = resolve(__dirname, "samples", pkgName);
     const distPath = resolve(pathPure, "dist");
 

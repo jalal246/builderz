@@ -39,6 +39,7 @@ function genInput({
     IS_PROD,
     BUILD_FORMAT,
     plugins: extraPlugins,
+    sourcePath,
     alias
   });
 

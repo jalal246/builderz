@@ -6,7 +6,7 @@ setIsSilent(true);
 
 describe("config function", () => {
   it("initBuild default", async () => {
-    const { sorted, pkgInfo } = await initBuild(undefined, [], []);
+    const { sorted, pkgInfo } = await initBuild("dist", [], []);
 
     // snapshot the name cause everything else is changeable.
     expect(sorted[0].name).toMatchSnapshot();

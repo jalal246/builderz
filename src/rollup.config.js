@@ -1,8 +1,7 @@
 import { rollup } from "rollup";
-
 import { error } from "@mytools/print";
-
 import { parse } from "shell-quote";
+
 import { initBuild, getInput, getOutput } from "./config/index";
 import { getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
@@ -40,17 +39,19 @@ async function build(inputOptions, outputOptions) {
 async function bundlePackage({
   plugins,
   alias,
-  flags: { IS_PROD, IS_SILENT },
+  flags,
   BUILD_FORMAT,
   json,
-  pkgInfo: { dist, camelizedName }
+  pkgInfo
 }) {
-  const { peerDependencies = {}, dependencies = {}, sourcePath } = json;
+  const { IS_PROD, IS_SILENT } = flags;
+  const { peerDependencies = {}, dependencies = {} } = json;
+  const { buildPath, srcPath, camelizedName } = pkgInfo;
 
   const input = await getInput({
     flags: { IS_SILENT, IS_PROD },
     json: { peerDependencies, dependencies },
-    sourcePath,
+    srcPath,
     BUILD_FORMAT,
     plugins,
     alias
@@ -60,7 +61,7 @@ async function bundlePackage({
     flags: { IS_PROD },
     camelizedName,
     json: {},
-    dist,
+    buildPath,
     BUILD_FORMAT
   });
 

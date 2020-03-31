@@ -46,25 +46,21 @@ function getPlugins({
       runtimeHelpers: true,
       babelrc: true
     }),
-
     /**
      * Automatically installs dependencies that are imported by a bundle, even
      * if not yet in package.json.
      */
     auto(),
-
     /**
      * Convert CommonJS modules to ES6, so they can be included in a Rollup
      * bundle.
      */
     commonjs(),
-
     /**
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.
      */
     resolve({ extensions: [".mjs", ".js", ".jsx", ".json", ".node"] }),
-
     /**
      * Converts .json files to ES6 modules.
      */
@@ -72,7 +68,7 @@ function getPlugins({
   ];
 
   if (alias.length > 0) {
-    aliasPlugin({ entries: alias });
+    essentialPlugins.push(aliasPlugin({ entries: alias }));
   }
 
   if (extraPlugins.length > 0) {

@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
-
+import { resolve } from "fs";
 import packageSorter from "package-sorter";
-import { getJsonByName } from "get-info";
+import { getJsonByName, getJsonByPath } from "get-info";
 import del from "del";
 
 import { msg, error } from "@mytools/print";
@@ -14,15 +14,16 @@ import { camelizeOutputBuild } from "../utils";
  * clean previous build.
  * sort packages.
  *
- * @param {string} [buildName="dist"]
- * @param {Array} packagesNames - packages name to be built
+ * @param {string} buildName
+ * @param {Array} pkgNames - packages name to be built
+ * @param {Array} pkgPaths - packages name to be built
  * @returns {Array} sortedJson
  */
-async function initBuild(buildName = "dist", paths, packagesNames) {
-  const { json, pkgInfo } = getJsonByName(
-    buildName,
-    ...paths
-  )(...packagesNames);
+async function initBuild(buildName, pkgPaths, pkgNames) {
+  const { json, pkgInfo } =
+    pkgNames.length > 0
+      ? getJsonByName(...pkgNames)
+      : getJsonByPath(...pkgPaths);
 
   /**
    * Sort packages before bump to production.
@@ -46,13 +47,20 @@ async function initBuild(buildName = "dist", paths, packagesNames) {
      */
     await promise;
 
-    const { dist } = pkgInfo[pkgName];
+    const { path, ext } = pkgInfo[pkgName];
 
-    await del(dist);
+    const srcPath = resolve(path, "src", `index.${ext}`);
+
+    const buildPath = resolve(path, buildName);
+
+    await del(buildPath);
 
     const camelizedName = camelizeOutputBuild(pkgName);
 
     pkgInfo[pkgName].camelizedName = camelizedName;
+
+    pkgInfo[pkgName].srcPath = srcPath;
+    pkgInfo[pkgName].buildPath = buildPath;
 
     msg(
       camelizedName !== pkgName
