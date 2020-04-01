@@ -11,8 +11,17 @@ import { getInput, getOutput } from "./config/index";
 import { camelizeOutputBuild, getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
 
+/**
+ * Invoking resolveArgs inside `start` won't work.
+ */
 const globalArgs = resolveArgs();
 
+/**
+ * Write bundle.
+ *
+ * @param {Object} inputOptions
+ * @param {Object} outputOptions
+ */
 async function build(inputOptions, outputOptions) {
   try {
     /**
@@ -24,11 +33,18 @@ async function build(inputOptions, outputOptions) {
      * write the bundle to disk
      */
     await bundle.write(outputOptions);
-  } catch (e) {
-    error(e);
+  } catch (err) {
+    error(err);
   }
 }
 
+/**
+ * Inits global options
+ *
+ * @param {Object} opt1 - cli options
+ * @param {Object} opt2 - api options
+ * @returns {Object} - final global opts
+ */
 function initOpts(opt1, opt2) {
   const options = {
     isSilent: true,
@@ -84,10 +100,17 @@ async function start(params = {}) {
 
       let localOpts = {};
 
+      /**
+       * Parsing empty object throws an error/
+       */
       if (!isEmpty(buildArgs)) {
         const parsedBuildArgs = parse(buildArgs);
 
         if (parsedBuildArgs.length > 0) {
+          /**
+           * For some unknown reason, resolveArgs doesn't work correctly when
+           * passing args without string first. So, yeah, I did it this way.
+           */
           parsedBuildArgs.unshift("builderz");
 
           localOpts = resolveArgs(parsedBuildArgs);
@@ -96,6 +119,9 @@ async function start(params = {}) {
 
       const { isSilent, formats, isMinify, alias: gAlias } = generalOpts;
 
+      /**
+       * Give localOpts the priority first.
+       */
       const bundleOpt = getBundleOpt(
         localOpts.formats || formats,
         localOpts.isMinify || isMinify
@@ -113,8 +139,14 @@ async function start(params = {}) {
 
       let alias = gAlias;
 
+      /**
+       * If there's local alias passed in package, let's resolve the pass.
+       */
       if (localOpts.alias && localOpts.alias.length > 0) {
         localOpts.alias.forEach(({ replacement }, i) => {
+          /**
+           * Assuming we're working in `src` by default.
+           */
           localOpts.alias[i].replacement = resolve(pkgPath, "src", replacement);
         });
 
@@ -155,7 +187,7 @@ async function start(params = {}) {
       );
     }, Promise.resolve());
   } catch (err) {
-    console.error(err);
+    error(err);
   }
 }
 
