@@ -2,8 +2,7 @@
 
 > Zero Configuration JavaScript Bundler :bowtie:
 
-`build/er/z` was built originally to bundle monorepos for one-step production
-only. And of course, works for regular repo with a single package.
+`build/er/z` was built originally to bundle monorepos for one-step production. And of course, works for regular repo with a single package.
 
 It does multiple things to save you some time and lets you focus on developing,
 that includes:
@@ -11,13 +10,14 @@ that includes:
 1. Gets all validate packages path by looking into the workplace - including
    monorepo.
 
-2. Extract JSON from each package found in the workplace.
+2. Extract JSON from each package found in the workplace. To get essential
+   production information.
 
 3. Cleans build folders if there is any.
 
 4. Creates camelize name for your package if it's not camelized.
 
-5. If monorepo, sorts packages according to core/decency, so core comes first
+5. If monorepo, sorts packages according to core/dependency, so core comes first
    and so on.
 
 6. Creates a distension path for each project found.
@@ -38,7 +38,7 @@ In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required args.
 
 ```json
-"build": "builderz --format=cjs --minify"
+"build": "builderz --formats=cjs --minify"
 ```
 
 ## Options
@@ -47,14 +47,14 @@ bundle just pass the required args.
   -s, --silent <boolean>    Silent mode, mutes build massages
   -f, --formats <list>      Specific build format
   -m, --minify <boolean>    Minify bundle works only if format is provided
-  -b, --buildName <string>  Specific build name
-  --pkg-paths <list>        Provide custom paths not in the root/src
+  -b, --build-name <string>  Specific build name
+  -w, --pkg-paths <list>        Provide custom paths not in the root/src
   -n, --pkg-names <list>    Building specific package[s], in workspace
   -a, --alias <list>        Package Alias
   -h, --help                Output usage information
 ```
 
-## Using Build Script
+### Using Build Script
 
 ```js
 const builderz = require("builderz");
@@ -65,14 +65,11 @@ const options = {};
 builderz(options);
 ```
 
-## Tests
+### Test
 
 ```sh
 npm test
 ```
-
-> Disclaimer: I am aware of existence bugs but keep working to enhance the next
-> versions that include adding more tests.
 
 ### Related projects
 
