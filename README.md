@@ -1,14 +1,17 @@
 # Builderz
 
-> Build your project(s) with zero configuration :bowtie:
+> Zero Configuration JavaScript Bundler :bowtie:
 
-`build/er/z` is a smart bundler. Works for regular repo with a single package and monorepo.
+`build/er/z` was built originally to bundle monorepos for one-step production
+only. And of course, works for regular repo with a single package.
+
 It does multiple things to save you some time and lets you focus on developing,
 that includes:
 
-1. Gets all packages path by looking into the workplace, including monorepo.
+1. Gets all validate packages path by looking into the workplace - including
+   monorepo.
 
-2. Extract JSON from each package found in the root.
+2. Extract JSON from each package found in the workplace.
 
 3. Cleans build folders if there is any.
 
@@ -22,51 +25,44 @@ that includes:
 7. If there's no targeted format, it generates default formats (CJS, UMD, ES)
    one cycle minified with a map and the second is not.
 
+8. Highly customized. Reads local package build args first, resolves local paths. Prioritize
+   local args to global ones.
+
 ```bash
 npm install builderz
 ```
 
-## Using API
-
-```js
-const builderz = require("builderz");
-
-/**
- * @param {boolean} [isSilent=true] - Silent mode, mutes build massages
- * @param {boolean} isMinify - Minify bundle, works only if format is provided
- * @param {string} format - Specific build format
- * @param {string} [buildName="dist"] - Specific build name
- * @param {Array} plugins - Custom plugins
- * @param {Array} paths - Provide custom paths not in the root/src
- */
-builderz({
-  isSilent,
-  isMinify,
-  format,
-  buildName,
-  plugins,
-  paths
-});
-```
-
-## Using CLI
-
-```bash
-  -s, --silent     silent mode, mutes build massages
-  -w, --watch      watch mode
-  -f --format      specific build format
-  -p, --plugins    input custom plugins
-  -b, --buildName  specific build name
-  -m, --minify     minify bundle works only if format is provided
-  PACKAGE_NAME     building specific package[s], in monorepo
-  -h, --help       output usage information
-```
+## Easy to use
 
 In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required args.
 
 ```json
 "build": "builderz --format=cjs --minify"
+```
+
+## Options
+
+```bash
+  -s, --silent <boolean>    Silent mode, mutes build massages
+  -f, --formats <list>      Specific build format
+  -m, --minify <boolean>    Minify bundle works only if format is provided
+  -b, --buildName <string>  Specific build name
+  --pkg-paths <list>        Provide custom paths not in the root/src
+  -n, --pkg-names <list>    Building specific package[s], in workspace
+  -a, --alias <list>        Package Alias
+  -h, --help                Output usage information
+```
+
+## Using Build Script
+
+```js
+const builderz = require("builderz");
+
+// Multi-word options are camel-cased.
+const options = {};
+
+builderz(options);
 ```
 
 ## Tests

@@ -42,10 +42,10 @@ function resolveArgs(argv) {
     )
     .option(
       "-n, --pkg-names <list>",
-      "Building specific package[s], in monorepo",
+      "Building specific package[s], in workspace",
       string2Arr
     )
-    .option("-a, --alias <list>", "package alias", extractAlias, "");
+    .option("-a, --alias <list>", "Package Alias", extractAlias, "");
 
   if (argv) {
     program.allowUnknownOption();
