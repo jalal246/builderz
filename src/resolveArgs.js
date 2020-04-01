@@ -1,18 +1,57 @@
-import { option } from "commander";
+const { program } = require("commander");
 
 /**
- * Get args pass to build command
- * @return {Object} contains flags and array of packages name
+ * Converts string to Array.
+ *
+ * @param {string} value
+ * @returns {Array}
  */
-function resolveArgs() {
-  return option("-s, --silent", "silent mode, mutes build massages")
-    .option("-w, --watch", "watch mode:TODO")
-    .option("-f, --format", "specific build format")
-    .option("-p, --plugins", "input custom plugins")
-    .option("-b, --buildName", "specific build name")
-    .option("-m, --minify", "minify bundle works only if format is provided")
-    .option("PACKAGE_NAME", "building specific package[s], in monorepo")
-    .parse(process.argv);
+function string2Arr(value) {
+  return value.split(",");
+}
+
+/**
+ * Extracts string to suit plugins entries
+ * {@link https://www.npmjs.com/package/@rollup/plugin-alias}
+ *
+ * @param {string[]} alias - batman=../../../batman
+ * @returns {Object[]} - {find, replacement}
+ */
+function extractAlias(aliasStr) {
+  const alias = string2Arr(aliasStr).map(str => {
+    const [key, value] = str.split("=");
+    return { find: key, replacement: value };
+  });
+
+  return alias;
+}
+
+function resolveArgs(argv) {
+  program
+    .option("-s, --silent <boolean>", "Silent mode, mutes build massages")
+    .option("-f, --formats <list>", "Specific build format", string2Arr)
+    .option(
+      "-m, --minify <boolean>",
+      "Minify bundle works only if format is provided"
+    )
+    .option("-b, --build-name <string>", "Specific build name")
+    .option(
+      "-w, --pkg-paths <list>",
+      "Provide custom paths not in the root/src",
+      string2Arr
+    )
+    .option(
+      "-n, --pkg-names <list>",
+      "Building specific package[s], in workspace",
+      string2Arr
+    )
+    .option("-a, --alias <list>", "Package Alias", extractAlias, "");
+
+  if (argv) {
+    program.allowUnknownOption();
+  }
+
+  return program.parse(argv || process.argv);
 }
 
 export default resolveArgs;

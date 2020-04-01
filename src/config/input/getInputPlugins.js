@@ -3,6 +3,7 @@ import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
+import aliasPlugin from "@rollup/plugin-alias";
 
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
@@ -18,12 +19,7 @@ import { CJS, ES } from "../../constants";
  * @param {string} BUILD_FORMAT
  * @returns {Array} plugins
  */
-function getPlugins({
-  IS_SILENT = true,
-  IS_PROD = true,
-  BUILD_FORMAT,
-  plugins: extraPlugins
-}) {
+function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
   const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
@@ -35,18 +31,18 @@ function getPlugins({
       babelrc: true
     }),
 
+    alias.length > 0 ? aliasPlugin({ entries: alias }) : null,
+
     /**
      * Automatically installs dependencies that are imported by a bundle, even
      * if not yet in package.json.
      */
     auto(),
-
     /**
      * Convert CommonJS modules to ES6, so they can be included in a Rollup
      * bundle.
      */
     commonjs(),
-
     /**
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.
@@ -57,13 +53,7 @@ function getPlugins({
      * Converts .json files to ES6 modules.
      */
     json()
-  ];
-
-  if (extraPlugins) {
-    extraPlugins.forEach(plg => {
-      essentialPlugins.push(plg);
-    });
-  }
+  ].filter(Boolean);
 
   if (!IS_SILENT) {
     essentialPlugins.push(analyze({ summaryOnly: true }));
