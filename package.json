@@ -6,8 +6,7 @@
   "author": "Jalal Maskoun <jimmy002020@gmail.com>",
   "license": "LGPL-3.0",
   "scripts": {
-    "args": "node src -h",
-    "build": "rollup src/rollup.config.js  --file dist/builderz.cjs.js --format=cjs",
+    "build": "node --require @babel/register build.self.js",
     "prepublish": "yarn build",
     "test": "jest"
   },
@@ -45,8 +44,10 @@
     "filter"
   ],
   "dependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.9.0",
     "@mytools/print": "^0.1.5",
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-auto-install": "^2.0.0",
