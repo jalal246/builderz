@@ -59,7 +59,7 @@ bundle just pass the required args.
 ```js
 const builderz = require("builderz");
 
-// Multi-word options are camel-cased.
+// Multi-word options are camel-cased. Pass list as array.
 const options = {};
 
 builderz(options);
