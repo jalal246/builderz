@@ -28,6 +28,8 @@ that includes:
 8. Highly customized. Reads local package build args first, resolves local paths. Prioritize
    local args to global ones.
 
+## Install
+
 ```bash
 npm install builderz
 ```
