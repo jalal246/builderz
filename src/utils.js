@@ -30,7 +30,7 @@ function getBundleOpt(customFormats, isMinify) {
     customFormats.length > 0 ? customFormats : DEFAULT_FORMATS;
 
   const minifyingProcess =
-    customFormats.length > 0 && isMinify !== undefined
+    customFormats.length > 0 && typeof isMinify === "boolean"
       ? [isMinify]
       : [true, false];
 

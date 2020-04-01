@@ -49,7 +49,7 @@ function initOpts(opt1, opt2) {
   const options = {
     isSilent: true,
     formats: [],
-    isMinify: undefined,
+    minify: false,
     buildName: "dist",
     pkgPaths: [],
     pkgNames: [],
@@ -117,14 +117,14 @@ async function start(params = {}) {
         }
       }
 
-      const { isSilent, formats, isMinify, alias: gAlias } = generalOpts;
+      const { isSilent, formats, minify, alias: gAlias } = generalOpts;
 
       /**
        * Give localOpts the priority first.
        */
       const bundleOpt = getBundleOpt(
         localOpts.formats || formats,
-        localOpts.isMinify || isMinify
+        typeof localOpts.minify === "boolean" ? localOpts.minify : minify
       );
 
       const pkgInfo = allPkgInfo[name];
