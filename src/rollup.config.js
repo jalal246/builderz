@@ -5,6 +5,7 @@ import { parse } from "shell-quote";
 import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
+import isEmpty from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 import { camelizeOutputBuild, getBundleOpt } from "./utils";
@@ -83,15 +84,17 @@ async function start(params = {}) {
 
       let localOpts = {};
 
-      if (buildArgs) {
+      if (!isEmpty(buildArgs)) {
         const parsedBuildArgs = parse(buildArgs);
 
         if (parsedBuildArgs.length > 0) {
+          parsedBuildArgs.unshift("builderz");
+
           localOpts = resolveArgs(parsedBuildArgs);
         }
       }
 
-      const { isSilent, formats, isMinify, alias } = generalOpts;
+      const { isSilent, formats, isMinify, alias: gAlias } = generalOpts;
 
       const bundleOpt = getBundleOpt(
         localOpts.formats || formats,
@@ -108,6 +111,24 @@ async function start(params = {}) {
 
       const defaultSrcPath = resolve(pkgPath, "src", `index.${pkgExt}`);
 
+      let alias = gAlias;
+
+      if (localOpts.alias && localOpts.alias.length > 0) {
+        localOpts.alias.forEach(({ replacement }, i) => {
+          localOpts.alias[i].replacement = resolve(pkgPath, "src", replacement);
+        });
+
+        alias = localOpts.alias;
+      }
+
+      const camelizedName = camelizeOutputBuild(name);
+
+      msg(
+        camelizedName !== name
+          ? `bundle ${name} as ${camelizedName}`
+          : `bundle  ${camelizedName}`
+      );
+
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
           await bundleOptPromise;
@@ -119,14 +140,6 @@ async function start(params = {}) {
             BUILD_FORMAT,
             alias
           });
-
-          const camelizedName = camelizeOutputBuild(name);
-
-          msg(
-            camelizedName !== name
-              ? `bundle ${name} as ${camelizedName}`
-              : `bundle  ${camelizedName}`
-          );
 
           const output = await getOutput({
             flags: { IS_PROD },
