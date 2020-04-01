@@ -1,1 +1,1 @@
-export { default } from "./rollup.config";
+export { default } from "./builderz";

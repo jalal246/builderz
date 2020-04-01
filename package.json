@@ -60,6 +60,7 @@
     "del": "^5.1.0",
     "get-info": "^2.3.0",
     "glob": "^7.1.6",
+    "lodash.isempty": "^4.4.0",
     "move-position": "^1.0.0",
     "ms": "^2.1.2",
     "package-sorter": "^1.1.1",

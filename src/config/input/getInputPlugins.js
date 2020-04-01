@@ -11,16 +11,6 @@ import analyze from "rollup-plugin-analyzer";
 
 import { CJS, ES } from "../../constants";
 
-// function isInExternalPlugins(extraPlugins, plugins) {
-//   const found = false;
-
-//   if (extraPlugins.length > 0) {
-//     extraPlugins.find(extraPlugin => extraPlugin.match(plugins));
-//   }
-
-//   return found;
-// }
-
 /**
  * Returns plugins according to passed flags.
  *
@@ -40,6 +30,9 @@ function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
       runtimeHelpers: true,
       babelrc: true
     }),
+
+    alias.length > 0 ? aliasPlugin({ entries: alias }) : null,
+
     /**
      * Automatically installs dependencies that are imported by a bundle, even
      * if not yet in package.json.
@@ -55,15 +48,12 @@ function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
      * party modules in node_modules.
      */
     resolve({ extensions: [".mjs", ".js", ".jsx", ".json", ".node"] }),
+
     /**
      * Converts .json files to ES6 modules.
      */
     json()
-  ];
-
-  if (alias.length > 0) {
-    essentialPlugins.push(aliasPlugin({ entries: alias }));
-  }
+  ].filter(Boolean);
 
   if (!IS_SILENT) {
     essentialPlugins.push(analyze({ summaryOnly: true }));
