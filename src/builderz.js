@@ -11,6 +11,30 @@ import { getInput, getOutput } from "./config/index";
 import { camelizeOutputBuild, getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
 
+function extractAlias(globalOpts, localOpts, localPkgPath) {
+  let alias;
+
+  const { alias: LocalAlias } = localOpts;
+
+  /**
+   * If there's local alias passed in package, let's resolve the pass.
+   */
+  if (LocalAlias && LocalAlias.length > 0) {
+    LocalAlias.forEach(({ replacement }, i) => {
+      /**
+       * Assuming we're working in `src` by default.
+       */
+      LocalAlias[i].replacement = resolve(localPkgPath, "src", replacement);
+    });
+
+    alias = LocalAlias;
+  } else {
+    alias = globalOpts.alias;
+  }
+
+  return alias;
+}
+
 /**
  * Write bundle.
  *
@@ -33,8 +57,39 @@ async function build(inputOptions, outputOptions) {
   }
 }
 
-async function start(generalOpts) {
-  const { buildName, pkgPaths, pkgNames } = generalOpts;
+/**
+ * Inits options
+ *
+ * @param {Object} opts - input options
+ * @returns {Object} - initialize options
+ */
+function initOpts(opts) {
+  const options = {
+    isSilent: true,
+    formats: [],
+    isMinify: undefined,
+    buildName: "dist",
+    pkgPaths: [],
+    pkgNames: [],
+    alias: []
+  };
+
+  Object.keys(options).forEach(option => {
+    // eslint-disable-next-line no-underscore-dangle
+    const _default = options[option];
+
+    const value = opts[option] || _default;
+
+    options[option] = value;
+  });
+
+  return options;
+}
+
+async function start(generalOpts, { isInitOpts = true }) {
+  const { buildName, pkgPaths, pkgNames } = isInitOpts
+    ? initOpts(generalOpts)
+    : generalOpts;
 
   const { json: allPkgJson, pkgInfo: allPkgInfo } =
     pkgNames.length > 0
@@ -80,7 +135,7 @@ async function start(generalOpts) {
         }
       }
 
-      const { isSilent, formats, minify, alias: gAlias } = generalOpts;
+      const { isSilent, formats, minify, entries } = generalOpts;
 
       /**
        * Give localOpts the priority first.
@@ -100,21 +155,7 @@ async function start(generalOpts) {
 
       const defaultSrcPath = resolve(pkgPath, "src", `index.${pkgExt}`);
 
-      let alias = gAlias;
-
-      /**
-       * If there's local alias passed in package, let's resolve the pass.
-       */
-      if (localOpts.alias && localOpts.alias.length > 0) {
-        localOpts.alias.forEach(({ replacement }, i) => {
-          /**
-           * Assuming we're working in `src` by default.
-           */
-          localOpts.alias[i].replacement = resolve(pkgPath, "src", replacement);
-        });
-
-        alias = localOpts.alias;
-      }
+      const alias = extractAlias(generalOpts, localOpts, pkgPath);
 
       const camelizedName = camelizeOutputBuild(name);
 
@@ -131,6 +172,7 @@ async function start(generalOpts) {
           const input = await getInput({
             flags: { IS_SILENT: isSilent, IS_PROD },
             json: { peerDependencies, dependencies },
+            entries: [],
             srcPath: defaultSrcPath,
             BUILD_FORMAT,
             alias

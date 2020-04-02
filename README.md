@@ -49,10 +49,11 @@ bundle just pass the required args.
   -s, --silent <boolean>    Silent mode, mutes build massages
   -f, --formats <list>      Specific build format
   -m, --minify <boolean>    Minify bundle works only if format is provided
-  -b, --build-name <string>  Specific build name
-  -w, --pkg-paths <list>        Provide custom paths not in the root/src
+  -b, --build-name <string> Specific build name
+  -w, --pkg-paths <list>    Provide custom paths not in the root/src
   -n, --pkg-names <list>    Building specific package[s], in workspace
   -a, --alias <list>        Package Alias
+  -e, --entries <list>      Add multi entries
   -h, --help                Output usage information
 ```
 

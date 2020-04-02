@@ -20,6 +20,9 @@ import getExternal from "./getInputExternal";
 function genInput({
   flags: { IS_SILENT, IS_PROD },
   json: { peerDependencies, dependencies },
+  entries,
+
+  // TODO: remove this.
   srcPath,
   BUILD_FORMAT,
   alias
@@ -39,7 +42,7 @@ function genInput({
   });
 
   return {
-    input: srcPath,
+    input: entries,
     external,
     plugins
   };

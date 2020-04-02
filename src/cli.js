@@ -8,7 +8,7 @@ const globalArgs = resolveArgs();
 
 function start() {
   try {
-    builderz(globalArgs);
+    builderz(globalArgs, { isInitOpts: false });
   } catch (err) {
     error(err);
   }
