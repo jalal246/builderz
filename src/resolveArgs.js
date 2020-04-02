@@ -28,24 +28,27 @@ function extractAlias(aliasStr) {
 
 function resolveArgs(argv) {
   program
-    .option("-s, --silent <boolean>", "Silent mode, mutes build massages")
-    .option("-f, --formats <list>", "Specific build format", string2Arr)
+    .option("-s, --silent <boolean>", "Silent mode, mutes build massages", true)
+    .option("-f, --formats <list>", "Specific build format", string2Arr, [])
     .option(
       "-m, --minify <boolean>",
-      "Minify bundle works only if format is provided"
+      "Minify bundle works only if format is provided",
+      false
     )
-    .option("-b, --build-name <string>", "Specific build name")
+    .option("-b, --build-name <string>", "Specific build name", "dist")
     .option(
       "-w, --pkg-paths <list>",
       "Provide custom paths not in the root/src",
-      string2Arr
+      string2Arr,
+      []
     )
     .option(
       "-n, --pkg-names <list>",
       "Building specific package[s], in workspace",
-      string2Arr
+      string2Arr,
+      []
     )
-    .option("-a, --alias <list>", "Package Alias", extractAlias, "");
+    .option("-a, --alias <list>", "Package Alias", extractAlias, []);
 
   if (argv) {
     program.allowUnknownOption();

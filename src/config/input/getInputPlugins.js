@@ -47,7 +47,10 @@ function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.
      */
-    resolve({ extensions: [".mjs", ".js", ".jsx", ".json", ".node"] }),
+    resolve({
+      preferBuiltins: true,
+      extensions: [".mjs", ".js", ".jsx", ".json", ".node"]
+    }),
 
     /**
      * Converts .json files to ES6 modules.

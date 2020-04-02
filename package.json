@@ -2,6 +2,7 @@
   "name": "builderz",
   "version": "0.3.0",
   "main": "./dist/builderz.cjs",
+  "bin": "./dist/cli.js",
   "repository": "https://github.com/jalal246/builderz.git",
   "author": "Jalal Maskoun <jimmy002020@gmail.com>",
   "license": "LGPL-3.0",

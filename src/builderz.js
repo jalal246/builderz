@@ -12,11 +12,6 @@ import { camelizeOutputBuild, getBundleOpt } from "./utils";
 import resolveArgs from "./resolveArgs";
 
 /**
- * Invoking resolveArgs inside `start` won't work.
- */
-const globalArgs = resolveArgs();
-
-/**
  * Write bundle.
  *
  * @param {Object} inputOptions
@@ -38,39 +33,7 @@ async function build(inputOptions, outputOptions) {
   }
 }
 
-/**
- * Inits global options
- *
- * @param {Object} opt1 - cli options
- * @param {Object} opt2 - api options
- * @returns {Object} - final global opts
- */
-function initOpts(opt1, opt2) {
-  const options = {
-    isSilent: true,
-    formats: [],
-    minify: false,
-    buildName: "dist",
-    pkgPaths: [],
-    pkgNames: [],
-    alias: []
-  };
-
-  Object.keys(options).forEach(option => {
-    // eslint-disable-next-line no-underscore-dangle
-    const _default = options[option];
-
-    const value = opt1[option] || opt2[option] || _default;
-
-    options[option] = value;
-  });
-
-  return options;
-}
-
-async function start(params = {}) {
-  const generalOpts = initOpts(params, globalArgs);
-
+async function start(generalOpts) {
   const { buildName, pkgPaths, pkgNames } = generalOpts;
 
   const { json: allPkgJson, pkgInfo: allPkgInfo } =
