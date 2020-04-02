@@ -48,7 +48,13 @@ function resolveArgs(argv) {
       string2Arr,
       []
     )
-    .option("-a, --alias <list>", "Package Alias", extractAlias, []);
+    .option("-a, --alias <list>", "Package Alias", extractAlias, [])
+    .option(
+      "-e, --entries <list>",
+      "Add multi entries instead of default src/index.",
+      extractAlias,
+      []
+    );
 
   if (argv) {
     program.allowUnknownOption();
