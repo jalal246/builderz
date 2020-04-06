@@ -1,7 +1,0 @@
-{
-  "name": "basic-multi-source",
-  "source":[
-    "./a.js",
-    "./b.js"
-  ]
-}

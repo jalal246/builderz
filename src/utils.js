@@ -1,5 +1,11 @@
 import camelize from "camelize";
+import { resolve } from "path";
+import isBoolean from "lodash.isboolean";
 import { UMD, CJS, ES } from "./constants";
+
+function NotEmptyArr(arr) {
+  return arr.length > 0;
+}
 
 /**
  * Modify package name in package.json to name the output build correctly.
@@ -26,16 +32,17 @@ function getBundleOpt(customFormats, isMinify) {
 
   const gen = [];
 
-  const buildFormat =
-    customFormats.length > 0 ? customFormats : DEFAULT_FORMATS;
+  const buildFormat = NotEmptyArr(customFormats)
+    ? customFormats
+    : DEFAULT_FORMATS;
 
   const minifyingProcess =
-    customFormats.length > 0 && typeof isMinify === "boolean"
+    NotEmptyArr(customFormats) && isBoolean(isMinify)
       ? [isMinify]
       : [true, false];
 
-  buildFormat.forEach(format => {
-    minifyingProcess.forEach(bool => {
+  buildFormat.forEach((format) => {
+    minifyingProcess.forEach((bool) => {
       gen.push({ BUILD_FORMAT: format, IS_PROD: bool });
     });
   });
@@ -43,4 +50,72 @@ function getBundleOpt(customFormats, isMinify) {
   return gen;
 }
 
-export { camelizeOutputBuild, getBundleOpt };
+const opts = {};
+
+function setOpt(localOpts, globalOpts) {
+  opts.localOpts = localOpts;
+  opts.globalOpts = globalOpts;
+}
+
+function getBoolean(localOpts, globalOpts, argName) {
+  return isBoolean(localOpts[argName])
+    ? localOpts[argName]
+    : globalOpts[argName];
+}
+
+function getBooleanOpt(argName) {
+  return getBoolean(opts.localOpts, opts.globalOpts, argName);
+}
+
+function getArr(localOpts, globalOpts, argName) {
+  return Array.isArray(localOpts[argName]) && NotEmptyArr(localOpts[argName])
+    ? localOpts[argName]
+    : globalOpts[argName];
+}
+function getArrOpt(argName) {
+  return getArr(opts.localOpts, opts.globalOpts, argName);
+}
+
+function extractAlias(generalOpts, localOpts, localPkgPath) {
+  let alias;
+
+  const { alias: LocalAlias } = localOpts;
+
+  /**
+   * If there's local alias passed in package, let's resolve the pass.
+   */
+  if (LocalAlias && LocalAlias.length > 0) {
+    LocalAlias.forEach(({ replacement }, i) => {
+      /**
+       * Assuming we're working in `src` by default.
+       */
+      LocalAlias[i].replacement = resolve(localPkgPath, "src", replacement);
+    });
+
+    alias = LocalAlias;
+  } else {
+    alias = generalOpts.alias;
+  }
+
+  return alias;
+}
+
+function extractEntries({ entries }, entriesJson, defaultSrcPath) {
+  // eslint-disable-next-line no-nested-ternary
+  return entries.length > 0
+    ? entries
+    : entriesJson.length > 0
+    ? entriesJson
+    : defaultSrcPath;
+}
+
+export {
+  setOpt,
+  NotEmptyArr,
+  camelizeOutputBuild,
+  getBundleOpt,
+  getBooleanOpt,
+  getArrOpt,
+  extractAlias,
+  extractEntries,
+};

@@ -3,37 +3,25 @@ import { rollup } from "rollup";
 import { msg, error } from "@mytools/print";
 import { parse } from "shell-quote";
 import del from "del";
+import { validateAccess } from "validate-access";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
-import isEmpty from "lodash.isempty";
+import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
-import { camelizeOutputBuild, getBundleOpt } from "./utils";
+
+import { NotEmptyArr, camelizeOutputBuild, getBundleOpt } from "./utils";
+
+import {
+  setOpt,
+  initOpts,
+  getBooleanOpt,
+  getArrOpt,
+  extractAlias,
+  extractEntries,
+} from "./optionsHandler";
+
 import resolveArgs from "./resolveArgs";
-
-function extractAlias(globalOpts, localOpts, localPkgPath) {
-  let alias;
-
-  const { alias: LocalAlias } = localOpts;
-
-  /**
-   * If there's local alias passed in package, let's resolve the pass.
-   */
-  if (LocalAlias && LocalAlias.length > 0) {
-    LocalAlias.forEach(({ replacement }, i) => {
-      /**
-       * Assuming we're working in `src` by default.
-       */
-      LocalAlias[i].replacement = resolve(localPkgPath, "src", replacement);
-    });
-
-    alias = LocalAlias;
-  } else {
-    alias = globalOpts.alias;
-  }
-
-  return alias;
-}
 
 /**
  * Write bundle.
@@ -57,51 +45,21 @@ async function build(inputOptions, outputOptions) {
   }
 }
 
-/**
- * Inits options
- *
- * @param {Object} opts - input options
- * @returns {Object} - initialize options
- */
-function initOpts(opts) {
-  const options = {
-    isSilent: true,
-    formats: [],
-    isMinify: undefined,
-    buildName: "dist",
-    pkgPaths: [],
-    pkgNames: [],
-    alias: []
-  };
+async function start(opts, { isInitOpts = true } = {}) {
+  const generalOpts = isInitOpts ? initOpts(opts) : opts;
 
-  Object.keys(options).forEach(option => {
-    // eslint-disable-next-line no-underscore-dangle
-    const _default = options[option];
+  const { buildName, pkgPaths, pkgNames } = generalOpts;
 
-    const value = opts[option] || _default;
-
-    options[option] = value;
-  });
-
-  return options;
-}
-
-async function start(generalOpts, { isInitOpts = true }) {
-  const { buildName, pkgPaths, pkgNames } = isInitOpts
-    ? initOpts(generalOpts)
-    : generalOpts;
-
-  const { json: allPkgJson, pkgInfo: allPkgInfo } =
-    pkgNames.length > 0
-      ? getJsonByName(...pkgNames)
-      : getJsonByPath(...pkgPaths);
+  const { json: allPkgJson, pkgInfo: allPkgInfo } = NotEmptyArr(pkgNames)
+    ? getJsonByName(...pkgNames)
+    : getJsonByPath(...pkgPaths);
 
   /**
    * Sort packages before bump to production.
    */
   const { sorted, unSorted } = packageSorter(allPkgJson);
 
-  if (unSorted.length > 0) {
+  if (NotEmptyArr(unSorted)) {
     error(`Unable to sort packages: ${unSorted}`);
   }
 
@@ -113,7 +71,8 @@ async function start(generalOpts, { isInitOpts = true }) {
         name,
         peerDependencies = {},
         dependencies = {},
-        scripts: { build: buildArgs } = {}
+        scripts: { build: buildArgs } = {},
+        entries: entriesJson = [],
       } = json;
 
       let localOpts = {};
@@ -121,28 +80,30 @@ async function start(generalOpts, { isInitOpts = true }) {
       /**
        * Parsing empty object throws an error/
        */
-      if (!isEmpty(buildArgs)) {
+      if (!isEmptyObj(buildArgs)) {
         const parsedBuildArgs = parse(buildArgs);
 
-        if (parsedBuildArgs.length > 0) {
+        if (NotEmptyArr(parsedBuildArgs)) {
           /**
            * For some unknown reason, resolveArgs doesn't work correctly when
            * passing args without string first. So, yeah, I did it this way.
            */
           parsedBuildArgs.unshift("builderz");
 
-          localOpts = resolveArgs(parsedBuildArgs);
+          localOpts = resolveArgs(parsedBuildArgs).opts();
         }
       }
 
-      const { isSilent, formats, minify, entries } = generalOpts;
+      setOpt(localOpts, generalOpts);
+
+      const { isSilent } = generalOpts;
 
       /**
        * Give localOpts the priority first.
        */
       const bundleOpt = getBundleOpt(
-        localOpts.formats || formats,
-        typeof localOpts.minify === "boolean" ? localOpts.minify : minify
+        getArrOpt("formats"),
+        getBooleanOpt("minify")
       );
 
       const pkgInfo = allPkgInfo[name];
@@ -155,7 +116,9 @@ async function start(generalOpts, { isInitOpts = true }) {
 
       const defaultSrcPath = resolve(pkgPath, "src", `index.${pkgExt}`);
 
-      const alias = extractAlias(generalOpts, localOpts, pkgPath);
+      const alias = extractAlias(pkgPath);
+
+      const entries = extractEntries(entriesJson, defaultSrcPath);
 
       const camelizedName = camelizeOutputBuild(name);
 
@@ -170,20 +133,29 @@ async function start(generalOpts, { isInitOpts = true }) {
           await bundleOptPromise;
 
           const input = await getInput({
-            flags: { IS_SILENT: isSilent, IS_PROD },
-            json: { peerDependencies, dependencies },
-            entries: [],
-            srcPath: defaultSrcPath,
+            flags: {
+              IS_SILENT: isSilent,
+              IS_PROD,
+            },
+            json: {
+              peerDependencies,
+              dependencies,
+            },
+            entries,
             BUILD_FORMAT,
-            alias
+            alias,
           });
 
           const output = await getOutput({
-            flags: { IS_PROD },
+            flags: {
+              IS_PROD,
+            },
             camelizedName,
-            json: { peerDependencies },
+            json: {
+              peerDependencies,
+            },
             buildPath,
-            BUILD_FORMAT
+            BUILD_FORMAT,
           });
 
           await build(input, output);
@@ -192,7 +164,7 @@ async function start(generalOpts, { isInitOpts = true }) {
       );
     }, Promise.resolve());
   } catch (err) {
-    error(err);
+    console.error(err);
   }
 }
 

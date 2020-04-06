@@ -21,9 +21,6 @@ function genInput({
   flags: { IS_SILENT, IS_PROD },
   json: { peerDependencies, dependencies },
   entries,
-
-  // TODO: remove this.
-  srcPath,
   BUILD_FORMAT,
   alias
 }) {
@@ -33,11 +30,13 @@ function genInput({
     BUILD_FORMAT
   });
 
+  const isMultiEntries = Array.isArray(entries);
+
   const plugins = getPlugins({
     IS_SILENT,
     IS_PROD,
     BUILD_FORMAT,
-    srcPath,
+    isMultiEntries,
     alias
   });
 
