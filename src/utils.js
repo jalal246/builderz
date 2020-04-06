@@ -5,6 +5,16 @@ function NotEmptyArr(arr) {
 }
 
 /**
+ * Checks if passed arr is type array and not empty
+ *
+ * @param {Array} arr
+ * @returns {boolean}
+ */
+function isValidArr(arr) {
+  return Array.isArray(arr) && NotEmptyArr(arr);
+}
+
+/**
  * Modify package name in package.json to name the output build correctly.
  * remove @
  * replace / with -
@@ -17,4 +27,4 @@ function camelizeOutputBuild(name) {
   return camelize(name.replace("@", "").replace("/", "-"));
 }
 
-export { NotEmptyArr, camelizeOutputBuild };
+export { isValidArr, NotEmptyArr, camelizeOutputBuild };

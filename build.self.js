@@ -4,7 +4,8 @@ try {
   builderz({
     isSilent: true,
     formats: ["cjs"],
-    minify: false
+    entries: ["src/cli.js", "src/index.js"],
+    minify: false,
   });
 } catch (err) {
   console.error(err);

@@ -1,7 +1,7 @@
 import isBoolean from "lodash.isboolean";
 import { resolve } from "path";
 import { validateAccess } from "validate-access";
-import { NotEmptyArr } from "./utils";
+import { NotEmptyArr, isValidArr } from "./utils";
 import { UMD, CJS, ES } from "./constants";
 
 /**
@@ -45,16 +45,6 @@ function getBoolean(localOpts, globalOpts, argName) {
  */
 function getBooleanOpt(argName) {
   return getBoolean(opts.localOpts, opts.globalOpts, argName);
-}
-
-/**
- * Checks if passed arr is type array and not empty
- *
- * @param {Array} arr
- * @returns {boolean}
- */
-function isValidArr(arr) {
-  return Array.isArray(arr) && NotEmptyArr(arr);
 }
 
 /**
@@ -144,7 +134,7 @@ function initOpts(options) {
     entries: [],
   };
 
-  Object.keys(defaultOptions).forEach((option) => {
+  Object.keys(options).forEach((option) => {
     // eslint-disable-next-line no-underscore-dangle
     const _default = options[option];
 
@@ -153,7 +143,7 @@ function initOpts(options) {
     defaultOptions[option] = value;
   });
 
-  return options;
+  return defaultOptions;
 }
 
 /**

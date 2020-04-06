@@ -45,6 +45,7 @@ async function build(inputOptions, outputOptions) {
 
 async function start(opts, { isInitOpts = true } = {}) {
   const generalOpts = isInitOpts ? initOpts(opts) : opts;
+  console.log("start -> generalOpts", generalOpts);
 
   const { buildName, pkgPaths, pkgNames } = generalOpts;
 
