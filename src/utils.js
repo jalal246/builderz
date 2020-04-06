@@ -1,6 +1,4 @@
 import camelize from "camelize";
-import isBoolean from "lodash.isboolean";
-import { UMD, CJS, ES } from "./constants";
 
 function NotEmptyArr(arr) {
   return arr.length > 0;
