@@ -3,7 +3,6 @@ import { rollup } from "rollup";
 import { msg, error } from "@mytools/print";
 import { parse } from "shell-quote";
 import del from "del";
-import { validateAccess } from "validate-access";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
 import isEmptyObj from "lodash.isempty";
@@ -113,11 +112,9 @@ async function start(opts, { isInitOpts = true } = {}) {
 
       await del(buildPath);
 
-      const defaultSrcPath = resolve(pkgPath, "src", `index.${pkgExt}`);
+      const entries = extractEntries(entriesJson, pkgPath);
 
       const alias = extractAlias(pkgPath);
-
-      const entries = extractEntries(entriesJson, defaultSrcPath);
 
       const camelizedName = camelizeOutputBuild(name);
 

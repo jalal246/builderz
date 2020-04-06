@@ -1,5 +1,6 @@
 import isBoolean from "lodash.isboolean";
 import { resolve } from "path";
+import { validateAccess } from "validate-access";
 import { NotEmptyArr } from "./utils";
 import { UMD, CJS, ES } from "./constants";
 
@@ -190,13 +191,27 @@ function extractAlias(localPkgPath) {
  * property. If no valid entries, it returns default path: src/index.extension
  *
  * @param {Array} entriesJson
- * @param {string} defaultSrcPath
+ * @param {string} pkgPath
  * @returns {Array|string}
  */
-function extractEntries(entriesJson, defaultSrcPath) {
+function extractEntries(entriesJson, pkgPath) {
   const {
     globalOpts: { entries },
   } = opts;
+
+  const { isValid, isSrc, ext } = validateAccess({
+    dir: pkgPath,
+    isValidateEntry: true,
+    entry: "index",
+    srcName: "src",
+  });
+
+  // eslint-disable-next-line no-nested-ternary
+  const defaultSrcPath = !isValid
+    ? null
+    : isSrc
+    ? resolve(pkgPath, "src", `index.${ext}`)
+    : resolve(pkgPath, `index.${ext}`);
 
   // eslint-disable-next-line no-nested-ternary
   return NotEmptyArr(entries)
