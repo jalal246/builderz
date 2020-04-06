@@ -10,13 +10,12 @@ import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr, camelizeOutputBuild, getBundleOpt } from "./utils";
+import { NotEmptyArr, camelizeOutputBuild } from "./utils";
 
 import {
   setOpt,
   initOpts,
-  getBooleanOpt,
-  getArrOpt,
+  extractBundleOpt,
   extractAlias,
   extractEntries,
 } from "./optionsHandler";
@@ -94,6 +93,9 @@ async function start(opts, { isInitOpts = true } = {}) {
         }
       }
 
+      /**
+       * Setting options allowing extracts functions to work properly.
+       */
       setOpt(localOpts, generalOpts);
 
       const { isSilent } = generalOpts;
@@ -101,14 +103,11 @@ async function start(opts, { isInitOpts = true } = {}) {
       /**
        * Give localOpts the priority first.
        */
-      const bundleOpt = getBundleOpt(
-        getArrOpt("formats"),
-        getBooleanOpt("minify")
-      );
+      const bundleOpt = extractBundleOpt();
 
       const pkgInfo = allPkgInfo[name];
 
-      const { path: pkgPath, ext: pkgExt } = pkgInfo;
+      const { path: pkgPath } = pkgInfo;
 
       const buildPath = resolve(pkgPath, buildName);
 
