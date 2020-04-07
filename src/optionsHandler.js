@@ -127,6 +127,7 @@ function initOpts(options) {
     isSilent: true,
     formats: [],
     isMinify: undefined,
+    camelCase: true,
     buildName: "dist",
     pkgPaths: [],
     pkgNames: [],

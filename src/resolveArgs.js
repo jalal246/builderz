@@ -17,8 +17,8 @@ function string2Arr(value) {
  * @param {string[]} alias - batman=../../../batman
  * @returns {Object[]} - {find, replacement}
  */
-function extractAlias(aliasStr) {
-  const alias = string2Arr(aliasStr).map(str => {
+function parseAlias(aliasStr) {
+  const alias = string2Arr(aliasStr).map((str) => {
     const [key, value] = str.split("=");
     return { find: key, replacement: value };
   });
@@ -35,6 +35,7 @@ function resolveArgs(argv) {
       "Minify bundle works only if format is provided",
       false
     )
+    .option("-c, --camel-case <boolean>", "camel-cased output file", true)
     .option("-b, --build-name <string>", "Specific build name", "dist")
     .option(
       "-w, --pkg-paths <list>",
@@ -48,11 +49,11 @@ function resolveArgs(argv) {
       string2Arr,
       []
     )
-    .option("-a, --alias <list>", "Package Alias", extractAlias, [])
+    .option("-a, --alias <list>", "Package Alias", parseAlias, [])
     .option(
       "-e, --entries <list>",
       "Add multi entries instead of default src/index.",
-      extractAlias,
+      parseAlias,
       []
     );
 

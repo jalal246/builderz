@@ -14,6 +14,7 @@ import { NotEmptyArr, camelizeOutputBuild } from "./utils";
 import {
   setOpt,
   initOpts,
+  getBooleanOpt,
   extractBundleOpt,
   extractAlias,
   extractEntries,
@@ -45,7 +46,6 @@ async function build(inputOptions, outputOptions) {
 
 async function start(opts, { isInitOpts = true } = {}) {
   const generalOpts = isInitOpts ? initOpts(opts) : opts;
-  console.log("start -> generalOpts", generalOpts);
 
   const { buildName, pkgPaths, pkgNames } = generalOpts;
 
@@ -117,13 +117,11 @@ async function start(opts, { isInitOpts = true } = {}) {
 
       const alias = extractAlias(pkgPath);
 
-      const camelizedName = camelizeOutputBuild(name);
+      const camelizedName = getBooleanOpt("camelCase")
+        ? camelizeOutputBuild(name)
+        : name;
 
-      msg(
-        camelizedName !== name
-          ? `bundle ${name} as ${camelizedName}`
-          : `bundle  ${camelizedName}`
-      );
+      msg(`bundle output as ${camelizedName}`);
 
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {

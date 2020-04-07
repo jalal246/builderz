@@ -4,7 +4,7 @@ import resolveArgs from "./resolveArgs";
 
 const globalArgs = resolveArgs();
 
-function start() {
+function run() {
   try {
     builderz(globalArgs.opts(), { isInitOpts: false });
   } catch (err) {
@@ -12,4 +12,4 @@ function start() {
   }
 }
 
-start();
+run();

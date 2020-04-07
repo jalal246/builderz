@@ -51,21 +51,21 @@ function getOutput({
   camelizedName,
   json: { peerDependencies },
   buildPath,
-  BUILD_FORMAT
+  BUILD_FORMAT,
 }) {
   const { IS_PROD } = flags;
 
   const name = getBundleName({
     camelizedName,
     BUILD_FORMAT,
-    flags: { IS_PROD }
+    flags: { IS_PROD },
   });
 
   const output = {
     file: join(buildPath, name),
     format: BUILD_FORMAT,
     name,
-    interop: false
+    interop: false,
   };
 
   if (BUILD_FORMAT === UMD) {
