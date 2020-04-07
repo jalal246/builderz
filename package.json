@@ -14,12 +14,14 @@
   "files": [
     "src",
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "keywords": [
     "builderz",
     "get-info",
     "package-sorter",
+    "validate-access",
     "corename",
     "mytools",
     "move-position",

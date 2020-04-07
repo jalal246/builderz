@@ -158,7 +158,7 @@ async function start(opts, { isInitOpts = true } = {}) {
       );
     }, Promise.resolve());
   } catch (err) {
-    console.error(err);
+    error(err);
   }
 }
 
