@@ -14,7 +14,7 @@ import { UMD, CJS, ES } from "../../constants";
  *
  * @returns {string} name with full extension
  */
-function getBundleName({ camelizedName, BUILD_FORMAT, flags: { IS_PROD } }) {
+function getBundleName({ outputName, BUILD_FORMAT, flags: { IS_PROD } }) {
   let ext;
 
   if (BUILD_FORMAT === UMD) {
@@ -25,7 +25,7 @@ function getBundleName({ camelizedName, BUILD_FORMAT, flags: { IS_PROD } }) {
     ext = "esm.js";
   }
 
-  const fname = `${camelizedName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
+  const fname = `${outputName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
 
   return fname;
 }
@@ -36,7 +36,7 @@ function getBundleName({ camelizedName, BUILD_FORMAT, flags: { IS_PROD } }) {
  * @param {Object} flags
  * @param {boolean} flags.IS_PROD
  *
- * @param {string} camelizedName - camelized package name
+ * @param {string} outputName -  package output name
  *
  * @param {Object} json
  * @param {Object} json.peerDependencies
@@ -48,7 +48,7 @@ function getBundleName({ camelizedName, BUILD_FORMAT, flags: { IS_PROD } }) {
  */
 function getOutput({
   flags,
-  camelizedName,
+  outputName,
   json: { peerDependencies },
   buildPath,
   BUILD_FORMAT,
@@ -56,7 +56,7 @@ function getOutput({
   const { IS_PROD } = flags;
 
   const name = getBundleName({
-    camelizedName,
+    outputName,
     BUILD_FORMAT,
     flags: { IS_PROD },
   });

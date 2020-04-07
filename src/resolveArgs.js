@@ -35,8 +35,10 @@ function resolveArgs(argv) {
       "Minify bundle works only if format is provided",
       false
     )
-    .option("-c, --camel-case <boolean>", "camel-cased output file", true)
-    .option("-b, --build-name <string>", "Specific build name", "dist")
+    .option("-c, --camel-case <boolean>", "Add camel-cased output file", true)
+    .option("-l, --clean-build <boolean>", "Clean previous build folder", false)
+    .option("-b, --build-name <string>", "Specific folder build name", "dist")
+    .option("-o, --output <string>", "Custom output name")
     .option(
       "-w, --pkg-paths <list>",
       "Provide custom paths not in the root/src",

@@ -1,7 +1,8 @@
 import isBoolean from "lodash.isboolean";
 import { resolve } from "path";
 import { validateAccess } from "validate-access";
-import { NotEmptyArr, isValidArr } from "./utils";
+import { msg } from "@mytools/print";
+import { NotEmptyArr, isValidArr, camelizeOutputBuild } from "./utils";
 import { UMD, CJS, ES } from "./constants";
 
 /**
@@ -74,6 +75,30 @@ function getArrOpt(argName) {
 }
 
 /**
+ * Get string options exists in localOpts or globalOpts. localOpts have
+ * always the priority.
+ *
+ * @param {Object} localOpts
+ * @param {Object} globalOpts
+ * @param {string} argName
+ * @returns {string}
+ */
+function getStr(localOpts, globalOpts, argName) {
+  return localOpts[argName] ? localOpts[argName] : globalOpts[argName];
+}
+
+/**
+ * Extracts string depending on localOpts and globalOpts that should be
+ * already set.
+ *
+ * @param {string} argName
+ * @returns {Array}
+ */
+function getStrOpt(argName) {
+  return getStr(opts.localOpts, opts.globalOpts, argName);
+}
+
+/**
  * Gen bundle format and minify options
  *
  * @param {Array} customFormats
@@ -127,8 +152,10 @@ function initOpts(options) {
     isSilent: true,
     formats: [],
     isMinify: undefined,
+    cleanBuild: false,
     camelCase: true,
     buildName: "dist",
+    output: undefined,
     pkgPaths: [],
     pkgNames: [],
     alias: [],
@@ -145,6 +172,29 @@ function initOpts(options) {
   });
 
   return defaultOptions;
+}
+
+/**
+ * Extract name based on output option if found, else, it looks if isCamelCase
+ * then camelize. otherwise, return jsonPkgName.
+ *
+ * @param {string} jsonPkgName
+ * @returns {string} - output name
+ */
+function extractName(jsonPkgName) {
+  let output = jsonPkgName;
+
+  const givenName = getStrOpt("output");
+
+  if (givenName) {
+    output = givenName;
+  } else if (getBooleanOpt("camelCase")) {
+    output = camelizeOutputBuild(jsonPkgName);
+  }
+
+  msg(`bundle output as ${output}`);
+
+  return output;
 }
 
 /**
@@ -220,4 +270,5 @@ export {
   getArrOpt,
   extractAlias,
   extractEntries,
+  extractName,
 };

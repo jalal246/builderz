@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import { rollup } from "rollup";
-import { msg, error } from "@mytools/print";
+import { error } from "@mytools/print";
 import { parse } from "shell-quote";
 import del from "del";
 import packageSorter from "package-sorter";
@@ -9,7 +9,7 @@ import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr, camelizeOutputBuild } from "./utils";
+import { NotEmptyArr } from "./utils";
 
 import {
   setOpt,
@@ -18,6 +18,7 @@ import {
   extractBundleOpt,
   extractAlias,
   extractEntries,
+  extractName,
 } from "./optionsHandler";
 
 import resolveArgs from "./resolveArgs";
@@ -111,17 +112,15 @@ async function start(opts, { isInitOpts = true } = {}) {
 
       const buildPath = resolve(pkgPath, buildName);
 
-      await del(buildPath);
+      if (getBooleanOpt("cleanBuild")) {
+        await del(buildPath);
+      }
 
       const entries = extractEntries(entriesJson, pkgPath);
 
       const alias = extractAlias(pkgPath);
 
-      const camelizedName = getBooleanOpt("camelCase")
-        ? camelizeOutputBuild(name)
-        : name;
-
-      msg(`bundle output as ${camelizedName}`);
+      const outputName = extractName(name);
 
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
@@ -145,7 +144,7 @@ async function start(opts, { isInitOpts = true } = {}) {
             flags: {
               IS_PROD,
             },
-            camelizedName,
+            outputName,
             json: {
               peerDependencies,
             },
