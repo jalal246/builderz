@@ -209,7 +209,7 @@ function extractName(jsonPkgName) {
  * @param {string} localPkgPath
  * @returns {Array}
  */
-function extractAlias(localPkgPath) {
+function extractAlias(pkgPath) {
   const { alias: localAlias } = opts.localOpts;
 
   if (!isValidArr(localAlias)) return opts.globalOpts.alias;
@@ -221,7 +221,7 @@ function extractAlias(localPkgPath) {
     /**
      * Assuming we're working in `src` by default.
      */
-    localAlias[i].replacement = resolve(localPkgPath, "src", replacement);
+    localAlias[i].replacement = resolve(pkgPath, "src", replacement);
   });
 
   return localAlias;
@@ -236,9 +236,15 @@ function extractAlias(localPkgPath) {
  * @returns {Array|string}
  */
 function extractEntries(entriesJson, pkgPath) {
-  const {
-    globalOpts: { entries },
-  } = opts;
+  const entries = getArrOpt("entries");
+
+  if (isValidArr(entries)) {
+    return entries.map((entry) => resolve(pkgPath, entry));
+  }
+
+  if (isValidArr(entriesJson)) {
+    return entriesJson.map((entryJson) => resolve(pkgPath, entryJson));
+  }
 
   const { isValid, isSrc, ext } = validateAccess({
     dir: pkgPath,
@@ -246,18 +252,6 @@ function extractEntries(entriesJson, pkgPath) {
     entry: "index",
     srcName: "src",
   });
-
-  if (NotEmptyArr(entries)) {
-    if (entries.length === 1) {
-      return entries[0];
-    }
-
-    return entries;
-  }
-
-  if (NotEmptyArr(entriesJson)) {
-    return entriesJson;
-  }
 
   // eslint-disable-next-line no-nested-ternary
   return !isValid
