@@ -45,7 +45,7 @@ async function build(inputOptions, outputOptions) {
   }
 }
 
-async function start(opts, { isInitOpts = true } = {}) {
+async function builderz(opts, { isInitOpts = true } = {}) {
   const generalOpts = isInitOpts ? initOpts(opts) : opts;
 
   const { buildName, pkgPaths, pkgNames } = generalOpts;
@@ -162,4 +162,4 @@ async function start(opts, { isInitOpts = true } = {}) {
   }
 }
 
-export default start;
+export default builderz;

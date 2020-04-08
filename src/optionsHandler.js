@@ -247,19 +247,24 @@ function extractEntries(entriesJson, pkgPath) {
     srcName: "src",
   });
 
+  if (NotEmptyArr(entries)) {
+    if (entries.length === 1) {
+      return entries[0];
+    }
+
+    return entries;
+  }
+
+  if (NotEmptyArr(entriesJson)) {
+    return entriesJson;
+  }
+
   // eslint-disable-next-line no-nested-ternary
-  const defaultSrcPath = !isValid
+  return !isValid
     ? null
     : isSrc
     ? resolve(pkgPath, "src", `index.${ext}`)
     : resolve(pkgPath, `index.${ext}`);
-
-  // eslint-disable-next-line no-nested-ternary
-  return NotEmptyArr(entries)
-    ? entries
-    : NotEmptyArr(entriesJson)
-    ? entriesJson
-    : defaultSrcPath;
 }
 
 export {
