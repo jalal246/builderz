@@ -2,24 +2,26 @@
   "name": "builderz",
   "version": "0.3.0",
   "main": "./dist/builderz.cjs",
+  "bin": "./dist/cli.cjs.js",
   "repository": "https://github.com/jalal246/builderz.git",
   "author": "Jalal Maskoun <jimmy002020@gmail.com>",
   "license": "LGPL-3.0",
   "scripts": {
-    "args": "node src -h",
-    "build": "rollup src/rollup.config.js  --file dist/builderz.cjs.js --format=cjs",
+    "build": "node --require @babel/register build.self.js",
     "prepublish": "yarn build",
     "test": "jest"
   },
   "files": [
     "src",
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "keywords": [
     "builderz",
     "get-info",
     "package-sorter",
+    "validate-access",
     "corename",
     "mytools",
     "move-position",
@@ -45,21 +47,25 @@
     "filter"
   ],
   "dependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.9.0",
     "@mytools/print": "^0.1.5",
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-auto-install": "^2.0.0",
     "@rollup/plugin-beep": "^0.1.2",
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-multi-entry": "^3.0.0",
     "@rollup/plugin-node-resolve": "^7.0.0",
     "camelize": "^1.0.0",
     "chalk": "^3.0.0",
     "commander": "^5.0.0",
     "del": "^5.1.0",
-    "get-info": "^2.3.0",
+    "get-info": "^2.4.0",
     "glob": "^7.1.6",
+    "lodash.isboolean": "^3.0.3",
     "lodash.isempty": "^4.4.0",
     "move-position": "^1.0.0",
     "ms": "^2.1.2",
@@ -68,7 +74,8 @@
     "rollup-plugin-analyzer": "^3.2.2",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-terser": "^5.2.0",
-    "shell-quote": "^1.7.2"
+    "shell-quote": "^1.7.2",
+    "validate-access": "^0.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

@@ -51,6 +51,57 @@ exports[`builderz working for single package alias 7`] = `
 "
 `;
 
+exports[`builderz working for single package basic-multi-entries-json 1`] = `10`;
+
+exports[`builderz working for single package basic-multi-entries-json 2`] = `
+"'use strict';
+
+console.log('i am a');
+
+console.log('i am b');
+"
+`;
+
+exports[`builderz working for single package basic-multi-entries-json 3`] = `
+"console.log('i am a');
+
+console.log('i am b');
+"
+`;
+
+exports[`builderz working for single package basic-multi-entries-json 4`] = `
+"\\"use strict\\";
+//# sourceMappingURL=basicMultiEntriesJson.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic-multi-entries-json 5`] = `
+"
+//# sourceMappingURL=basicMultiEntriesJson.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-multi-entries-json 6`] = `
+"!function(n){\\"function\\"==typeof define&&define.amd?define(n):n()}((function(){}));
+//# sourceMappingURL=basicMultiEntriesJson.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-multi-entries-json 7`] = `
+"(function (factory) {
+	typeof define === 'function' && define.amd ? define(factory) :
+	factory();
+}((function () { 'use strict';
+
+	console.log('i am a');
+
+	console.log('i am b');
+
+})));
+//# sourceMappingURL=basicMultiEntriesJson.umd.js.map
+"
+`;
+
 exports[`builderz working for single package pure 1`] = `10`;
 
 exports[`builderz working for single package pure 2`] = `

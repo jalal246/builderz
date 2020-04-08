@@ -1,20 +1,27 @@
 import { resolve } from "path";
 import { rollup } from "rollup";
-import { msg, error } from "@mytools/print";
+import { error } from "@mytools/print";
 import { parse } from "shell-quote";
 import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
-import isEmpty from "lodash.isempty";
+import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
-import { camelizeOutputBuild, getBundleOpt } from "./utils";
-import resolveArgs from "./resolveArgs";
 
-/**
- * Invoking resolveArgs inside `start` won't work.
- */
-const globalArgs = resolveArgs();
+import { NotEmptyArr } from "./utils";
+
+import {
+  setOpt,
+  initOpts,
+  getBooleanOpt,
+  extractBundleOpt,
+  extractAlias,
+  extractEntries,
+  extractName,
+} from "./optionsHandler";
+
+import resolveArgs from "./resolveArgs";
 
 /**
  * Write bundle.
@@ -38,52 +45,21 @@ async function build(inputOptions, outputOptions) {
   }
 }
 
-/**
- * Inits global options
- *
- * @param {Object} opt1 - cli options
- * @param {Object} opt2 - api options
- * @returns {Object} - final global opts
- */
-function initOpts(opt1, opt2) {
-  const options = {
-    isSilent: true,
-    formats: [],
-    isMinify: undefined,
-    buildName: "dist",
-    pkgPaths: [],
-    pkgNames: [],
-    alias: []
-  };
-
-  Object.keys(options).forEach(option => {
-    // eslint-disable-next-line no-underscore-dangle
-    const _default = options[option];
-
-    const value = opt1[option] || opt2[option] || _default;
-
-    options[option] = value;
-  });
-
-  return options;
-}
-
-async function start(params = {}) {
-  const generalOpts = initOpts(params, globalArgs);
+async function builderz(opts, { isInitOpts = true } = {}) {
+  const generalOpts = isInitOpts ? initOpts(opts) : opts;
 
   const { buildName, pkgPaths, pkgNames } = generalOpts;
 
-  const { json: allPkgJson, pkgInfo: allPkgInfo } =
-    pkgNames.length > 0
-      ? getJsonByName(...pkgNames)
-      : getJsonByPath(...pkgPaths);
+  const { json: allPkgJson, pkgInfo: allPkgInfo } = NotEmptyArr(pkgNames)
+    ? getJsonByName(...pkgNames)
+    : getJsonByPath(...pkgPaths);
 
   /**
    * Sort packages before bump to production.
    */
   const { sorted, unSorted } = packageSorter(allPkgJson);
 
-  if (unSorted.length > 0) {
+  if (NotEmptyArr(unSorted)) {
     error(`Unable to sort packages: ${unSorted}`);
   }
 
@@ -95,7 +71,8 @@ async function start(params = {}) {
         name,
         peerDependencies = {},
         dependencies = {},
-        scripts: { build: buildArgs } = {}
+        scripts: { build: buildArgs } = {},
+        entries: entriesJson = [],
       } = json;
 
       let localOpts = {};
@@ -103,82 +80,76 @@ async function start(params = {}) {
       /**
        * Parsing empty object throws an error/
        */
-      if (!isEmpty(buildArgs)) {
+      if (!isEmptyObj(buildArgs)) {
         const parsedBuildArgs = parse(buildArgs);
 
-        if (parsedBuildArgs.length > 0) {
+        if (NotEmptyArr(parsedBuildArgs)) {
           /**
            * For some unknown reason, resolveArgs doesn't work correctly when
            * passing args without string first. So, yeah, I did it this way.
            */
           parsedBuildArgs.unshift("builderz");
 
-          localOpts = resolveArgs(parsedBuildArgs);
+          localOpts = resolveArgs(parsedBuildArgs).opts();
         }
       }
 
-      const { isSilent, formats, isMinify, alias: gAlias } = generalOpts;
+      /**
+       * Setting options allowing extracts functions to work properly.
+       */
+      setOpt(localOpts, generalOpts);
+
+      const { isSilent } = generalOpts;
 
       /**
        * Give localOpts the priority first.
        */
-      const bundleOpt = getBundleOpt(
-        localOpts.formats || formats,
-        localOpts.isMinify || isMinify
-      );
+      const bundleOpt = extractBundleOpt();
 
       const pkgInfo = allPkgInfo[name];
 
-      const { path: pkgPath, ext: pkgExt } = pkgInfo;
+      const { path: pkgPath } = pkgInfo;
 
       const buildPath = resolve(pkgPath, buildName);
 
-      await del(buildPath);
-
-      const defaultSrcPath = resolve(pkgPath, "src", `index.${pkgExt}`);
-
-      let alias = gAlias;
-
-      /**
-       * If there's local alias passed in package, let's resolve the pass.
-       */
-      if (localOpts.alias && localOpts.alias.length > 0) {
-        localOpts.alias.forEach(({ replacement }, i) => {
-          /**
-           * Assuming we're working in `src` by default.
-           */
-          localOpts.alias[i].replacement = resolve(pkgPath, "src", replacement);
-        });
-
-        alias = localOpts.alias;
+      if (getBooleanOpt("cleanBuild")) {
+        await del(buildPath);
       }
 
-      const camelizedName = camelizeOutputBuild(name);
+      const entries = extractEntries(entriesJson, pkgPath);
 
-      msg(
-        camelizedName !== name
-          ? `bundle ${name} as ${camelizedName}`
-          : `bundle  ${camelizedName}`
-      );
+      const alias = extractAlias(pkgPath);
+
+      const outputName = extractName(name);
 
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
           await bundleOptPromise;
 
           const input = await getInput({
-            flags: { IS_SILENT: isSilent, IS_PROD },
-            json: { peerDependencies, dependencies },
-            srcPath: defaultSrcPath,
+            flags: {
+              IS_SILENT: isSilent,
+              IS_PROD,
+            },
+            json: {
+              peerDependencies,
+              dependencies,
+            },
+            entries,
             BUILD_FORMAT,
-            alias
+            alias,
           });
 
           const output = await getOutput({
-            flags: { IS_PROD },
-            camelizedName,
-            json: { peerDependencies },
+            flags: {
+              IS_PROD,
+            },
+            outputName,
+            json: {
+              peerDependencies,
+            },
             buildPath,
-            BUILD_FORMAT
+            BUILD_FORMAT,
           });
 
           await build(input, output);
@@ -191,4 +162,4 @@ async function start(params = {}) {
   }
 }
 
-export default start;
+export default builderz;

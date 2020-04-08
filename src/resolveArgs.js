@@ -17,8 +17,8 @@ function string2Arr(value) {
  * @param {string[]} alias - batman=../../../batman
  * @returns {Object[]} - {find, replacement}
  */
-function extractAlias(aliasStr) {
-  const alias = string2Arr(aliasStr).map(str => {
+function parseAlias(aliasStr) {
+  const alias = string2Arr(aliasStr).map((str) => {
     const [key, value] = str.split("=");
     return { find: key, replacement: value };
   });
@@ -28,24 +28,36 @@ function extractAlias(aliasStr) {
 
 function resolveArgs(argv) {
   program
-    .option("-s, --silent <boolean>", "Silent mode, mutes build massages")
-    .option("-f, --formats <list>", "Specific build format", string2Arr)
+    .option("-s, --silent <boolean>", "Silent mode, mutes build massages", true)
+    .option("-f, --formats <list>", "Specific build format", string2Arr, [])
     .option(
       "-m, --minify <boolean>",
-      "Minify bundle works only if format is provided"
+      "Minify bundle works only if format is provided",
+      false
     )
-    .option("-b, --build-name <string>", "Specific build name")
+    .option("-c, --camel-case <boolean>", "Add camel-cased output file", true)
+    .option("-l, --clean-build <boolean>", "Clean previous build folder", false)
+    .option("-b, --build-name <string>", "Specific folder build name", "dist")
+    .option("-o, --output <string>", "Custom output name")
     .option(
       "-w, --pkg-paths <list>",
       "Provide custom paths not in the root/src",
-      string2Arr
+      string2Arr,
+      []
     )
     .option(
       "-n, --pkg-names <list>",
       "Building specific package[s], in workspace",
-      string2Arr
+      string2Arr,
+      []
     )
-    .option("-a, --alias <list>", "Package Alias", extractAlias, "");
+    .option("-a, --alias <list>", "Package Alias", parseAlias, [])
+    .option(
+      "-e, --entries <list>",
+      "Add multi entries instead of default src/index.",
+      parseAlias,
+      []
+    );
 
   if (argv) {
     program.allowUnknownOption();

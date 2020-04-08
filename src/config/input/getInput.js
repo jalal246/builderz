@@ -20,7 +20,7 @@ import getExternal from "./getInputExternal";
 function genInput({
   flags: { IS_SILENT, IS_PROD },
   json: { peerDependencies, dependencies },
-  srcPath,
+  entries,
   BUILD_FORMAT,
   alias
 }) {
@@ -30,16 +30,18 @@ function genInput({
     BUILD_FORMAT
   });
 
+  const isMultiEntries = Array.isArray(entries);
+
   const plugins = getPlugins({
     IS_SILENT,
     IS_PROD,
     BUILD_FORMAT,
-    srcPath,
+    isMultiEntries,
     alias
   });
 
   return {
-    input: srcPath,
+    input: entries,
     external,
     plugins
   };

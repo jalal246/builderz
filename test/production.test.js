@@ -4,32 +4,36 @@ import { readdirSync, readFileSync } from "fs";
 // import del from "del";
 import builderz from "../src";
 
+// ["basic-multi-entries-json", "pure", "alias"];
 describe("builderz working for single package", () => {
-  it.each(["pure", "alias"])("%s", async pkgName => {
-    const pathPure = resolve(__dirname, "samples", pkgName);
-    const distPath = resolve(pathPure, "dist");
+  it.each(["basic-multi-entries-json", "pure", "alias"])(
+    "%s",
+    async (pkgName) => {
+      const pathPure = resolve(__dirname, "samples", pkgName);
+      const distPath = resolve(pathPure, "dist");
 
-    try {
-      await builderz({
-        isSilent: true,
-        pkgPaths: [resolve(__dirname, pathPure)]
-      });
-
-      const files = readdirSync(distPath);
-      expect(files.length).toMatchSnapshot();
-
-      files
-        .filter(file => !/\.map$/.test(file))
-        .sort(file => (/modern/.test(file) ? 1 : 0))
-        .forEach(file => {
-          expect(
-            readFileSync(resolve(distPath, file)).toString("utf8")
-          ).toMatchSnapshot();
+      try {
+        await builderz({
+          isSilent: true,
+          pkgPaths: [resolve(__dirname, pathPure)],
         });
 
-      // await del(distPath);
-    } catch (err) {
-      console.error(err);
+        const files = readdirSync(distPath);
+        expect(files.length).toMatchSnapshot();
+
+        files
+          .filter((file) => !/\.map$/.test(file))
+          .sort((file) => (/modern/.test(file) ? 1 : 0))
+          .forEach((file) => {
+            expect(
+              readFileSync(resolve(distPath, file)).toString("utf8")
+            ).toMatchSnapshot();
+          });
+
+        // await del(distPath);
+      } catch (err) {
+        console.error(err);
+      }
     }
-  });
+  );
 });

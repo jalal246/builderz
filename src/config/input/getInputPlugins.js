@@ -4,6 +4,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
+import multiEntry from "@rollup/plugin-multi-entry";
 
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
@@ -19,7 +20,14 @@ import { CJS, ES } from "../../constants";
  * @param {string} BUILD_FORMAT
  * @returns {Array} plugins
  */
-function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
+function getPlugins({
+  // TODO: why those are capital? with default values?
+  IS_SILENT = true,
+  IS_PROD = true,
+  isMultiEntries,
+  BUILD_FORMAT,
+  alias
+}) {
   const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
@@ -31,6 +39,8 @@ function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
       babelrc: true
     }),
 
+    isMultiEntries ? multiEntry() : null,
+
     alias.length > 0 ? aliasPlugin({ entries: alias }) : null,
 
     /**
@@ -38,6 +48,7 @@ function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
      * if not yet in package.json.
      */
     auto(),
+
     /**
      * Convert CommonJS modules to ES6, so they can be included in a Rollup
      * bundle.
@@ -47,7 +58,10 @@ function getPlugins({ IS_SILENT = true, IS_PROD = true, BUILD_FORMAT, alias }) {
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.
      */
-    resolve({ extensions: [".mjs", ".js", ".jsx", ".json", ".node"] }),
+    resolve({
+      preferBuiltins: true,
+      extensions: [".mjs", ".js", ".jsx", ".json", ".node"]
+    }),
 
     /**
      * Converts .json files to ES6 modules.
