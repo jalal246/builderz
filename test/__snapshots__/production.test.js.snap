@@ -56,11 +56,16 @@ exports[`builderz working for single package basic-multi-entries-json 1`] = `10`
 exports[`builderz working for single package basic-multi-entries-json 2`] = `
 "'use strict';
 
+console.log('i am a');
+
+console.log('i am b');
 "
 `;
 
 exports[`builderz working for single package basic-multi-entries-json 3`] = `
-"
+"console.log('i am a');
+
+console.log('i am b');
 "
 `;
 
@@ -88,7 +93,9 @@ exports[`builderz working for single package basic-multi-entries-json 7`] = `
 	factory();
 }((function () { 'use strict';
 
+	console.log('i am a');
 
+	console.log('i am b');
 
 })));
 //# sourceMappingURL=basicMultiEntriesJson.umd.js.map
