@@ -11,16 +11,7 @@ import { getInput, getOutput } from "./config/index";
 
 import { NotEmptyArr } from "./utils";
 
-import {
-  setOpt,
-  initOpts,
-  getBooleanOpt,
-  getStrOpt,
-  extractBundleOpt,
-  extractAlias,
-  extractEntries,
-  extractName,
-} from "./optionsHandler";
+import State from "./store";
 
 import resolveArgs from "./resolveArgs";
 
@@ -47,9 +38,9 @@ async function build(inputOptions, outputOptions) {
 }
 
 async function builderz(opts, { isInitOpts = true } = {}) {
-  const generalOpts = isInitOpts ? initOpts(opts) : opts;
+  const state = new State(opts, isInitOpts);
 
-  const { buildName, pkgPaths, pkgNames } = generalOpts;
+  const { buildName, pkgPaths, pkgNames } = state.generalOpts;
 
   const { json: allPkgJson, pkgInfo: allPkgInfo } = NotEmptyArr(pkgNames)
     ? getJsonByName(...pkgNames)
@@ -98,14 +89,9 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       /**
        * Setting options allowing extracts functions to work properly.
        */
-      setOpt(localOpts, generalOpts);
+      state.setLocal(localOpts);
 
-      const { isSilent } = generalOpts;
-
-      /**
-       * Give localOpts the priority first.
-       */
-      const bundleOpt = extractBundleOpt();
+      const { isSilent } = state.generalOpts;
 
       const pkgInfo = allPkgInfo[name];
 
@@ -113,19 +99,19 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const buildPath = resolve(pkgPath, buildName);
 
-      if (getBooleanOpt("cleanBuild")) {
+      if (state.get("boolean", "cleanBuild")) {
         await del(buildPath);
       }
 
-      const entries = extractEntries(entriesJson, pkgPath);
+      const entries = state.extractEntries(entriesJson, pkgPath);
 
-      const alias = extractAlias(pkgPath);
+      const alias = state.extractAlias(pkgPath);
 
-      const outputName = extractName(name);
+      const outputName = state.extractName(name);
 
-      const banner = getStrOpt("banner");
+      const banner = state.get("string", "banner");
 
-      await bundleOpt.reduce(
+      await state.bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
           await bundleOptPromise;
 
@@ -162,7 +148,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       );
     }, Promise.resolve());
   } catch (err) {
-    error(err);
+    console.error(err);
   }
 }
 
