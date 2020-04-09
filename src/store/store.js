@@ -10,52 +10,52 @@ import { isValidArr, getBundleOpt, camelizeOutputBuild } from "../utils";
  */
 class State {
   /**
-   * Gets boolean option exists in localOpts or generalOpts. localOpts have
+   * Gets boolean option exists in pkgBuildOpts or generalOpts. pkgBuildOpts have
    * always the priority.
    *
    * @static
-   * @param {Object} localOpts
+   * @param {Object} pkgBuildOpts
    * @param {Object} generalOpts
    * @param {string} argName
    * @returns {boolean|undefined}
    * @memberof State
    */
-  static boolean(localOpts, generalOpts, argName) {
-    return isBoolean(localOpts[argName])
-      ? localOpts[argName]
+  static boolean(pkgBuildOpts, generalOpts, argName) {
+    return isBoolean(pkgBuildOpts[argName])
+      ? pkgBuildOpts[argName]
       : generalOpts[argName];
   }
 
   /**
-   * Gets array option exists in localOpts or generalOpts. localOpts have
+   * Gets array option exists in pkgBuildOpts or generalOpts. pkgBuildOpts have
    * always the priority.
    *
    * @static
-   * @param {Object} localOpts
+   * @param {Object} pkgBuildOpts
    * @param {Object} generalOpts
    * @param {string} argName
    * @returns {Array}
    * @memberof State
    */
-  static array(localOpts, generalOpts, argName) {
-    return isValidArr(localOpts[argName])
-      ? localOpts[argName]
+  static array(pkgBuildOpts, generalOpts, argName) {
+    return isValidArr(pkgBuildOpts[argName])
+      ? pkgBuildOpts[argName]
       : generalOpts[argName];
   }
 
   /**
-   * Gets string option exists in localOpts or generalOpts. localOpts have
+   * Gets string option exists in pkgBuildOpts or generalOpts. pkgBuildOpts have
    * always the priority.
    *
    * @static
-   * @param {Object} localOpts
+   * @param {Object} pkgBuildOpts
    * @param {Object} generalOpts
    * @param {string} argName
    * @returns {string}
    * @memberof State
    */
-  static string(localOpts, generalOpts, argName) {
-    return localOpts[argName] ? localOpts[argName] : generalOpts[argName];
+  static string(pkgBuildOpts, generalOpts, argName) {
+    return pkgBuildOpts[argName] ? pkgBuildOpts[argName] : generalOpts[argName];
   }
 
   /**
@@ -65,9 +65,20 @@ class State {
    * @param {boolean} isInit
    * @memberof State
    */
-  constructor(opts, isInit) {
-    this.localOpts = {};
+  constructor(generalOpts, isInit) {
+    /**
+     * package build options in build script.
+     */
+    this.pkgBuildOpts = {};
 
+    /**
+     * package Json options in packages.json as properties.
+     */
+    this.pkgJsonOpts = {};
+
+    /**
+     * general options passed when running builderz.
+     */
     this.generalOpts = {
       isSilent: true,
       formats: [],
@@ -83,8 +94,8 @@ class State {
       banner: undefined,
     };
 
-    if (isInit) this.initializer(opts);
-    else this.generalOpts = opts;
+    if (isInit) this.initializer(generalOpts);
+    else this.generalOpts = generalOpts;
   }
 
   /**
@@ -104,11 +115,11 @@ class State {
   }
 
   get(type, argName) {
-    return State[type](this.localOpts, this.generalOpts, argName);
+    return State[type](this.pkgBuildOpts, this.generalOpts, argName);
   }
 
   /**
-   * Extracts bundle options depending on localOpts and generalOpts that should be
+   * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
    * already set.
    *
    * @returns {Array}
@@ -122,13 +133,17 @@ class State {
   }
 
   /**
+   * Sets package local option
    *
-   *
-   * @param {*} localOpts
+   * @param {Object} pkgBuildOpts
    * @memberof State
    */
-  setLocal(localOpts) {
-    this.localOpts = localOpts;
+  setPkgBuildOpts(pkgBuildOpts) {
+    this.pkgBuildOpts = pkgBuildOpts;
+
+    /**
+     * As soon as we get local options we can extract bundle option.
+     */
     this.extractBundleOpt();
   }
 
@@ -206,7 +221,7 @@ class State {
  * 
  */
   extractAlias(pkgPath) {
-    const { alias: localAlias } = this.localOpts;
+    const { alias: localAlias } = this.pkgBuildOpts;
 
     if (!isValidArr(localAlias)) return this.generalOpts.alias;
 

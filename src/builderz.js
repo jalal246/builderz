@@ -89,7 +89,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       /**
        * Setting options allowing extracts functions to work properly.
        */
-      state.setLocal(localOpts);
+      state.setPkgBuildOpts(localOpts);
 
       const { isSilent } = state.generalOpts;
 
