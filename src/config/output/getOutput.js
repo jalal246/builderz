@@ -2,6 +2,7 @@ import { join } from "path";
 import getGlobal from "./getGlobalOutput";
 
 import { UMD, CJS, ES } from "../../constants";
+import { NotEmptyArr } from "../../utils";
 
 /**
  * Gets full bundle name camelized with extension
@@ -52,6 +53,7 @@ function getOutput({
   json: { peerDependencies },
   buildPath,
   BUILD_FORMAT,
+  banner,
 }) {
   const { IS_PROD } = flags;
 
@@ -74,6 +76,10 @@ function getOutput({
 
   if (IS_PROD || BUILD_FORMAT === UMD) {
     output.sourcemap = true;
+  }
+
+  if (banner && NotEmptyArr(banner)) {
+    output.banner = banner;
   }
 
   return output;
