@@ -4,26 +4,67 @@ import { validateAccess } from "validate-access";
 import { isValidArr, getBundleOpt, camelizeOutputBuild } from "../utils";
 
 /**
- * Shared state build options, provided by global arguments and local ones exist in each
- * build script.
+ *  State build options.
+ *
+ * @class State
  */
 class State {
+  /**
+   * Gets boolean option exists in localOpts or generalOpts. localOpts have
+   * always the priority.
+   *
+   * @static
+   * @param {Object} localOpts
+   * @param {Object} generalOpts
+   * @param {string} argName
+   * @returns {boolean|undefined}
+   * @memberof State
+   */
   static boolean(localOpts, generalOpts, argName) {
     return isBoolean(localOpts[argName])
       ? localOpts[argName]
       : generalOpts[argName];
   }
 
+  /**
+   * Gets array option exists in localOpts or generalOpts. localOpts have
+   * always the priority.
+   *
+   * @static
+   * @param {Object} localOpts
+   * @param {Object} generalOpts
+   * @param {string} argName
+   * @returns {Array}
+   * @memberof State
+   */
   static array(localOpts, generalOpts, argName) {
     return isValidArr(localOpts[argName])
       ? localOpts[argName]
       : generalOpts[argName];
   }
 
+  /**
+   * Gets string option exists in localOpts or generalOpts. localOpts have
+   * always the priority.
+   *
+   * @static
+   * @param {Object} localOpts
+   * @param {Object} generalOpts
+   * @param {string} argName
+   * @returns {string}
+   * @memberof State
+   */
   static string(localOpts, generalOpts, argName) {
     return localOpts[argName] ? localOpts[argName] : generalOpts[argName];
   }
 
+  /**
+   * Creates an instance of State.
+   *
+   * @param {Object} opts
+   * @param {boolean} isInit
+   * @memberof State
+   */
   constructor(opts, isInit) {
     this.localOpts = {};
 
@@ -46,6 +87,12 @@ class State {
     else this.generalOpts = opts;
   }
 
+  /**
+   * Initialize generalOpts.
+   *
+   * @param {Object} inputOpts
+   * @memberof State
+   */
   initializer(inputOpts) {
     Object.keys(inputOpts).forEach((inOption) => {
       const input = inputOpts[inOption];
@@ -61,10 +108,11 @@ class State {
   }
 
   /**
-   * Extracts bundle options depending on localOpts and globalOpts that should be
+   * Extracts bundle options depending on localOpts and generalOpts that should be
    * already set.
    *
    * @returns {Array}
+   * @memberof State
    */
   extractBundleOpt() {
     const format = this.get("array", "formats");
@@ -73,6 +121,12 @@ class State {
     this.bundleOpt = getBundleOpt(format, isMinify);
   }
 
+  /**
+   *
+   *
+   * @param {*} localOpts
+   * @memberof State
+   */
   setLocal(localOpts) {
     this.localOpts = localOpts;
     this.extractBundleOpt();
@@ -84,6 +138,7 @@ class State {
    *
    * @param {string} jsonPkgName
    * @returns {string} - output name
+   * @memberof State
    */
   extractName(jsonPkgName) {
     let output = jsonPkgName;
@@ -108,6 +163,7 @@ class State {
    * @param {Array} entriesJson
    * @param {string} pkgPath
    * @returns {Array|string}
+   * @memberof State
    */
   extractEntries(entriesJson, pkgPath) {
     const entries = this.get("array", "entries");
@@ -145,7 +201,9 @@ class State {
       ]
  *
  * @param {string} localPkgPath
- * @returns {Array}
+ * @returns {Array
+ * @memberof State
+ * 
  */
   extractAlias(pkgPath) {
     const { alias: localAlias } = this.localOpts;
