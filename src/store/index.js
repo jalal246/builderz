@@ -1,4 +1,4 @@
-import state from "./store";
+import State from "./store";
 
 import {
   extractBundleOpt,
@@ -9,7 +9,7 @@ import {
 } from "./stateHandlers";
 
 export {
-  state,
+  State,
   extractBundleOpt,
   initOpts,
   extractAlias,

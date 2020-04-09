@@ -12,9 +12,8 @@ import { getInput, getOutput } from "./config/index";
 import { NotEmptyArr } from "./utils";
 
 import {
-  state,
+  State,
   extractBundleOpt,
-  initOpts,
   extractAlias,
   extractEntries,
   extractName,
@@ -45,9 +44,9 @@ async function build(inputOptions, outputOptions) {
 }
 
 async function builderz(opts, { isInitOpts = true } = {}) {
-  const generalOpts = isInitOpts ? state.initializer(opts) : opts;
+  const state = new State(opts, isInitOpts);
 
-  const { buildName, pkgPaths, pkgNames } = generalOpts;
+  const { buildName, pkgPaths, pkgNames } = state.generalOpts;
 
   const { json: allPkgJson, pkgInfo: allPkgInfo } = NotEmptyArr(pkgNames)
     ? getJsonByName(...pkgNames)
@@ -96,9 +95,9 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       /**
        * Setting options allowing extracts functions to work properly.
        */
-      state.set(localOpts, generalOpts);
+      state.setLocal(localOpts);
 
-      const { isSilent } = generalOpts;
+      const { isSilent } = state.generalOpts;
 
       /**
        * Give localOpts the priority first.
@@ -160,7 +159,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       );
     }, Promise.resolve());
   } catch (err) {
-    error(err);
+    console.error(err);
   }
 }
 
