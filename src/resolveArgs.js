@@ -58,7 +58,7 @@ function resolveArgs(argv) {
       parseAlias,
       []
     )
-    .option("-r, banner <string>", "Add banner to output");
+    .option("-r, --banner <string>", "Add banner to output");
 
   if (argv) {
     program.allowUnknownOption();
