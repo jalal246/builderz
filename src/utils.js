@@ -1,4 +1,7 @@
 import camelize from "camelize";
+import isBoolean from "lodash.isboolean";
+
+import { UMD, CJS, ES } from "./constants";
 
 function NotEmptyArr(arr) {
   return arr.length > 0;
@@ -27,4 +30,33 @@ function camelizeOutputBuild(name) {
   return camelize(name.replace("@", "").replace("/", "-"));
 }
 
-export { isValidArr, NotEmptyArr, camelizeOutputBuild };
+/**
+ * Gen bundle format and minify options
+ *
+ * @param {Array} customFormats
+ * @param {boolean} isMinify
+ * @returns {Object[]} bundle output options
+ */
+function getBundleOpt(customFormats, isMinify) {
+  const DEFAULT_FORMATS = [UMD, CJS, ES];
+
+  const gen = [];
+
+  const buildFormat = NotEmptyArr(customFormats)
+    ? customFormats
+    : DEFAULT_FORMATS;
+
+  const minifyingProcess =
+    NotEmptyArr(customFormats) && isBoolean(isMinify)
+      ? [isMinify]
+      : [true, false];
+
+  buildFormat.forEach((format) => {
+    minifyingProcess.forEach((bool) => {
+      gen.push({ BUILD_FORMAT: format, IS_PROD: bool });
+    });
+  });
+
+  return gen;
+}
+export { isValidArr, NotEmptyArr, camelizeOutputBuild, getBundleOpt };

@@ -57,7 +57,8 @@ function resolveArgs(argv) {
       "Add multi entries instead of default src/index.",
       parseAlias,
       []
-    );
+    )
+    .option("-r, --banner <string>", "Add banner to output");
 
   if (argv) {
     program.allowUnknownOption();
