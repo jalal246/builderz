@@ -9,7 +9,7 @@ import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr } from "./utils";
+import { NotEmptyArr, getStrOpt } from "./utils";
 
 import {
   setOpt,
@@ -122,6 +122,8 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const outputName = extractName(name);
 
+      const banner = getStrOpt("banner");
+
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
           await bundleOptPromise;
@@ -150,6 +152,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             },
             buildPath,
             BUILD_FORMAT,
+            banner,
           });
 
           await build(input, output);

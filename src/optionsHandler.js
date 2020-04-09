@@ -160,6 +160,7 @@ function initOpts(options) {
     pkgNames: [],
     alias: [],
     entries: [],
+    banner: undefined,
   };
 
   Object.keys(options).forEach((option) => {
@@ -267,6 +268,7 @@ export {
   initOpts,
   getBooleanOpt,
   getArrOpt,
+  getStrOpt,
   extractAlias,
   extractEntries,
   extractName,
