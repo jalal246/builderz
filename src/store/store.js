@@ -7,7 +7,33 @@ import { isValidArr } from "../utils";
  */
 const State = {
   localOpts: {},
-  globalOpts: {},
+
+  globalOpts: {
+    isSilent: true,
+    formats: [],
+    isMinify: undefined,
+    cleanBuild: false,
+    camelCase: true,
+    buildName: "dist",
+    output: undefined,
+    pkgPaths: [],
+    pkgNames: [],
+    alias: [],
+    entries: [],
+    banner: undefined,
+  },
+
+  initializer(inputOpts) {
+    Object.keys(inputOpts).forEach((inOption) => {
+      const input = inputOpts[inOption];
+
+      if (input) {
+        this.globalOpts[inOption] = inputOpts[inOption];
+      }
+    });
+
+    return this.globalOpts;
+  },
 
   set(localOpts, globalOpts) {
     this.localOpts = localOpts;
