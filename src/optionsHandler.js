@@ -6,97 +6,148 @@ import { NotEmptyArr, isValidArr, camelizeOutputBuild } from "./utils";
 import { UMD, CJS, ES } from "./constants";
 
 /**
- * Build Options provided by global arguments and local ones exist in each
+ * Shared state build options, provided by global arguments and local ones exist in each
  * build script.
  */
-const opts = {};
+const opts = {
+  localOpts: {},
+  globalOpts: {},
 
-/**
- * Assign options
- *
- * @param {Object} localOpts
- * @param {Object} globalOpts
- */
-function setOpt(localOpts, globalOpts) {
-  opts.localOpts = localOpts;
-  opts.globalOpts = globalOpts;
-}
+  set(localOpts, globalOpts) {
+    this.localOpts = localOpts;
+    this.globalOpts = globalOpts;
+  },
 
-/**
- * Get valid Boolean value exists in localOpts or globalOpts. localOpts have
- * always the priority.
- *
- * @param {Object} localOpts
- * @param {Object} globalOpts
- * @param {string} argName
- * @returns {boolean}
- */
-function getBoolean(localOpts, globalOpts, argName) {
-  return isBoolean(localOpts[argName])
-    ? localOpts[argName]
-    : globalOpts[argName];
-}
+  boolean(localOpts, globalOpts, argName) {
+    return isBoolean(localOpts[argName])
+      ? localOpts[argName]
+      : globalOpts[argName];
+  },
 
-/**
- * Extracts boolean value depending on localOpts and globalOpts that should be
- * already set.
- *
- * @param {string} argName
- * @returns {boolean}
- */
-function getBooleanOpt(argName) {
-  return getBoolean(opts.localOpts, opts.globalOpts, argName);
-}
+  array(localOpts, globalOpts, argName) {
+    return isValidArr(localOpts[argName])
+      ? localOpts[argName]
+      : globalOpts[argName];
+  },
 
-/**
- * Get valid Array exists in localOpts or globalOpts. localOpts have
- * always the priority.
- *
- * @param {Object} localOpts
- * @param {Object} globalOpts
- * @param {string} argName
- * @returns {Array}
- */
-function getArr(localOpts, globalOpts, argName) {
-  return isValidArr(localOpts[argName])
-    ? localOpts[argName]
-    : globalOpts[argName];
-}
+  string(localOpts, globalOpts, argName) {
+    return localOpts[argName] ? localOpts[argName] : globalOpts[argName];
+  },
 
-/**
- * Extracts array depending on localOpts and globalOpts that should be
- * already set.
- *
- * @param {string} argName
- * @returns {Array}
- */
-function getArrOpt(argName) {
-  return getArr(opts.localOpts, opts.globalOpts, argName);
-}
+  get(type, argName) {
+    return this[type](this.localOpts, this.globalOpts, argName);
+  },
+};
 
-/**
- * Get string options exists in localOpts or globalOpts. localOpts have
- * always the priority.
- *
- * @param {Object} localOpts
- * @param {Object} globalOpts
- * @param {string} argName
- * @returns {string}
- */
-function getStr(localOpts, globalOpts, argName) {
-  return localOpts[argName] ? localOpts[argName] : globalOpts[argName];
-}
+// /**
+//  * Assign options
+//  *
+//  * @param {Object} localOpts
+//  * @param {Object} globalOpts
+//  */
+// function setOpt(localOpts, globalOpts) {
+//   opts.localOpts = localOpts;
+//   opts.globalOpts = globalOpts;
+// }
 
-/**
- * Extracts string depending on localOpts and globalOpts that should be
- * already set.
- *
- * @param {string} argName
- * @returns {Array}
- */
-function getStrOpt(argName) {
-  return getStr(opts.localOpts, opts.globalOpts, argName);
-}
+// const types = {
+//   boolean(localOpts, globalOpts, argName) {
+//     return isBoolean(localOpts[argName])
+//       ? localOpts[argName]
+//       : globalOpts[argName];
+//   },
+//   array(localOpts, globalOpts, argName) {
+//     return isValidArr(localOpts[argName])
+//       ? localOpts[argName]
+//       : globalOpts[argName];
+//   },
+//   string(localOpts, globalOpts, argName) {
+//     return localOpts[argName] ? localOpts[argName] : globalOpts[argName];
+//   },
+//   get(type, argName) {
+//     return this[type](opts.localOpts, opts.globalOpts, argName);
+//   },
+// };
+
+// /**
+//  * Get valid Boolean value exists in localOpts or globalOpts. localOpts have
+//  * always the priority.
+//  *
+//  * @param {Object} localOpts
+//  * @param {Object} globalOpts
+//  * @param {string} argName
+//  * @returns {boolean}
+//  */
+// function getBoolean(localOpts, globalOpts, argName) {
+//   return isBoolean(localOpts[argName])
+//     ? localOpts[argName]
+//     : globalOpts[argName];
+// }
+
+// /**
+//  * Get valid Array exists in localOpts or globalOpts. localOpts have
+//  * always the priority.
+//  *
+//  * @param {Object} localOpts
+//  * @param {Object} globalOpts
+//  * @param {string} argName
+//  * @returns {Array}
+//  */
+// function getArr(localOpts, globalOpts, argName) {
+//   return isValidArr(localOpts[argName])
+//     ? localOpts[argName]
+//     : globalOpts[argName];
+// }
+
+// /**
+//  * Get string options exists in localOpts or globalOpts. localOpts have
+//  * always the priority.
+//  *
+//  * @param {Object} localOpts
+//  * @param {Object} globalOpts
+//  * @param {string} argName
+//  * @returns {string}
+//  */
+// function getStr(localOpts, globalOpts, argName) {
+//   return localOpts[argName] ? localOpts[argName] : globalOpts[argName];
+// }
+
+// function getFunc(func, argName) {
+//   return types[func](opts.localOpts, opts.globalOpts, argName);
+// }
+
+// /**
+//  * Extracts boolean value depending on localOpts and globalOpts that should be
+//  * already set.
+//  *
+//  * @param {string} argName
+//  * @returns {boolean}
+//  */
+// function getBooleanOpt(argName) {
+//   return getFunc("getBoolean", argName);
+// }
+
+// /**
+//  * Extracts array depending on localOpts and globalOpts that should be
+//  * already set.
+//  *
+//  * @param {string} argName
+//  * @returns {Array}
+//  */
+// function getArrOpt(argName) {
+//   return getFunc("getArr", argName);
+// }
+
+// /**
+//  * Extracts string depending on localOpts and globalOpts that should be
+//  * already set.
+//  *
+//  * @param {string} argName
+//  * @returns {Array}
+//  */
+// function getStrOpt(argName) {
+//   return getFunc("getStr", argName);
+// }
 
 /**
  * Gen bundle format and minify options
@@ -135,8 +186,8 @@ function getBundleOpt(customFormats, isMinify) {
  * @returns {Array}
  */
 function extractBundleOpt() {
-  const format = getArrOpt("formats");
-  const isMinify = getBooleanOpt("minify");
+  const format = opts.get("array", "formats");
+  const isMinify = opts.get("boolean", "minify");
 
   return getBundleOpt(format, isMinify);
 }
@@ -185,11 +236,11 @@ function initOpts(options) {
 function extractName(jsonPkgName) {
   let output = jsonPkgName;
 
-  const givenName = getStrOpt("output");
+  const givenName = opts.get("string", "output");
 
   if (givenName) {
     output = givenName;
-  } else if (getBooleanOpt("camelCase")) {
+  } else if (opts.get("boolean", "camelCase")) {
     output = camelizeOutputBuild(jsonPkgName);
   }
 
@@ -237,7 +288,7 @@ function extractAlias(pkgPath) {
  * @returns {Array|string}
  */
 function extractEntries(entriesJson, pkgPath) {
-  const entries = getArrOpt("entries");
+  const entries = opts.get("array", "entries");
 
   if (isValidArr(entries)) {
     return entries.map((entry) => resolve(pkgPath, entry));
@@ -263,12 +314,9 @@ function extractEntries(entriesJson, pkgPath) {
 }
 
 export {
-  setOpt,
+  opts,
   extractBundleOpt,
   initOpts,
-  getBooleanOpt,
-  getArrOpt,
-  getStrOpt,
   extractAlias,
   extractEntries,
   extractName,

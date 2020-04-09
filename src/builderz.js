@@ -12,15 +12,13 @@ import { getInput, getOutput } from "./config/index";
 import { NotEmptyArr } from "./utils";
 
 import {
-  setOpt,
-  initOpts,
-  getBooleanOpt,
-  getStrOpt,
+  state,
   extractBundleOpt,
+  initOpts,
   extractAlias,
   extractEntries,
   extractName,
-} from "./optionsHandler";
+} from "./store";
 
 import resolveArgs from "./resolveArgs";
 
@@ -98,7 +96,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       /**
        * Setting options allowing extracts functions to work properly.
        */
-      setOpt(localOpts, generalOpts);
+      state.set(localOpts, generalOpts);
 
       const { isSilent } = generalOpts;
 
@@ -113,7 +111,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const buildPath = resolve(pkgPath, buildName);
 
-      if (getBooleanOpt("cleanBuild")) {
+      if (state.get("boolean", "cleanBuild")) {
         await del(buildPath);
       }
 
@@ -123,7 +121,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const outputName = extractName(name);
 
-      const banner = getStrOpt("banner");
+      const banner = state.get("string", "banner");
 
       await bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
