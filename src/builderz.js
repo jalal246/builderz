@@ -9,12 +9,13 @@ import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr, getStrOpt } from "./utils";
+import { NotEmptyArr } from "./utils";
 
 import {
   setOpt,
   initOpts,
   getBooleanOpt,
+  getStrOpt,
   extractBundleOpt,
   extractAlias,
   extractEntries,
