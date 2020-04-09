@@ -11,13 +11,7 @@ import { getInput, getOutput } from "./config/index";
 
 import { NotEmptyArr } from "./utils";
 
-import {
-  State,
-  extractBundleOpt,
-  extractAlias,
-  extractEntries,
-  extractName,
-} from "./store";
+import State from "./store";
 
 import resolveArgs from "./resolveArgs";
 
@@ -99,11 +93,6 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const { isSilent } = state.generalOpts;
 
-      /**
-       * Give localOpts the priority first.
-       */
-      const bundleOpt = extractBundleOpt();
-
       const pkgInfo = allPkgInfo[name];
 
       const { path: pkgPath } = pkgInfo;
@@ -114,15 +103,15 @@ async function builderz(opts, { isInitOpts = true } = {}) {
         await del(buildPath);
       }
 
-      const entries = extractEntries(entriesJson, pkgPath);
+      const entries = state.extractEntries(entriesJson, pkgPath);
 
-      const alias = extractAlias(pkgPath);
+      const alias = state.extractAlias(pkgPath);
 
-      const outputName = extractName(name);
+      const outputName = state.extractName(name);
 
       const banner = state.get("string", "banner");
 
-      await bundleOpt.reduce(
+      await state.bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
           await bundleOptPromise;
 
