@@ -8,7 +8,7 @@ import { isValidArr } from "../utils";
 const State = {
   localOpts: {},
 
-  globalOpts: {
+  generalOpts: {
     isSilent: true,
     formats: [],
     isMinify: undefined,
@@ -28,36 +28,36 @@ const State = {
       const input = inputOpts[inOption];
 
       if (input) {
-        this.globalOpts[inOption] = inputOpts[inOption];
+        this.generalOpts[inOption] = inputOpts[inOption];
       }
     });
 
-    return this.globalOpts;
+    return this.generalOpts;
   },
 
-  set(localOpts, globalOpts) {
+  set(localOpts, generalOpts) {
     this.localOpts = localOpts;
-    this.globalOpts = globalOpts;
+    this.generalOpts = generalOpts;
   },
 
-  boolean(localOpts, globalOpts, argName) {
+  boolean(localOpts, generalOpts, argName) {
     return isBoolean(localOpts[argName])
       ? localOpts[argName]
-      : globalOpts[argName];
+      : generalOpts[argName];
   },
 
-  array(localOpts, globalOpts, argName) {
+  array(localOpts, generalOpts, argName) {
     return isValidArr(localOpts[argName])
       ? localOpts[argName]
-      : globalOpts[argName];
+      : generalOpts[argName];
   },
 
-  string(localOpts, globalOpts, argName) {
-    return localOpts[argName] ? localOpts[argName] : globalOpts[argName];
+  string(localOpts, generalOpts, argName) {
+    return localOpts[argName] ? localOpts[argName] : generalOpts[argName];
   },
 
   get(type, argName) {
-    return this[type](this.localOpts, this.globalOpts, argName);
+    return this[type](this.localOpts, this.generalOpts, argName);
   },
 };
 
