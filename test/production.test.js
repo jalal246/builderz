@@ -4,6 +4,8 @@ import { readdirSync, readFileSync } from "fs";
 // import del from "del";
 import builderz from "../src";
 
+jest.setTimeout(30000);
+
 // ["basic-multi-entries-json", "pure", "alias"];
 describe("builderz working for single package", () => {
   it.each(["basic-multi-entries-json", "pure", "alias"])(
@@ -14,6 +16,7 @@ describe("builderz working for single package", () => {
 
       try {
         await builderz({
+          cleanBuild: true,
           isSilent: true,
           pkgPaths: [resolve(__dirname, pathPure)],
         });
