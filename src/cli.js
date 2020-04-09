@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import error from "@mytools/print";
 import builderz from "./builderz";
 import resolveArgs from "./resolveArgs";
