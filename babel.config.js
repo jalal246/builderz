@@ -6,10 +6,11 @@ module.exports = api => {
         "@babel/preset-env",
         {
           targets: {
-            node: "current"
-          }
-        }
-      ]
-    ]
+            node: "current",
+          },
+        },
+      ],
+    ],
+    plugins: ["@babel/plugin-transform-classes"],
   };
 };
