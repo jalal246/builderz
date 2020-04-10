@@ -60,6 +60,10 @@ class StateHandler extends State {
       return entriesOpt.map((entry) => this.resolvePath(entry));
     }
 
+    if (entriesOpt.length > 0) {
+      return this.resolvePath(entriesOpt);
+    }
+
     // eslint-disable-next-line no-nested-ternary
     return !isValid
       ? null
