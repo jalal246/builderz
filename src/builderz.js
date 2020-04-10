@@ -10,7 +10,8 @@ import { getInput, getOutput } from "./config/index";
 import { NotEmptyArr } from "./utils";
 
 import { CLEAN_BUILD, BANNER } from "./constants";
-import State from "./store";
+
+import StateHandler from "./store";
 
 /**
  * Write bundle.
@@ -35,7 +36,7 @@ async function build(inputOptions, outputOptions) {
 }
 
 async function builderz(opts, { isInitOpts = true } = {}) {
-  const state = new State(opts, isInitOpts);
+  const state = new StateHandler(opts, isInitOpts);
 
   const { buildName, pkgPaths, pkgNames } = state.generalOpts;
 

@@ -6,13 +6,13 @@ import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS } from "../constants";
 import { isValidArr, camelizeOutputBuild } from "../utils";
 import State from "./State";
 
-class StateOperator extends State {
+class StateHandler extends State {
   /**
    * Extracts name based on valid options if found. Otherwise, it takes name of
    * package.json. It checks also CamelCase, if true it does it.
    *
    * @returns {string} - output name
-   * @memberof StateOperator
+   * @memberof StateHandler
    */
   extractName() {
     const { name } = this.pkgJsonOpts;
@@ -29,7 +29,7 @@ class StateOperator extends State {
    *
    * @param {string} args
    * @returns {string}
-   * @memberof StateOperator
+   * @memberof StateHandler
    */
   resolvePath(...args) {
     return this.shouldPathResolved
@@ -42,7 +42,7 @@ class StateOperator extends State {
    * default path: src/index.extension.
    *
    * @returns {Array|string}
-   * @memberof StateOperator
+   * @memberof StateHandler
    */
   extractEntries() {
     const entriesOpt = this.get(ENTRIES);
@@ -72,7 +72,7 @@ class StateOperator extends State {
    * Extracts alias based on valid options if found.
    *
    * @returns {Array}
-   * @memberof StateOperator
+   * @memberof StateHandler
    */
   extractAlias() {
     const alias = this.get(ALIAS);
@@ -99,4 +99,4 @@ class StateOperator extends State {
   }
 }
 
-export default StateOperator;
+export default StateHandler;
