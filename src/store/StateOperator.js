@@ -1,14 +1,15 @@
+/* eslint-disable no-nested-ternary */
 import { resolve } from "path";
 import { validateAccess } from "validate-access";
-import { CAMEL_CASE, OUTPUT, ENTRIES } from "../constants";
+import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS } from "../constants";
 
 import { isValidArr, camelizeOutputBuild } from "../utils";
 import State from "./State";
 
 class StateOperator extends State {
   /**
-   * Extract name based on output option if found, else, it looks if isCamelCase
-   * then camelize. otherwise, return jsonPkgName.
+   * Extracts name based on valid options if found. Otherwise, it takes name of
+   * package.json. It checks also CamelCase, if true it does it.
    *
    * @returns {string} - output name
    * @memberof StateOperator
@@ -23,25 +24,28 @@ class StateOperator extends State {
     return this.get(CAMEL_CASE) ? camelizeOutputBuild(chosen) : chosen;
   }
 
+  /**
+   * Revolves path taking into consideration current package path.
+   *
+   * @param {string} args
+   * @returns {string}
+   * @memberof StateOperator
+   */
   resolvePath(...args) {
-    return resolve(this.pkgPath, ...args);
+    return this.shouldPathResolved
+      ? resolve(this.pkgPath, ...args)
+      : resolve(this.pkgPath, ...args);
   }
 
   /**
-   * Extracts entries by checking global entries, entries passed in Json as
-   * property. If no valid entries, it returns default path: src/index.extension
+   * Extracts entries based on valid options if found. Otherwise, it returns
+   * default path: src/index.extension.
    *
-   * @param {Array} entriesJson
-   * @param {string} pkgPath
    * @returns {Array|string}
    * @memberof StateOperator
    */
   extractEntries() {
     const entriesOpt = this.get(ENTRIES);
-
-    if (isValidArr(entriesOpt)) {
-      return entriesOpt.map((entry) => this.resolvePath(entry));
-    }
 
     const { isValid, isSrc, ext } = validateAccess({
       dir: this.pkgPath,
@@ -49,6 +53,12 @@ class StateOperator extends State {
       entry: "index",
       srcName: "src",
     });
+
+    this.isSrc = isSrc;
+
+    if (isValidArr(entriesOpt)) {
+      return entriesOpt.map((entry) => this.resolvePath(entry));
+    }
 
     // eslint-disable-next-line no-nested-ternary
     return !isValid
@@ -59,35 +69,33 @@ class StateOperator extends State {
   }
 
   /**
- * Extracts alias. If there's local alias in package, then revolve path:
- * by adding localPkgPath:
-     alias({
-      entries: [
-        { find: 'utils', replacement: 'localPkgPath/../../../utils' },
-        { find: 'batman-1.0.0', replacement: 'localPkgPath/joker-1.5.0' }
-      ]
- *
- * @param {string} localPkgPath
- * @returns {Array
- * @memberof StateOperator
- * 
- */
+   * Extracts alias based on valid options if found.
+   *
+   * @returns {Array}
+   * @memberof StateOperator
+   */
   extractAlias() {
-    const { alias: localAlias } = this.pkgBuildOpts;
+    const alias = this.get(ALIAS);
 
-    if (!isValidArr(localAlias)) return this.generalOpts.alias;
+    // const alias = [
+    //   { find: "utils", replacement: "localPkgPath/../../../utils" },
+    //   { find: "batman-1.0.0", replacement: "localPkgPath/joker-1.5.0" },
+    // ];
 
     /**
      * If there's local alias passed in package, let's resolve the pass.
      */
-    localAlias.forEach(({ replacement }, i) => {
+    alias.forEach(({ replacement }, i) => {
       /**
        * Assuming we're working in `src` by default.
        */
-      localAlias[i].replacement = this.resolvePath("src", replacement);
+      alias[i].replacement = this.resolvePath(
+        this.isSrc ? "src" : null,
+        replacement
+      );
     });
 
-    return localAlias;
+    return alias;
   }
 }
 

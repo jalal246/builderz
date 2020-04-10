@@ -2,6 +2,7 @@
 import isBoolean from "lodash.isboolean";
 import { parse } from "shell-quote";
 import isEmptyObj from "lodash.isempty";
+import { relative } from "path";
 
 import {
   IS_SILENT,
@@ -198,6 +199,12 @@ class State {
   }
 
   setPkgPath(pkgPath) {
+    const relativePath = relative(process.cwd(), pkgPath);
+
+    /**
+     * If working directory is the same as package path, don't resolve path.
+     */
+    this.shouldPathResolved = relativePath.length !== 0;
     this.pkgPath = pkgPath;
   }
 
