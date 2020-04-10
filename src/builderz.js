@@ -1,19 +1,15 @@
 import { resolve } from "path";
 import { rollup } from "rollup";
 import { error } from "@mytools/print";
-import { parse } from "shell-quote";
 import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
-import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 
 import { NotEmptyArr } from "./utils";
 
 import State from "./store";
-
-import resolveArgs from "./resolveArgs";
 
 /**
  * Write bundle.
@@ -59,35 +55,11 @@ async function builderz(opts, { isInitOpts = true } = {}) {
     await sorted.reduce(async (sortedPromise, json) => {
       await sortedPromise;
 
-      const {
-        name,
-        peerDependencies = {},
-        dependencies = {},
-        scripts: { build: buildArgs } = {},
-        entries: entriesJson = [],
-      } = json;
+      state.setPkgJsonOpts(json);
 
-      /**
-       * Parsing empty object throws an error/
-       */
-      if (!isEmptyObj(buildArgs)) {
-        const parsedBuildArgs = parse(buildArgs);
+      state.setPkgBuildOpts();
 
-        if (NotEmptyArr(parsedBuildArgs)) {
-          /**
-           * For some unknown reason, resolveArgs doesn't work correctly when
-           * passing args without string first. So, yeah, I did it this way.
-           */
-          parsedBuildArgs.unshift("builderz");
-
-          const localOpts = resolveArgs(parsedBuildArgs).opts();
-
-          /**
-           * Setting options allowing extracts functions to work properly.
-           */
-          state.setPkgBuildOpts(localOpts);
-        }
-      }
+      const { name, peerDependencies = {}, dependencies = {} } = json;
 
       const { isSilent } = state.generalOpts;
 
@@ -95,17 +67,19 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const { path: pkgPath } = pkgInfo;
 
+      state.setPkgPath(pkgPath);
+
       const buildPath = resolve(pkgPath, buildName);
 
       if (state.get("boolean", "cleanBuild")) {
         await del(buildPath);
       }
 
-      const entries = state.extractEntries(entriesJson, pkgPath);
+      const entries = state.extractEntries();
 
-      const alias = state.extractAlias(pkgPath);
+      const alias = state.extractAlias();
 
-      const outputName = state.extractName(name);
+      const outputName = state.extractName();
 
       const banner = state.get("string", "banner");
 
