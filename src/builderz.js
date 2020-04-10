@@ -9,6 +9,7 @@ import { getInput, getOutput } from "./config/index";
 
 import { NotEmptyArr } from "./utils";
 
+import { CLEAN_BUILD, BANNER } from "./constants";
 import State from "./store";
 
 /**
@@ -71,7 +72,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const buildPath = resolve(pkgPath, buildName);
 
-      if (state.get("boolean", "cleanBuild")) {
+      if (state.get(CLEAN_BUILD)) {
         await del(buildPath);
       }
 
@@ -81,7 +82,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const outputName = state.extractName();
 
-      const banner = state.get("string", "banner");
+      const banner = state.get(BANNER);
 
       await state.bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {

@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import { validateAccess } from "validate-access";
-import { camelCase, output, entries } from "constants";
+import { CAMEL_CASE, OUTPUT, ENTRIES } from "../constants";
 
 import { isValidArr, camelizeOutputBuild } from "../utils";
 import State from "./State";
@@ -16,13 +16,11 @@ class StateOperator extends State {
   extractName() {
     const { name } = this.pkgJsonOpts;
 
-    const outputOpt = this.get("string", output);
+    const outputOpt = this.get(OUTPUT);
 
     const chosen = outputOpt || name;
 
-    return this.get("boolean", camelCase)
-      ? camelizeOutputBuild(chosen)
-      : chosen;
+    return this.get(CAMEL_CASE) ? camelizeOutputBuild(chosen) : chosen;
   }
 
   resolvePath(...args) {
@@ -39,7 +37,7 @@ class StateOperator extends State {
    * @memberof StateOperator
    */
   extractEntries() {
-    const entriesOpt = this.get("array", entries);
+    const entriesOpt = this.get(ENTRIES);
 
     if (isValidArr(entriesOpt)) {
       return entriesOpt.map((entry) => this.resolvePath(entry));

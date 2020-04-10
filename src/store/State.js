@@ -4,19 +4,20 @@ import { parse } from "shell-quote";
 import isEmptyObj from "lodash.isempty";
 
 import {
-  isSilent,
-  formats,
-  minify,
-  cleanBuild,
-  camelCase,
-  buildName,
-  output,
-  pkgPaths,
-  pkgNames,
-  alias,
-  entries,
-  banner,
-} from "constants";
+  IS_SILENT,
+  FORMATS,
+  MINIFY,
+  CLEAN_BUILD,
+  CAMEL_CASE,
+  BUILD_NAME,
+  OUTPUT,
+  PKG_PATHS,
+  PKG_NAMES,
+  ALIAS,
+  ENTRIES,
+  BANNER,
+  getVarTypes,
+} from "../constants";
 
 import { isValidArr, getBundleOpt } from "../utils";
 import resolveArgs from "../resolveArgs";
@@ -106,18 +107,18 @@ class State {
      * general options passed when running builderz.
      */
     this.generalOpts = {
-      [isSilent]: true,
-      [formats]: [],
-      [minify]: undefined,
-      [cleanBuild]: false,
-      [camelCase]: true,
-      [buildName]: "dist",
-      [output]: undefined,
-      [pkgPaths]: [],
-      [pkgNames]: [],
-      [alias]: [],
-      [entries]: [],
-      [banner]: undefined,
+      [IS_SILENT]: true,
+      [FORMATS]: [],
+      [MINIFY]: undefined,
+      [CLEAN_BUILD]: false,
+      [CAMEL_CASE]: true,
+      [BUILD_NAME]: "dist",
+      [OUTPUT]: undefined,
+      [PKG_PATHS]: [],
+      [PKG_NAMES]: [],
+      [ALIAS]: [],
+      [ENTRIES]: [],
+      [BANNER]: undefined,
     };
 
     if (isInit) this.initializer(generalOpts);
@@ -148,8 +149,8 @@ class State {
    * @memberof State
    */
   extractBundleOpt() {
-    const format = this.get("array", formats);
-    const isMinify = this.get("boolean", minify);
+    const format = this.get(FORMATS);
+    const isMinify = this.get(MINIFY);
 
     this.bundleOpt = getBundleOpt(format, isMinify);
   }
@@ -200,7 +201,9 @@ class State {
     this.pkgPath = pkgPath;
   }
 
-  get(type, argName) {
+  get(argName) {
+    const type = getVarTypes(argName);
+
     return State[type](
       this.pkgBuildOpts,
       this.pkgJsonOpts,
