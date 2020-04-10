@@ -67,8 +67,6 @@ async function builderz(opts, { isInitOpts = true } = {}) {
         entries: entriesJson = [],
       } = json;
 
-      let localOpts = {};
-
       /**
        * Parsing empty object throws an error/
        */
@@ -82,14 +80,14 @@ async function builderz(opts, { isInitOpts = true } = {}) {
            */
           parsedBuildArgs.unshift("builderz");
 
-          localOpts = resolveArgs(parsedBuildArgs).opts();
+          const localOpts = resolveArgs(parsedBuildArgs).opts();
+
+          /**
+           * Setting options allowing extracts functions to work properly.
+           */
+          state.setPkgBuildOpts(localOpts);
         }
       }
-
-      /**
-       * Setting options allowing extracts functions to work properly.
-       */
-      state.setPkgBuildOpts(localOpts);
 
       const { isSilent } = state.generalOpts;
 
