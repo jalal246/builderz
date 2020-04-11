@@ -1,6 +1,6 @@
 {
   "name": "alias-mapping",
   "scripts": {
-    "build": "--no-sourcemap --alias=./constants=./constants-debug"
+    "build": "--no-sourcemap --alias=./constants=./constants-debug --formats=cjs"
   }
 }

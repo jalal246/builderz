@@ -73,10 +73,11 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const buildPath = resolve(pkgPath, buildName);
 
+      console.log("builderz -> state.get(CLEAN_BUILD)", state.get(CLEAN_BUILD));
       if (state.get(CLEAN_BUILD)) {
         await del(buildPath);
       }
-
+      return;
       const entries = state.extractEntries();
 
       const alias = state.extractAlias();

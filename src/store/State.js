@@ -3,6 +3,7 @@ import isBoolean from "lodash.isboolean";
 import { parse } from "shell-quote";
 import isEmptyObj from "lodash.isempty";
 import { relative } from "path";
+import yargs from "yargs";
 
 import {
   IS_SILENT,
@@ -122,24 +123,8 @@ class State {
       [BANNER]: undefined,
     };
 
-    if (isInit) this.initializer(generalOpts);
+    if (isInit) this.generalOpts = Object.assign(this.generalOpts, generalOpts);
     else this.generalOpts = generalOpts;
-  }
-
-  /**
-   * Initialize generalOpts.
-   *
-   * @param {Object} inputOpts
-   * @memberof State
-   */
-  initializer(inputOpts) {
-    Object.keys(inputOpts).forEach((inOption) => {
-      const input = inputOpts[inOption];
-
-      if (input) {
-        this.generalOpts[inOption] = inputOpts[inOption];
-      }
-    });
   }
 
   /**
@@ -176,9 +161,17 @@ class State {
          * For some unknown reason, resolveArgs doesn't work correctly when
          * passing args without string first. So, yeah, I did it this way.
          */
-        parsedBuildArgs.unshift("builderz");
-
-        this.pkgBuildOpts = resolveArgs(parsedBuildArgs).opts();
+        // parsedBuildArgs.unshift("builderz");
+        console.log(
+          "State -> setPkgBuildOpts -> parsedBuildArgs",
+          parsedBuildArgs
+        );
+        this.pkgBuildOpts = yargs.parse(parsedBuildArgs);
+        console.log(
+          "State -> setPkgBuildOpts -> pkgBuildOpts",
+          this.pkgBuildOpts
+        );
+        // this.pkgBuildOpts = resolveArgs(parsedBuildArgs).opts();
       }
     }
 
