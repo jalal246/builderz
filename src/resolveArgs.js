@@ -20,6 +20,11 @@ function resolveArgs(args) {
       type: "boolean",
       // default: false,
     })
+    .option("sourcemap", {
+      describe: "Enable sourcemap in output",
+      type: "boolean",
+      // default: true,
+    })
     .option("camel-case", {
       alias: "c",
       describe: "Add camel-cased output file",

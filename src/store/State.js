@@ -79,11 +79,7 @@ class State {
    * @memberof State
    */
   setPkgJsonOpts(pkgJson) {
-    const {
-      name: pkgName,
-      scripts: { build },
-      builderz,
-    } = pkgJson;
+    const { name: pkgName, scripts: { build } = {}, builderz } = pkgJson;
 
     this.pkgName = pkgName;
 

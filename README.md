@@ -45,7 +45,7 @@ In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required args.
 
 ```json
-"build": "builderz --formats=cjs --minify=false"
+"build": "builderz --formats=cjs --minify"
 ```
 
 ## Options
@@ -54,6 +54,7 @@ bundle just pass the required args.
   -s, --silent <boolean>       Silent mode, mutes build massages (default: true)
   -f, --formats <list>         Specific build format (default: [])
   -m, --minify <boolean>       Minify bundle works only if format is provided (default: false)
+  -m, --sourcemap <boolean>    Enable sourcemap in output
   -c, --camel-case <boolean>   Add camel-cased output file (default: true)
   -l, --clean-build <boolean>  Clean previous build folder (default: false)
   -b, --build-name <string>    Specific folder build name (default: "dist")
