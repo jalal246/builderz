@@ -93,7 +93,10 @@ class State {
      * Extracting other options if there are any.
      */
     this.setOptsFrom(build);
-    this.setOptsFrom(builderz);
+
+    if (!isEmptyObj(builderz)) {
+      Object.assign(this.opts, builderz);
+    }
 
     Object.keys(defaultOpts).forEach((key) => {
       if (this.opts[key] === undefined) {

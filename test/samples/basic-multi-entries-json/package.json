@@ -1,7 +1,12 @@
 {
   "name": "basic-multi-entries-json",
-  "entries": [
-    "src/a.js",
-    "src/b.js"
-  ]
+  "scripts": {
+    "build": "--no-minify --formats=cjs"
+  },
+  "builderz": {
+    "entries": [
+      "src/a.js",
+      "src/b.js"
+    ]
+  }
 }
