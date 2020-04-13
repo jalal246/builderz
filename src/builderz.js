@@ -50,6 +50,10 @@ async function builderz(opts, { isInitOpts = true } = {}) {
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
+  if (allPkgJson.length === 0) {
+    error(`Builderz has not found any valid package.json`);
+  }
+
   /**
    * Sort packages before bump to production.
    */
