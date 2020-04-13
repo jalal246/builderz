@@ -15,13 +15,11 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   extractName() {
-    const { name } = this.pkgJsonOpts;
+    const outputOpt = this.opts[OUTPUT];
 
-    const outputOpt = this.get(OUTPUT);
+    const chosen = outputOpt || this.pkgName;
 
-    const chosen = outputOpt || name;
-
-    return this.get(CAMEL_CASE) ? camelizeOutputBuild(chosen) : chosen;
+    return this.opts[CAMEL_CASE] ? camelizeOutputBuild(chosen) : chosen;
   }
 
   /**
@@ -32,9 +30,7 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   resolvePath(...args) {
-    return this.shouldPathResolved
-      ? resolve(this.pkgPath, ...args)
-      : resolve(this.pkgPath, ...args);
+    return resolve(this.pkgPath, ...args);
   }
 
   /**
@@ -45,7 +41,7 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   extractEntries() {
-    const entriesOpt = this.get(ENTRIES);
+    const entriesOpt = this.opts[ENTRIES];
 
     const { isValid, isSrc, ext } = validateAccess({
       dir: this.pkgPath,
@@ -79,7 +75,7 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   extractAlias() {
-    const alias = this.get(ALIAS);
+    let alias = this.opts[ALIAS];
 
     // const alias = [
     //   { find: "utils", replacement: "localPkgPath/../../../utils" },
@@ -89,14 +85,25 @@ class StateHandler extends State {
     /**
      * If there's local alias passed in package, let's resolve the pass.
      */
-    alias.forEach(({ replacement }, i) => {
-      /**
-       * Assuming we're working in `src` by default.
-       */
-      alias[i].replacement = this.resolvePath(
-        this.isSrc ? "src" : null,
-        replacement
-      );
+    alias = alias.map((str) => {
+      let find;
+      let replacement;
+
+      if (typeof str === "string") {
+        // eslint-disable-next-line prefer-const
+        [find, replacement] = str.split("=");
+      } else {
+        ({ find, replacement } = str);
+      }
+
+      if (this.shouldPathResolved) {
+        /**
+         * Assuming we're working in `src` by default.
+         */
+        replacement = this.resolvePath(this.isSrc ? "src" : null, replacement);
+      }
+
+      return { find, replacement };
     });
 
     return alias;

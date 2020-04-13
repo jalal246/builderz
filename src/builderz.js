@@ -7,9 +7,15 @@ import { getJsonByName, getJsonByPath } from "get-info";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr } from "./utils";
+import { NotEmptyArr, isValidArr } from "./utils";
 
-import { CLEAN_BUILD, BANNER } from "./constants";
+import {
+  CLEAN_BUILD,
+  BANNER,
+  SILENT,
+  BUILD_NAME,
+  SOURCE_MAP,
+} from "./constants";
 
 import StateHandler from "./store";
 
@@ -38,9 +44,9 @@ async function build(inputOptions, outputOptions) {
 async function builderz(opts, { isInitOpts = true } = {}) {
   const state = new StateHandler(opts, isInitOpts);
 
-  const { buildName, pkgPaths, pkgNames } = state.generalOpts;
+  const { pkgPaths, pkgNames } = state.generalOpts;
 
-  const { json: allPkgJson, pkgInfo: allPkgInfo } = NotEmptyArr(pkgNames)
+  const { json: allPkgJson, pkgInfo: allPkgInfo } = isValidArr(pkgNames)
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
@@ -59,11 +65,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       state.setPkgJsonOpts(json);
 
-      state.setPkgBuildOpts();
-
       const { name, peerDependencies = {}, dependencies = {} } = json;
-
-      const { isSilent } = state.generalOpts;
 
       const pkgInfo = allPkgInfo[name];
 
@@ -71,20 +73,21 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       state.setPkgPath(pkgPath);
 
-      const buildPath = resolve(pkgPath, buildName);
+      const buildPath = resolve(pkgPath, state.opts[BUILD_NAME]);
 
-      console.log("builderz -> state.get(CLEAN_BUILD)", state.get(CLEAN_BUILD));
-      if (state.get(CLEAN_BUILD)) {
+      if (state.opts[CLEAN_BUILD]) {
         await del(buildPath);
       }
-      return;
+
       const entries = state.extractEntries();
 
       const alias = state.extractAlias();
 
       const outputName = state.extractName();
 
-      const banner = state.get(BANNER);
+      const banner = state.opts[BANNER];
+      const isSourcemap = state.opts[SOURCE_MAP];
+      const isSilent = state.opts[SILENT];
 
       await state.bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
@@ -114,6 +117,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             },
             buildPath,
             BUILD_FORMAT,
+            isSourcemap,
             banner,
           });
 

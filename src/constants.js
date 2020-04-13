@@ -5,9 +5,10 @@ export const ES = "es";
 export const DEV = "development";
 export const PROD = "production";
 
-export const IS_SILENT = "isSilent";
+export const SILENT = "silent";
 export const FORMATS = "formats";
 export const MINIFY = "minify";
+export const SOURCE_MAP = "sourcemap";
 export const CLEAN_BUILD = "cleanBuild";
 export const CAMEL_CASE = "camelCase";
 export const BUILD_NAME = "buildName";
@@ -18,21 +19,33 @@ export const ALIAS = "alias";
 export const ENTRIES = "entries";
 export const BANNER = "banner";
 
-const types = {
-  [IS_SILENT]: "boolean",
-  [FORMATS]: "array",
-  [MINIFY]: "boolean",
-  [CLEAN_BUILD]: "boolean",
-  [CAMEL_CASE]: "boolean",
-  [BUILD_NAME]: "string",
-  [OUTPUT]: "string",
-  [PKG_PATHS]: "array",
-  [PKG_NAMES]: "array",
-  [ALIAS]: "array",
-  [ENTRIES]: "array",
-  [BANNER]: "string",
-};
+// export const optsTypes = {
+//   [SILENT]: "boolean",
+//   [FORMATS]: "array",
+//   [MINIFY]: "boolean",
+//   [CLEAN_BUILD]: "boolean",
+//   [CAMEL_CASE]: "boolean",
+//   [BUILD_NAME]: "string",
+//   [OUTPUT]: "string",
+//   [PKG_PATHS]: "array",
+//   [PKG_NAMES]: "array",
+//   [ALIAS]: "array",
+//   [ENTRIES]: "array",
+//   [BANNER]: "string",
+// };
 
-export function getVarTypes(varName) {
-  return types[varName];
-}
+export const defaultOpts = {
+  [SILENT]: true,
+  [FORMATS]: [],
+  [MINIFY]: undefined,
+  [SOURCE_MAP]: true,
+  [CLEAN_BUILD]: false,
+  [CAMEL_CASE]: true,
+  [BUILD_NAME]: "dist",
+  [OUTPUT]: undefined,
+  [PKG_PATHS]: [],
+  [PKG_NAMES]: [],
+  [ALIAS]: [],
+  [ENTRIES]: [],
+  [BANNER]: undefined,
+};

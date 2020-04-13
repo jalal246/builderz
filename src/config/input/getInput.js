@@ -22,12 +22,12 @@ function genInput({
   json: { peerDependencies, dependencies },
   entries,
   BUILD_FORMAT,
-  alias
+  alias,
 }) {
   const external = getExternal({
     peerDependencies,
     dependencies,
-    BUILD_FORMAT
+    BUILD_FORMAT,
   });
 
   const isMultiEntries = Array.isArray(entries);
@@ -37,13 +37,13 @@ function genInput({
     IS_PROD,
     BUILD_FORMAT,
     isMultiEntries,
-    alias
+    alias,
   });
 
   return {
     input: entries,
     external,
-    plugins
+    plugins,
   };
 }
 

@@ -17,7 +17,6 @@ describe("builderz working for single package", () => {
       try {
         await builderz({
           cleanBuild: true,
-          isSilent: true,
           pkgPaths: [resolve(__dirname, pathPure)],
         });
 

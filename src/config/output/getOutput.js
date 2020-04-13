@@ -53,6 +53,7 @@ function getOutput({
   json: { peerDependencies },
   buildPath,
   BUILD_FORMAT,
+  isSourcemap,
   banner,
 }) {
   const { IS_PROD } = flags;
@@ -74,7 +75,7 @@ function getOutput({
     output.globals = getGlobal(peerDependencies);
   }
 
-  if (IS_PROD || BUILD_FORMAT === UMD) {
+  if ((IS_PROD || BUILD_FORMAT === UMD) && isSourcemap) {
     output.sourcemap = true;
   }
 
