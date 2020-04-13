@@ -5,6 +5,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
 import multiEntry from "@rollup/plugin-multi-entry";
+import postcss from "rollup-plugin-postcss";
 
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
@@ -26,7 +27,8 @@ function getPlugins({
   IS_PROD = true,
   isMultiEntries,
   BUILD_FORMAT,
-  alias
+  alias,
+  idx,
 }) {
   const essentialPlugins = [
     /**
@@ -36,7 +38,7 @@ function getPlugins({
 
     babel({
       runtimeHelpers: true,
-      babelrc: true
+      babelrc: true,
     }),
 
     isMultiEntries ? multiEntry() : null,
@@ -60,13 +62,15 @@ function getPlugins({
      */
     resolve({
       preferBuiltins: true,
-      extensions: [".mjs", ".js", ".jsx", ".json", ".node"]
+      extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
 
     /**
      * Converts .json files to ES6 modules.
      */
-    json()
+    json(),
+
+    postcss({ inject: false, extract: idx === 0 }),
   ].filter(Boolean);
 
   if (!IS_SILENT) {
@@ -95,7 +99,7 @@ function getPlugins({
 
           // default: false
           // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
-          keep_infinity: true
+          keep_infinity: true,
         },
 
         // pass an empty object {} or a previously used nameCache object
@@ -104,13 +108,13 @@ function getPlugins({
         nameCache: {},
 
         mangle: {
-          properties: false
+          properties: false,
         },
 
         // true if to enable top level variable
         // and function name mangling
         // and to drop unused variables and functions.
-        toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES
+        toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES,
       })
     );
   }

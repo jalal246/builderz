@@ -94,7 +94,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       const isSilent = state.opts[SILENT];
 
       await state.bundleOpt.reduce(
-        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
+        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }, idx) => {
           await bundleOptPromise;
 
           const input = await getInput({
@@ -109,6 +109,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             entries,
             BUILD_FORMAT,
             alias,
+            idx,
           });
 
           const output = await getOutput({

@@ -16,7 +16,7 @@ describe("builderz working for single package", () => {
     // "shebang",
     // "pretty",
     // "no-pkg-name",
-    "no-pkg",
+    "basic-css",
   ])("%s", async (pkgName) => {
     const pathPure = resolve(__dirname, "samples", pkgName);
     const distPath = resolve(pathPure, "dist");

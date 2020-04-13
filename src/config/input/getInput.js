@@ -23,6 +23,7 @@ function genInput({
   entries,
   BUILD_FORMAT,
   alias,
+  idx,
 }) {
   const external = getExternal({
     peerDependencies,
@@ -38,6 +39,7 @@ function genInput({
     BUILD_FORMAT,
     isMultiEntries,
     alias,
+    idx,
   });
 
   return {

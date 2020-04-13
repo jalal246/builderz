@@ -11,6 +11,225 @@ console.log('DEBUG should be true: ', DEBUG);
 "
 `;
 
+exports[`builderz working for single package basic-css 1`] = `10`;
+
+exports[`builderz working for single package basic-css 2`] = `
+"'use strict';
+
+function styleInject(css, ref) {
+  if (ref === void 0) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') {
+    return;
+  }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = \\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\";
+styleInject(css_248z);
+
+function index () {
+  const el = document.createElement('div');
+  el.className = 'testing';
+  return el;
+}
+
+module.exports = index;
+"
+`;
+
+exports[`builderz working for single package basic-css 3`] = `
+"function styleInject(css, ref) {
+  if (ref === void 0) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') {
+    return;
+  }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css_248z = \\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\";
+styleInject(css_248z);
+
+function index () {
+  const el = document.createElement('div');
+  el.className = 'testing';
+  return el;
+}
+
+export default index;
+"
+`;
+
+exports[`builderz working for single package basic-css 4`] = `
+"\\"use strict\\";!function(e,t){void 0===t&&(t={});var n=t.insertAt;if(e&&\\"undefined\\"!=typeof document){var d=document.head||document.getElementsByTagName(\\"head\\")[0],r=document.createElement(\\"style\\");r.type=\\"text/css\\",\\"top\\"===n&&d.firstChild?d.insertBefore(r,d.firstChild):d.appendChild(r),r.styleSheet?r.styleSheet.cssText=e:r.appendChild(document.createTextNode(e))}}(\\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\"),module.exports=function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e};
+//# sourceMappingURL=basicCss.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 5`] = `
+"!function(e,t){void 0===t&&(t={});var n=t.insertAt;if(e&&\\"undefined\\"!=typeof document){var d=document.head||document.getElementsByTagName(\\"head\\")[0],r=document.createElement(\\"style\\");r.type=\\"text/css\\",\\"top\\"===n&&d.firstChild?d.insertBefore(r,d.firstChild):d.appendChild(r),r.styleSheet?r.styleSheet.cssText=e:r.appendChild(document.createTextNode(e))}}(\\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\");export default function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
+//# sourceMappingURL=basicCss.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 6`] = `
+"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t():\\"function\\"==typeof define&&define.amd?define(t):((e=e||self).basicCss=e.basicCss||{},e.basicCss.min=e.basicCss.min||{},e.basicCss.min.umd=e.basicCss.min.umd||{},e.basicCss.min.umd.js=t())}(this,(function(){\\"use strict\\";return function(e,t){void 0===t&&(t={});var n=t.insertAt;if(e&&\\"undefined\\"!=typeof document){var s=document.head||document.getElementsByTagName(\\"head\\")[0],i=document.createElement(\\"style\\");i.type=\\"text/css\\",\\"top\\"===n&&s.firstChild?s.insertBefore(i,s.firstChild):s.appendChild(i),i.styleSheet?i.styleSheet.cssText=e:i.appendChild(document.createTextNode(e))}}(\\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\"),function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}}));
+//# sourceMappingURL=basicCss.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 7`] = `
+"(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, (global.basicCss = global.basicCss || {}, global.basicCss.umd = global.basicCss.umd || {}, global.basicCss.umd.js = factory()));
+}(this, (function () { 'use strict';
+
+  function styleInject(css, ref) {
+    if (ref === void 0) ref = {};
+    var insertAt = ref.insertAt;
+
+    if (!css || typeof document === 'undefined') {
+      return;
+    }
+
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+    style.type = 'text/css';
+
+    if (insertAt === 'top') {
+      if (head.firstChild) {
+        head.insertBefore(style, head.firstChild);
+      } else {
+        head.appendChild(style);
+      }
+    } else {
+      head.appendChild(style);
+    }
+
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+  }
+
+  var css_248z = \\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\";
+  styleInject(css_248z);
+
+  function index () {
+    const el = document.createElement('div');
+    el.className = 'testing';
+    return el;
+  }
+
+  return index;
+
+})));
+//# sourceMappingURL=basicCss.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 8`] = `
+".testing {
+	display: flex;
+	color: red;
+	background: blue;
+}
+"
+`;
+
+exports[`builderz working for single package basic-css 9`] = `
+"export default function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
+//# sourceMappingURL=basicCss.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 10`] = `
+".testing {
+	display: flex;
+	color: red;
+	background: blue;
+}
+"
+`;
+
+exports[`builderz working for single package basic-css 11`] = `
+"!function(s,e){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=e():\\"function\\"==typeof define&&define.amd?define(e):((s=s||self).basicCss=s.basicCss||{},s.basicCss.min=s.basicCss.min||{},s.basicCss.min.umd=s.basicCss.min.umd||{},s.basicCss.min.umd.js=e())}(this,(function(){\\"use strict\\";return function(){const s=document.createElement(\\"div\\");return s.className=\\"testing\\",s}}));
+//# sourceMappingURL=basicCss.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 12`] = `
+".testing {
+	display: flex;
+	color: red;
+	background: blue;
+}
+"
+`;
+
+exports[`builderz working for single package basic-css 13`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, (global.basicCss = global.basicCss || {}, global.basicCss.umd = global.basicCss.umd || {}, global.basicCss.umd.js = factory()));
+}(this, (function () { 'use strict';
+
+	function index () {
+	  const el = document.createElement('div');
+	  el.className = 'testing';
+	  return el;
+	}
+
+	return index;
+
+})));
+//# sourceMappingURL=basicCss.umd.js.map
+"
+`;
+
 exports[`builderz working for single package basic-json 1`] = `10`;
 
 exports[`builderz working for single package basic-json 2`] = `
