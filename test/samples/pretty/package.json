@@ -1,3 +1,10 @@
 {
-  "name": "pretty"
+  "name": "pretty",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "sourcemap": false,
+    "banner": "#!/usr/bin/env node"
+  }
 }

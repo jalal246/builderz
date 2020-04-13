@@ -1,3 +1,10 @@
 {
-  "name": "shebang"
+  "name": "shebang",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "sourcemap": false,
+    "banner": "#!/usr/bin/env node"
+  }
 }
