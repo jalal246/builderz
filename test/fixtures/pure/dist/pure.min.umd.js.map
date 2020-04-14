@@ -1,0 +1,1 @@
+{"version":3,"file":"pure.min.umd.js","sources":["../src/index.js"],"sourcesContent":["// this is currently broken because of a bug in terser\r\n// https://github.com/terser-js/terser/issues/353\r\n/** @__PURE__ */\r\nexport function foo() {\r\n  return \"hello world\";\r\n}\r\n"],"names":[],"mappings":"kSAGO,iBACE"}

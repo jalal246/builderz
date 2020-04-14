@@ -1,0 +1,2 @@
+!function(n,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):((n=n||self).basicJson=n.basicJson||{},n.basicJson.min=n.basicJson.min||{},n.basicJson.min.umd=n.basicJson.min.umd||{},n.basicJson.min.umd.js=e())}(this,function(){"use strict";var n={test:"true"};return function(...e){return(s=n)&&s.then||(s=Promise.resolve(s)),s;var s}});
+//# sourceMappingURL=basicJson.min.umd.js.map

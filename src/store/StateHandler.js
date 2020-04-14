@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { resolve } from "path";
+import { resolve, basename } from "path";
 import { validateAccess } from "validate-access";
 import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS } from "../constants";
 
@@ -17,7 +17,7 @@ class StateHandler extends State {
   extractName() {
     const outputOpt = this.opts[OUTPUT];
 
-    const chosen = outputOpt || this.pkgName;
+    const chosen = outputOpt || this.pkgName || basename(this.pkgPath);
 
     return this.opts[CAMEL_CASE] ? camelizeOutputBuild(chosen) : chosen;
   }

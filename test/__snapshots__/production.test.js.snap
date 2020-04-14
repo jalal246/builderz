@@ -11,6 +11,390 @@ console.log('DEBUG should be true: ', DEBUG);
 "
 `;
 
+exports[`builderz working for single package basic 1`] = `10`;
+
+exports[`builderz working for single package basic 2`] = `
+"'use strict';
+
+function _async(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+const two = _async(function (...args) {
+  return args.reduce((total, value) => total + value, 0);
+});
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+function _async$1(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+var index = _async$1(function (...args) {
+  return _await(two(...args), function (_two) {
+    return _await(two(...args), function (_two2) {
+      return [_two, _two2];
+    });
+  });
+});
+
+module.exports = index;
+"
+`;
+
+exports[`builderz working for single package basic 3`] = `
+"function _async(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+const two = _async(function (...args) {
+  return args.reduce((total, value) => total + value, 0);
+});
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+function _async$1(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+var index = _async$1(function (...args) {
+  return _await(two(...args), function (_two) {
+    return _await(two(...args), function (_two2) {
+      return [_two, _two2];
+    });
+  });
+});
+
+export default index;
+"
+`;
+
+exports[`builderz working for single package basic 4`] = `
+"\\"use strict\\";const r=(e=function(...r){return r.reduce((r,e)=>r+e,0)},function(){for(var r=[],t=0;t<arguments.length;t++)r[t]=arguments[t];try{return Promise.resolve(e.apply(this,r))}catch(r){return Promise.reject(r)}});var e;function t(r,e,t){return t?e?e(r):r:(r&&r.then||(r=Promise.resolve(r)),e?r.then(e):r)}var n=function(r){return function(){for(var e=[],t=0;t<arguments.length;t++)e[t]=arguments[t];try{return Promise.resolve(r.apply(this,e))}catch(r){return Promise.reject(r)}}}(function(...e){return t(r(...e),function(n){return t(r(...e),function(r){return[n,r]})})});module.exports=n;
+//# sourceMappingURL=basicLib.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic 5`] = `
+"const r=(e=function(...r){return r.reduce((r,e)=>r+e,0)},function(){for(var r=[],t=0;t<arguments.length;t++)r[t]=arguments[t];try{return Promise.resolve(e.apply(this,r))}catch(r){return Promise.reject(r)}});var e;function t(r,e,t){return t?e?e(r):r:(r&&r.then||(r=Promise.resolve(r)),e?r.then(e):r)}var n=function(r){return function(){for(var e=[],t=0;t<arguments.length;t++)e[t]=arguments[t];try{return Promise.resolve(r.apply(this,e))}catch(r){return Promise.reject(r)}}}(function(...e){return t(r(...e),function(n){return t(r(...e),function(r){return[n,r]})})});export default n;
+//# sourceMappingURL=basicLib.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic 6`] = `
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):((e=e||self).basicLib=e.basicLib||{},e.basicLib.min=e.basicLib.min||{},e.basicLib.min.umd=e.basicLib.min.umd||{},e.basicLib.min.umd.js=n())}(this,function(){\\"use strict\\";const e=(n=function(...e){return e.reduce((e,n)=>e+n,0)},function(){for(var e=[],t=0;t<arguments.length;t++)e[t]=arguments[t];try{return Promise.resolve(n.apply(this,e))}catch(e){return Promise.reject(e)}});var n;function t(e,n,t){return t?n?n(e):e:(e&&e.then||(e=Promise.resolve(e)),n?e.then(n):e)}return function(e){return function(){for(var n=[],t=0;t<arguments.length;t++)n[t]=arguments[t];try{return Promise.resolve(e.apply(this,n))}catch(e){return Promise.reject(e)}}}(function(...n){return t(e(...n),function(i){return t(e(...n),function(e){return[i,e]})})})});
+//# sourceMappingURL=basicLib.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, (global.basicLib = global.basicLib || {}, global.basicLib.umd = global.basicLib.umd || {}, global.basicLib.umd.js = factory()));
+}(this, (function () { 'use strict';
+
+	function _async(f) {
+	  return function () {
+	    for (var args = [], i = 0; i < arguments.length; i++) {
+	      args[i] = arguments[i];
+	    }
+
+	    try {
+	      return Promise.resolve(f.apply(this, args));
+	    } catch (e) {
+	      return Promise.reject(e);
+	    }
+	  };
+	}
+
+	const two = _async(function (...args) {
+	  return args.reduce((total, value) => total + value, 0);
+	});
+
+	function _await(value, then, direct) {
+	  if (direct) {
+	    return then ? then(value) : value;
+	  }
+
+	  if (!value || !value.then) {
+	    value = Promise.resolve(value);
+	  }
+
+	  return then ? value.then(then) : value;
+	}
+
+	function _async$1(f) {
+	  return function () {
+	    for (var args = [], i = 0; i < arguments.length; i++) {
+	      args[i] = arguments[i];
+	    }
+
+	    try {
+	      return Promise.resolve(f.apply(this, args));
+	    } catch (e) {
+	      return Promise.reject(e);
+	    }
+	  };
+	}
+
+	var index = _async$1(function (...args) {
+	  return _await(two(...args), function (_two) {
+	    return _await(two(...args), function (_two2) {
+	      return [_two, _two2];
+	    });
+	  });
+	});
+
+	return index;
+
+})));
+//# sourceMappingURL=basicLib.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 1`] = `11`;
+
+exports[`builderz working for single package basic-css 2`] = `
+"'use strict';
+
+function index () {
+  const el = document.createElement('div');
+  el.className = 'testing';
+  return el;
+}
+
+module.exports = index;
+"
+`;
+
+exports[`builderz working for single package basic-css 3`] = `
+".testing {
+	display: flex;
+	color: red;
+	background: blue;
+}
+"
+`;
+
+exports[`builderz working for single package basic-css 4`] = `
+"function index () {
+  const el = document.createElement('div');
+  el.className = 'testing';
+  return el;
+}
+
+export default index;
+"
+`;
+
+exports[`builderz working for single package basic-css 5`] = `
+"\\"use strict\\";module.exports=function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e};
+//# sourceMappingURL=basicCss.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 6`] = `
+"export default function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
+//# sourceMappingURL=basicCss.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 7`] = `
+"!function(s,e){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=e():\\"function\\"==typeof define&&define.amd?define(e):((s=s||self).basicCss=s.basicCss||{},s.basicCss.min=s.basicCss.min||{},s.basicCss.min.umd=s.basicCss.min.umd||{},s.basicCss.min.umd.js=e())}(this,function(){\\"use strict\\";return function(){const s=document.createElement(\\"div\\");return s.className=\\"testing\\",s}});
+//# sourceMappingURL=basicCss.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-css 8`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, (global.basicCss = global.basicCss || {}, global.basicCss.umd = global.basicCss.umd || {}, global.basicCss.umd.js = factory()));
+}(this, (function () { 'use strict';
+
+	function index () {
+	  const el = document.createElement('div');
+	  el.className = 'testing';
+	  return el;
+	}
+
+	return index;
+
+})));
+//# sourceMappingURL=basicCss.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-json 1`] = `10`;
+
+exports[`builderz working for single package basic-json 2`] = `
+"'use strict';
+
+var test = \\"true\\";
+var two = {
+	test: test
+};
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+var index = (function (...args) {
+  return _await(two);
+});
+
+module.exports = index;
+"
+`;
+
+exports[`builderz working for single package basic-json 3`] = `
+"var test = \\"true\\";
+var two = {
+	test: test
+};
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+var index = (function (...args) {
+  return _await(two);
+});
+
+export default index;
+"
+`;
+
+exports[`builderz working for single package basic-json 4`] = `
+"\\"use strict\\";var e={test:\\"true\\"};module.exports=function(...r){return(t=e)&&t.then||(t=Promise.resolve(t)),t;var t};
+//# sourceMappingURL=basicJson.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic-json 5`] = `
+"var e={test:\\"true\\"};export default function(...r){return(t=e)&&t.then||(t=Promise.resolve(t)),t;var t}
+//# sourceMappingURL=basicJson.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-json 6`] = `
+"!function(n,e){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=e():\\"function\\"==typeof define&&define.amd?define(e):((n=n||self).basicJson=n.basicJson||{},n.basicJson.min=n.basicJson.min||{},n.basicJson.min.umd=n.basicJson.min.umd||{},n.basicJson.min.umd.js=e())}(this,function(){\\"use strict\\";var n={test:\\"true\\"};return function(...e){return(s=n)&&s.then||(s=Promise.resolve(s)),s;var s}});
+//# sourceMappingURL=basicJson.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-json 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, (global.basicJson = global.basicJson || {}, global.basicJson.umd = global.basicJson.umd || {}, global.basicJson.umd.js = factory()));
+}(this, (function () { 'use strict';
+
+	var test = \\"true\\";
+	var two = {
+		test: test
+	};
+
+	function _await(value, then, direct) {
+	  if (direct) {
+	    return then ? then(value) : value;
+	  }
+
+	  if (!value || !value.then) {
+	    value = Promise.resolve(value);
+	  }
+
+	  return then ? value.then(then) : value;
+	}
+
+	var index = (function (...args) {
+	  return _await(two);
+	});
+
+	return index;
+
+})));
+//# sourceMappingURL=basicJson.umd.js.map
+"
+`;
+
 exports[`builderz working for single package basic-multi-entries-json 1`] = `1`;
 
 exports[`builderz working for single package basic-multi-entries-json 2`] = `
@@ -19,6 +403,317 @@ exports[`builderz working for single package basic-multi-entries-json 2`] = `
 console.log('i am a');
 
 console.log('i am b');
+"
+`;
+
+exports[`builderz working for single package no-pkg-name 1`] = `10`;
+
+exports[`builderz working for single package no-pkg-name 2`] = `
+"'use strict';
+
+function _async(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+const two = _async(function (...args) {
+  return args.reduce((total, value) => total + value, 0);
+});
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+function _async$1(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+var index = _async$1(function (...args) {
+  return _await(two(...args), function (_two) {
+    return _await(two(...args), function (_two2) {
+      return [_two, _two2];
+    });
+  });
+});
+
+module.exports = index;
+"
+`;
+
+exports[`builderz working for single package no-pkg-name 3`] = `
+"function _async(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+const two = _async(function (...args) {
+  return args.reduce((total, value) => total + value, 0);
+});
+
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }
+
+  if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }
+
+  return then ? value.then(then) : value;
+}
+
+function _async$1(f) {
+  return function () {
+    for (var args = [], i = 0; i < arguments.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    try {
+      return Promise.resolve(f.apply(this, args));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
+
+var index = _async$1(function (...args) {
+  return _await(two(...args), function (_two) {
+    return _await(two(...args), function (_two2) {
+      return [_two, _two2];
+    });
+  });
+});
+
+export default index;
+"
+`;
+
+exports[`builderz working for single package no-pkg-name 4`] = `
+"\\"use strict\\";const r=(e=function(...r){return r.reduce((r,e)=>r+e,0)},function(){for(var r=[],t=0;t<arguments.length;t++)r[t]=arguments[t];try{return Promise.resolve(e.apply(this,r))}catch(r){return Promise.reject(r)}});var e;function t(r,e,t){return t?e?e(r):r:(r&&r.then||(r=Promise.resolve(r)),e?r.then(e):r)}var n=function(r){return function(){for(var e=[],t=0;t<arguments.length;t++)e[t]=arguments[t];try{return Promise.resolve(r.apply(this,e))}catch(r){return Promise.reject(r)}}}(function(...e){return t(r(...e),function(n){return t(r(...e),function(r){return[n,r]})})});module.exports=n;
+//# sourceMappingURL=noPkgName.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package no-pkg-name 5`] = `
+"const r=(e=function(...r){return r.reduce((r,e)=>r+e,0)},function(){for(var r=[],t=0;t<arguments.length;t++)r[t]=arguments[t];try{return Promise.resolve(e.apply(this,r))}catch(r){return Promise.reject(r)}});var e;function t(r,e,t){return t?e?e(r):r:(r&&r.then||(r=Promise.resolve(r)),e?r.then(e):r)}var n=function(r){return function(){for(var e=[],t=0;t<arguments.length;t++)e[t]=arguments[t];try{return Promise.resolve(r.apply(this,e))}catch(r){return Promise.reject(r)}}}(function(...e){return t(r(...e),function(n){return t(r(...e),function(r){return[n,r]})})});export default n;
+//# sourceMappingURL=noPkgName.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package no-pkg-name 6`] = `
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):((e=e||self).noPkgName=e.noPkgName||{},e.noPkgName.min=e.noPkgName.min||{},e.noPkgName.min.umd=e.noPkgName.min.umd||{},e.noPkgName.min.umd.js=n())}(this,function(){\\"use strict\\";const e=(n=function(...e){return e.reduce((e,n)=>e+n,0)},function(){for(var e=[],t=0;t<arguments.length;t++)e[t]=arguments[t];try{return Promise.resolve(n.apply(this,e))}catch(e){return Promise.reject(e)}});var n;function t(e,n,t){return t?n?n(e):e:(e&&e.then||(e=Promise.resolve(e)),n?e.then(n):e)}return function(e){return function(){for(var n=[],t=0;t<arguments.length;t++)n[t]=arguments[t];try{return Promise.resolve(e.apply(this,n))}catch(e){return Promise.reject(e)}}}(function(...n){return t(e(...n),function(r){return t(e(...n),function(e){return[r,e]})})})});
+//# sourceMappingURL=noPkgName.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package no-pkg-name 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, (global.noPkgName = global.noPkgName || {}, global.noPkgName.umd = global.noPkgName.umd || {}, global.noPkgName.umd.js = factory()));
+}(this, (function () { 'use strict';
+
+	function _async(f) {
+	  return function () {
+	    for (var args = [], i = 0; i < arguments.length; i++) {
+	      args[i] = arguments[i];
+	    }
+
+	    try {
+	      return Promise.resolve(f.apply(this, args));
+	    } catch (e) {
+	      return Promise.reject(e);
+	    }
+	  };
+	}
+
+	const two = _async(function (...args) {
+	  return args.reduce((total, value) => total + value, 0);
+	});
+
+	function _await(value, then, direct) {
+	  if (direct) {
+	    return then ? then(value) : value;
+	  }
+
+	  if (!value || !value.then) {
+	    value = Promise.resolve(value);
+	  }
+
+	  return then ? value.then(then) : value;
+	}
+
+	function _async$1(f) {
+	  return function () {
+	    for (var args = [], i = 0; i < arguments.length; i++) {
+	      args[i] = arguments[i];
+	    }
+
+	    try {
+	      return Promise.resolve(f.apply(this, args));
+	    } catch (e) {
+	      return Promise.reject(e);
+	    }
+	  };
+	}
+
+	var index = _async$1(function (...args) {
+	  return _await(two(...args), function (_two) {
+	    return _await(two(...args), function (_two2) {
+	      return [_two, _two2];
+	    });
+	  });
+	});
+
+	return index;
+
+})));
+//# sourceMappingURL=noPkgName.umd.js.map
+"
+`;
+
+exports[`builderz working for single package pretty 1`] = `2`;
+
+exports[`builderz working for single package pretty 2`] = `
+"#!/usr/bin/env node
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+const allTheIpsum = \`
+
+There is immense joy in just watching - watching all the little creatures in nature. I'll go over the colors one more
+time that we use: Titanium white, Thalo green, Prussian blue, Van Dyke brown, Alizarin crimson, Sap green, Cad yellow,
+and Permanent red. If you don't like it - change it. It's your world. Be brave. Sometimes you learn more from your
+mistakes than you do from your masterpieces.
+
+Trees grow in all kinds of ways. They're not all perfectly straight. Not every limb is perfect. Now let's put some happy
+little clouds in here. We have no limits to our world. We're only limited by our imagination. The first step to doing
+anything is to believe you can do it. See it finished in your mind before you ever start. Even trees need a friend. We
+all need friends. And that's when it becomes fun - you don't have to spend your time thinking about what's happening -
+you just let it happen.
+
+रिती संपादक बेंगलूर अन्तरराष्ट्रीयकरन शीघ्र भाषा चिदंश उद्योग विस्तरणक्षमता चिदंश एकएस तरहथा। प्रोत्साहित उपेक्ष बिन्दुओ
+ध्येय देने गुजरना ऎसाजीस निर्माण नवंबर लिए। एसेएवं उपलब्धता मुश्किले डाले। बहतर सहायता माध्यम भाषाओ समूह
+
+井待品亡写回横提和指生志考結。重特天県偏切運録広詳三人転者数代歳。秀天戦機広八型希金生作事国第。年米教止証車断級弘報安楽
+銀必約現獲料切。点額講問課覧傷邸出送跡出懲。編米人験由社迷入解公著片法記択昇必崎掲清。摩出元自越食多県実間旅売主注理併間
+話策。小政退時年福米越給新家入解美露方堀港朝。俊間髪物縦該高報見甲購形州日事。
+
+🌸🍂🌃🐧🍘🏧🍮 🌶👢🔗🐥🔼🎮 🐤🍲📆👧🎼🐒 💑🍖📴🐠🍼 🎱🔮🍦💳👹 💫🏮📅🍑📭🎎 🏭💿🏫🔢👚💩 👇🌄🌗🔵💦 🔺🔡🌍🐗🏀📫
+📻🍵🐰🔜🕧 🌴🌞🕙🎨🎾🔊🏰 🎑🌆🔁🌂 🕐📣📉🌴🕠📢 🎀📖🎋🔱📒💰 🍅🐻🌃🌖. 🎁🕔👎🎷📀📞 🍁🔫🍀🌃📹 💈📂💶👕 🍡📰👛🐻
+🍖🐽💫📼 🍆🎀💛👫🔹 🎷🕙🌱👸🕁🔝 🍸🔅👿🐡. 🐟🔐🏡🔅👾 🐱💱👺🍶 🎠🔆🎤🏥🌻🗾 👽🎯💈🏣🔊📴💆🏫 🔉🌉🍃🌻 🎅🔌🔻💣 🌸🍎🐀🌇
+🗻👔📤💤🔶. 🍆👣🕕👦📦👑 🐍🐉🔶🕕 🍲👩🍍🌕📻👒📵 🔣🌋🌟👼 🔏📀🐆🍖🍮 🐁🌘🐻🏥🐡🔶🔘🏭 👡🔫🔗📊📻 🍂💧🌿📥🔚 📹💻🔌💠🌚
+🐦💴🌎🌞🏤.
+
+There is immense joy in just watching - watching all the little creatures in nature. I'll go over the colors one more
+time that we use: Titanium white, Thalo green, Prussian blue, Van Dyke brown, Alizarin crimson, Sap green, Cad yellow,
+and Permanent red. If you don't like it - change it. It's your world. Be brave. Sometimes you learn more from your
+mistakes than you do from your masterpieces. That's why I paint - because I can create the kind of world I want - and I
+can make this world as happy as I want it. I was blessed with a very steady hand; and it comes in very handy when you're
+doing these little delicate things. We'll paint one happy little tree right here. These things happen automatically. All
+you have to do is just let them happen.
+
+🐻🍘💀🐪 🕧🎂🕃🍵🏠 💎🌄🐐📘🐄 🍂🏤👊🍖 👆🍂📫👪🐈🕢👓 👯🕞🏉🍚🎆🔠🌵 🎭🎎💵📮📭 🔪💨📢📕 🐔📬👪🏄🐙🗽📤.
+💛👴💧🎁👗💟👡💎 🎷🕡👮🗾🍷 🎪🍇🍩💰 📫🐗🎄🍍🎃 🎯🌴🐍🔉📰 👼👧🐢🕔🔷📞🍩 🔘👑🌆🌒🔣 🔆👺📴👾 🔝💑💸💒🏡🔸 🔟👞📷🔱👠
+📵🏠📕🕝🐂👪 💐🎾🕁🗾👊📪. 🍉🏁👰🏡🕔💒🐯 🐟🍡📴🌿👱👢 📵💄🌊🌵🐫🍏 🎎🕠🍍💭💀👖 🎵💘🔗🍖 📧🌘🍅🕚📘🔮 👤🌾👿🐍🎽🌹
+🎲🎎💅📪🐐🍢📈 🏣🐑👇👼🐄🍔 🍠📧🌊🕁🔛🐩. 🌺📊🍼🐁💼 🔈💬🌱🎑🔊🐙💲👩 🍇👞📎👻🌔 💑🕁🎲💤 🎮📃🕖📖 📻💬🔢💔🐇👬 🔨🌃📈🔞
+🌒🎈👙🔥🐊 📭👍📢👊📟.
+
+出死問民同歴術荘面族上自。窃指写氷名続球投込光試事樹増。作合副者扶実権守安展感意環待質出。告供体企紙勢構込君奪属仕子業戦
+浮私。長論攻士踊再連公雪地約政近第公。界地島命党浮国沼出問気混心未独院。朝原妙画岡性制領子金次問無浦妥混口時研。道記険健
+集立根聖間前設集族山要本覧。変注再悩式付療場図験問県家界月止収文。
+
+लेकिन उसके संपादक उपलब्ध दिनांक प्रति सम्पर्क प्राधिकरन नाकर मुक्त कलइस वेबजाल वर्तमान समस्याओ देखने भोगोलिक केन्द्रिय
+किया खयालात विज्ञान ध्येय गटको साधन चिदंश पासपाई व्याख्या मार्गदर्शन संदेश जिवन प्रतिबध वार्तालाप किके विश्व खरिदने
+हुआआदी तकनीकी संदेश सारांश असरकारक वार्तालाप चाहे पहोच। अतित पुर्णता केन्द्रिय
+
+👅💾🐂🔙 🐂🎠👶🐮🐛 👛💗💶🌿💒 🐐🌱🐶🌴🏤🐒 🔪🍡🎸🐛🍖 📗🎓🏊🕀🎿 🔅📋📥👳🔝 🐗👝🏄🐲 📂🎷🐎🏯💎🐹 📲🍍🏥🔂🕚🐉🎤
+🌕🐴📐🎪💋. 💔👂🐗📷🎐 🌹📔💒📝👎📭 🔖🍶💺🕘 🔡💘🎪🔚🔯👉 💯🎉👠🎁🐌💵 👌🔉🎹🕒💕🍁 🏡🍢🔹🔷👀💦🏉👀 👑🐺🐁🏤
+🎺🍁🐙🐮🌃🕢🐟 🍶🎃🕕🔦 🐧🔝💔💚🔫👍 🌉🔁🌄📺 👓🎳📧🌆💖🍋🕔. 🍥🔘🗼📟 🍹🔸🔰🕣🌍 🏡💽🍬👗👧 📩👬🌻🐐🌞🌎🐵🔛 🏆🌹🍰🔬📕
+👋🎩🍓🌏👙 🎁🏃🎌🍳🔋👎📔 🐈🌽🔘💮 🏬🐷💿🕕. 📕👖📦📡 🎅🎺🏭🍗💜💷🐦 💻💚🐪🕠🔀 💰🍹💶🍶🎥📄 🌛👕🐲🐣🍷🎬 🐥🎯🔵🎹
+🌿👌🐚🍛🏪 🌵📞💃📗👱👩 📟🐸🌺🐅👮 💚🐦💉💞🌛 🔼🔤👓🏡💩.
+
+
+यधपि बाजार तकरीबन आंतरजाल प्राधिकरन लगती संदेश एसलिये बिन्दुओ प्रोत्साहित जानकारी ढांचामात्रुभाषा बाजार बदले प्रमान
+अनुवाद विकेन्द्रित पसंद ढांचा हमारि जोवे उद्योग संस्थान और्४५० विकसित उदेश लेकिन सकती वार्तालाप लाभान्वित संदेश उदेश
+पहोच। लचकनहि अनुवाद सुविधा एकत्रित कीने सक्षम भीयह अत्यंत लचकनहि निरपेक्ष कराना हमारि प्राप्त पुर्णता प्रतिबध्दता होगा
+उन्हे जाएन खयालात पहोचाना
+
+散待望会窮縮囲前賀理格顔欧製暮景初子加。首稿覧析回未帯則号医間本取退埋帯品。右歳約幻病護指極講賞京応。野受移供頑特公却報
+法利務水提士政駐物際。角媛分地昧況面日残金真福方雨入顔作化。最刊情感売校見強移本説注辞。経必好以小球生音明優去験見政感治
+報付。講刊切記勝帯載豪著転読金止。金子森午模移言兆埠関価亡出目載。
+
+Work on one thing at a time. Don't get carried away - we have plenty of time. Everything is happy if you choose to make
+it that way. Happy painting, God bless. You can create anything that makes you happy. Just make a decision and let it
+go. Nice little clouds playing around in the sky.You can do anything here - the only pre-requisite is that it makes you
+happy. I'm going to mix up a little color. We’ll use Van Dyke Brown, Permanent Red, and a little bit of Prussian Blue.
+Let's make some happy little clouds in our world.
+
+पहेला गएआप स्वतंत्र प्राधिकरन सेऔर अनुकूल ब्रौशर बिन्दुओमे सदस्य गुजरना तकनिकल वैश्विक सकते बनाति चिदंश चाहे कुशलता
+वर्तमान प्रोत्साहित देने विवरन पहोचाना विकेन्द्रियकरण अनुकूल विभाजनक्षमता औषधिक अन्य खरिदे दिये आवश्यक समस्याए कम्प्युटर
+विनिमय अविरोधता लाभान्वित लाभो ढांचा
+
+抄聞調時得直決移警撃覧進聞滑公政央。日探劇票選伊追短青功書更将奈府成多。味治理育月漬安意散護良読京。芳豚大度面傾府山応著
+器地捜志。止高棋戻管明証経処流自勝動続。装載聞視属王減通橋説主費事業情芸。追若得本臭稿事馬予治川劇覧記今竹犯破育食。参兆
+徹括単写東家素講舞校食医咋存務代連子。球設国事検問周東集題聞供奈。
+
+🍊🌆📛🍛🌊🍡🍒 🔦🐟🐵🍚🌐🍛🐏 🔆💍📟🎧 🔐📤💺🐒 🔥🔬🐣💹🌻👚 🎰👯🎡🗻💯🐉🌗 🍐👣🐯🔖📚 💡📟👨🍮🍼💛📞 🕕🐁🌾🏧💻📷
+💗🐢🏥🎵🐰🍉 🏥🔎💛💘🔧🍛🎿 🍟🌰🐴🏫🎀 🎷🌿🌴🏤🍢📳🍺 🐗👷🌳👦📩🌁 🐂🔜🔙📕. 🌎🍠📓📠🕡 🎽🔺🔱🌔📗🎤 🎫🍃👚🍤🐽🌰
+🕠🌉📪🍒🐃💲 🎢🔯👶🔙🔚🕝 🍮📒🏉🏨🐝🌿 👔💫🏁🎺 🐸💞🌈🐸 📣🔯📅🐍🐴 🌑🌍🌛👀 🕂👟🐕📃🎇🔞 🍮🔏🍥👨 🐪📲🐐🎁 🍥🔁📑💮🌘.
+🌏🎎🍛👯 🔈🎸💨🏧📚 🏪💼🎣🔚 🐤💳💁👓 👃🍆🕘🐋👬🐣 🕚🏃🌄🔷🌈🔖 💥💧🔴🌛🍁👦 💣🐐🕓🎠🕚🕞🏭 💨👓🏢🌓🔄. 📪🔜💹👤👂🐭
+🕚🔎🐂🏂👍📻 👾💠🌕📻🎍 🐟🔬🏢💍 👓👠👤🎐💸👝 🔟💕🕛💊 🍩🌙👬🐘 🍪🔙📉💔🐝🕝 📭🕡🎼💈📇🔡 👓🍁🎾👯👨 🏇🍱🐢🌛
+🎇🐩📴🎋🕁📎🎈 🐌👱📎🍹👆 👐🍐📗👽🐹💜 📭🌔🌅🍯👀.
+
+🔜🐰🏊🍃🐮 🔪🔐📇🐩 🐬👔🍙🍩💉 🏉👩👔🍞🍟🌂 🍺🕔🌖🔪🔩🍥 🎓🍒🌅🐘💛 🐔🐊📶🐊 👂📌👂🍺 💗🐳🎠📧🏭💧 🐝📅🍆🔞🏆
+👇🔂🐺🔬🎯🔳🎐🎍 💖💅🐲🔭📔🏊🔋 🐨📫🕢🎁. 🐯💁🔘📰🐪 💥👭🍘🎴📣💂💄 🐏🔊🐚👔🎿🐙 🔕🐞💹📁 🔊👴👬👪 👠📱👃📍 🏢🐃🍯🍹🗻
+🐩💮👲👠 🍏🎽📄🐋 🔣💉🔉📒💸🎭👎 💁🗾🔵🐪🍣 🍃🔝💥🔒👴. 📦🔟🔶💷🍥 🍚🕤👦🍻🔥🍹 👄🌜🐑🌀🐃🔪🕦 🌟🐶🍞🕥🌛 👮🐄🏬🎴👂💼📵
+🌋📐🐲👥 🔒🏭🔭💿🎫🎄 💓🐓🎐🎁👔📟 💌🍇🎶👷🎬 🌌💀🎸💡 📔🐢💁🔊👘🐳🌞 🎩📝💟🍼💦🔄 🕒🍼🏧🎄🔃💐. 🎆🌜👗👿 🐁🌑💮👙🎌👞
+🏫📙🌌🕙🐥 👓🌑💎💸📹📒 👋🐎🍡🎾👸🗽 📢📓🌍🏮📳🔈 👶🐷🐭🎿🔴🗾🏬 🌆🔈🍡💞💭🎨. \`;
+
+exports.allTheIpsum = allTheIpsum;
+"
+`;
+
+exports[`builderz working for single package pretty 3`] = `
+"#!/usr/bin/env node
+\\"use strict\\";Object.defineProperty(exports,\\"__esModule\\",{value:!0}),exports.allTheIpsum=\\"\\\\n\\\\nThere is immense joy in just watching - watching all the little creatures in nature. I'll go over the colors one more\\\\ntime that we use: Titanium white, Thalo green, Prussian blue, Van Dyke brown, Alizarin crimson, Sap green, Cad yellow,\\\\nand Permanent red. If you don't like it - change it. It's your world. Be brave. Sometimes you learn more from your\\\\nmistakes than you do from your masterpieces.\\\\n\\\\nTrees grow in all kinds of ways. They're not all perfectly straight. Not every limb is perfect. Now let's put some happy\\\\nlittle clouds in here. We have no limits to our world. We're only limited by our imagination. The first step to doing\\\\nanything is to believe you can do it. See it finished in your mind before you ever start. Even trees need a friend. We\\\\nall need friends. And that's when it becomes fun - you don't have to spend your time thinking about what's happening -\\\\nyou just let it happen.\\\\n\\\\nरिती संपादक बेंगलूर अन्तरराष्ट्रीयकरन शीघ्र भाषा चिदंश उद्योग विस्तरणक्षमता चिदंश एकएस तरहथा। प्रोत्साहित उपेक्ष बिन्दुओ\\\\nध्येय देने गुजरना ऎसाजीस निर्माण नवंबर लिए। एसेएवं उपलब्धता मुश्किले डाले। बहतर सहायता माध्यम भाषाओ समूह\\\\n\\\\n井待品亡写回横提和指生志考結。重特天県偏切運録広詳三人転者数代歳。秀天戦機広八型希金生作事国第。年米教止証車断級弘報安楽\\\\n銀必約現獲料切。点額講問課覧傷邸出送跡出懲。編米人験由社迷入解公著片法記択昇必崎掲清。摩出元自越食多県実間旅売主注理併間\\\\n話策。小政退時年福米越給新家入解美露方堀港朝。俊間髪物縦該高報見甲購形州日事。\\\\n\\\\n🌸🍂🌃🐧🍘🏧🍮 🌶👢🔗🐥🔼🎮 🐤🍲📆👧🎼🐒 💑🍖📴🐠🍼 🎱🔮🍦💳👹 💫🏮📅🍑📭🎎 🏭💿🏫🔢👚💩 👇🌄🌗🔵💦 🔺🔡🌍🐗🏀📫\\\\n📻🍵🐰🔜🕧 🌴🌞🕙🎨🎾🔊🏰 🎑🌆🔁🌂 🕐📣📉🌴🕠📢 🎀📖🎋🔱📒💰 🍅🐻🌃🌖. 🎁🕔👎🎷📀📞 🍁🔫🍀🌃📹 💈📂💶👕 🍡📰👛🐻\\\\n🍖🐽💫📼 🍆🎀💛👫🔹 🎷🕙🌱👸🕁🔝 🍸🔅👿🐡. 🐟🔐🏡🔅👾 🐱💱👺🍶 🎠🔆🎤🏥🌻🗾 👽🎯💈🏣🔊📴💆🏫 🔉🌉🍃🌻 🎅🔌🔻💣 🌸🍎🐀🌇\\\\n🗻👔📤💤🔶. 🍆👣🕕👦📦👑 🐍🐉🔶🕕 🍲👩🍍🌕📻👒📵 🔣🌋🌟👼 🔏📀🐆🍖🍮 🐁🌘🐻🏥🐡🔶🔘🏭 👡🔫🔗📊📻 🍂💧🌿📥🔚 📹💻🔌💠🌚\\\\n🐦💴🌎🌞🏤.\\\\n\\\\nThere is immense joy in just watching - watching all the little creatures in nature. I'll go over the colors one more\\\\ntime that we use: Titanium white, Thalo green, Prussian blue, Van Dyke brown, Alizarin crimson, Sap green, Cad yellow,\\\\nand Permanent red. If you don't like it - change it. It's your world. Be brave. Sometimes you learn more from your\\\\nmistakes than you do from your masterpieces. That's why I paint - because I can create the kind of world I want - and I\\\\ncan make this world as happy as I want it. I was blessed with a very steady hand; and it comes in very handy when you're\\\\ndoing these little delicate things. We'll paint one happy little tree right here. These things happen automatically. All\\\\nyou have to do is just let them happen.\\\\n\\\\n🐻🍘💀🐪 🕧🎂🕃🍵🏠 💎🌄🐐📘🐄 🍂🏤👊🍖 👆🍂📫👪🐈🕢👓 👯🕞🏉🍚🎆🔠🌵 🎭🎎💵📮📭 🔪💨📢📕 🐔📬👪🏄🐙🗽📤.\\\\n💛👴💧🎁👗💟👡💎 🎷🕡👮🗾🍷 🎪🍇🍩💰 📫🐗🎄🍍🎃 🎯🌴🐍🔉📰 👼👧🐢🕔🔷📞🍩 🔘👑🌆🌒🔣 🔆👺📴👾 🔝💑💸💒🏡🔸 🔟👞📷🔱👠\\\\n📵🏠📕🕝🐂👪 💐🎾🕁🗾👊📪. 🍉🏁👰🏡🕔💒🐯 🐟🍡📴🌿👱👢 📵💄🌊🌵🐫🍏 🎎🕠🍍💭💀👖 🎵💘🔗🍖 📧🌘🍅🕚📘🔮 👤🌾👿🐍🎽🌹\\\\n🎲🎎💅📪🐐🍢📈 🏣🐑👇👼🐄🍔 🍠📧🌊🕁🔛🐩. 🌺📊🍼🐁💼 🔈💬🌱🎑🔊🐙💲👩 🍇👞📎👻🌔 💑🕁🎲💤 🎮📃🕖📖 📻💬🔢💔🐇👬 🔨🌃📈🔞\\\\n🌒🎈👙🔥🐊 📭👍📢👊📟.\\\\n\\\\n出死問民同歴術荘面族上自。窃指写氷名続球投込光試事樹増。作合副者扶実権守安展感意環待質出。告供体企紙勢構込君奪属仕子業戦\\\\n浮私。長論攻士踊再連公雪地約政近第公。界地島命党浮国沼出問気混心未独院。朝原妙画岡性制領子金次問無浦妥混口時研。道記険健\\\\n集立根聖間前設集族山要本覧。変注再悩式付療場図験問県家界月止収文。\\\\n\\\\nलेकिन उसके संपादक उपलब्ध दिनांक प्रति सम्पर्क प्राधिकरन नाकर मुक्त कलइस वेबजाल वर्तमान समस्याओ देखने भोगोलिक केन्द्रिय\\\\nकिया खयालात विज्ञान ध्येय गटको साधन चिदंश पासपाई व्याख्या मार्गदर्शन संदेश जिवन प्रतिबध वार्तालाप किके विश्व खरिदने\\\\nहुआआदी तकनीकी संदेश सारांश असरकारक वार्तालाप चाहे पहोच। अतित पुर्णता केन्द्रिय\\\\n\\\\n👅💾🐂🔙 🐂🎠👶🐮🐛 👛💗💶🌿💒 🐐🌱🐶🌴🏤🐒 🔪🍡🎸🐛🍖 📗🎓🏊🕀🎿 🔅📋📥👳🔝 🐗👝🏄🐲 📂🎷🐎🏯💎🐹 📲🍍🏥🔂🕚🐉🎤\\\\n🌕🐴📐🎪💋. 💔👂🐗📷🎐 🌹📔💒📝👎📭 🔖🍶💺🕘 🔡💘🎪🔚🔯👉 💯🎉👠🎁🐌💵 👌🔉🎹🕒💕🍁 🏡🍢🔹🔷👀💦🏉👀 👑🐺🐁🏤\\\\n🎺🍁🐙🐮🌃🕢🐟 🍶🎃🕕🔦 🐧🔝💔💚🔫👍 🌉🔁🌄📺 👓🎳📧🌆💖🍋🕔. 🍥🔘🗼📟 🍹🔸🔰🕣🌍 🏡💽🍬👗👧 📩👬🌻🐐🌞🌎🐵🔛 🏆🌹🍰🔬📕\\\\n👋🎩🍓🌏👙 🎁🏃🎌🍳🔋👎📔 🐈🌽🔘💮 🏬🐷💿🕕. 📕👖📦📡 🎅🎺🏭🍗💜💷🐦 💻💚🐪🕠🔀 💰🍹💶🍶🎥📄 🌛👕🐲🐣🍷🎬 🐥🎯🔵🎹\\\\n🌿👌🐚🍛🏪 🌵📞💃📗👱👩 📟🐸🌺🐅👮 💚🐦💉💞🌛 🔼🔤👓🏡💩.\\\\n\\\\n\\\\nयधपि बाजार तकरीबन आंतरजाल प्राधिकरन लगती संदेश एसलिये बिन्दुओ प्रोत्साहित जानकारी ढांचामात्रुभाषा बाजार बदले प्रमान\\\\nअनुवाद विकेन्द्रित पसंद ढांचा हमारि जोवे उद्योग संस्थान और्४५० विकसित उदेश लेकिन सकती वार्तालाप लाभान्वित संदेश उदेश\\\\nपहोच। लचकनहि अनुवाद सुविधा एकत्रित कीने सक्षम भीयह अत्यंत लचकनहि निरपेक्ष कराना हमारि प्राप्त पुर्णता प्रतिबध्दता होगा\\\\nउन्हे जाएन खयालात पहोचाना\\\\n\\\\n散待望会窮縮囲前賀理格顔欧製暮景初子加。首稿覧析回未帯則号医間本取退埋帯品。右歳約幻病護指極講賞京応。野受移供頑特公却報\\\\n法利務水提士政駐物際。角媛分地昧況面日残金真福方雨入顔作化。最刊情感売校見強移本説注辞。経必好以小球生音明優去験見政感治\\\\n報付。講刊切記勝帯載豪著転読金止。金子森午模移言兆埠関価亡出目載。\\\\n\\\\nWork on one thing at a time. Don't get carried away - we have plenty of time. Everything is happy if you choose to make\\\\nit that way. Happy painting, God bless. You can create anything that makes you happy. Just make a decision and let it\\\\ngo. Nice little clouds playing around in the sky.You can do anything here - the only pre-requisite is that it makes you\\\\nhappy. I'm going to mix up a little color. We’ll use Van Dyke Brown, Permanent Red, and a little bit of Prussian Blue.\\\\nLet's make some happy little clouds in our world.\\\\n\\\\nपहेला गएआप स्वतंत्र प्राधिकरन सेऔर अनुकूल ब्रौशर बिन्दुओमे सदस्य गुजरना तकनिकल वैश्विक सकते बनाति चिदंश चाहे कुशलता\\\\nवर्तमान प्रोत्साहित देने विवरन पहोचाना विकेन्द्रियकरण अनुकूल विभाजनक्षमता औषधिक अन्य खरिदे दिये आवश्यक समस्याए कम्प्युटर\\\\nविनिमय अविरोधता लाभान्वित लाभो ढांचा\\\\n\\\\n抄聞調時得直決移警撃覧進聞滑公政央。日探劇票選伊追短青功書更将奈府成多。味治理育月漬安意散護良読京。芳豚大度面傾府山応著\\\\n器地捜志。止高棋戻管明証経処流自勝動続。装載聞視属王減通橋説主費事業情芸。追若得本臭稿事馬予治川劇覧記今竹犯破育食。参兆\\\\n徹括単写東家素講舞校食医咋存務代連子。球設国事検問周東集題聞供奈。\\\\n\\\\n🍊🌆📛🍛🌊🍡🍒 🔦🐟🐵🍚🌐🍛🐏 🔆💍📟🎧 🔐📤💺🐒 🔥🔬🐣💹🌻👚 🎰👯🎡🗻💯🐉🌗 🍐👣🐯🔖📚 💡📟👨🍮🍼💛📞 🕕🐁🌾🏧💻📷\\\\n💗🐢🏥🎵🐰🍉 🏥🔎💛💘🔧🍛🎿 🍟🌰🐴🏫🎀 🎷🌿🌴🏤🍢📳🍺 🐗👷🌳👦📩🌁 🐂🔜🔙📕. 🌎🍠📓📠🕡 🎽🔺🔱🌔📗🎤 🎫🍃👚🍤🐽🌰\\\\n🕠🌉📪🍒🐃💲 🎢🔯👶🔙🔚🕝 🍮📒🏉🏨🐝🌿 👔💫🏁🎺 🐸💞🌈🐸 📣🔯📅🐍🐴 🌑🌍🌛👀 🕂👟🐕📃🎇🔞 🍮🔏🍥👨 🐪📲🐐🎁 🍥🔁📑💮🌘.\\\\n🌏🎎🍛👯 🔈🎸💨🏧📚 🏪💼🎣🔚 🐤💳💁👓 👃🍆🕘🐋👬🐣 🕚🏃🌄🔷🌈🔖 💥💧🔴🌛🍁👦 💣🐐🕓🎠🕚🕞🏭 💨👓🏢🌓🔄. 📪🔜💹👤👂🐭\\\\n🕚🔎🐂🏂👍📻 👾💠🌕📻🎍 🐟🔬🏢💍 👓👠👤🎐💸👝 🔟💕🕛💊 🍩🌙👬🐘 🍪🔙📉💔🐝🕝 📭🕡🎼💈📇🔡 👓🍁🎾👯👨 🏇🍱🐢🌛\\\\n🎇🐩📴🎋🕁📎🎈 🐌👱📎🍹👆 👐🍐📗👽🐹💜 📭🌔🌅🍯👀.\\\\n\\\\n🔜🐰🏊🍃🐮 🔪🔐📇🐩 🐬👔🍙🍩💉 🏉👩👔🍞🍟🌂 🍺🕔🌖🔪🔩🍥 🎓🍒🌅🐘💛 🐔🐊📶🐊 👂📌👂🍺 💗🐳🎠📧🏭💧 🐝📅🍆🔞🏆\\\\n👇🔂🐺🔬🎯🔳🎐🎍 💖💅🐲🔭📔🏊🔋 🐨📫🕢🎁. 🐯💁🔘📰🐪 💥👭🍘🎴📣💂💄 🐏🔊🐚👔🎿🐙 🔕🐞💹📁 🔊👴👬👪 👠📱👃📍 🏢🐃🍯🍹🗻\\\\n🐩💮👲👠 🍏🎽📄🐋 🔣💉🔉📒💸🎭👎 💁🗾🔵🐪🍣 🍃🔝💥🔒👴. 📦🔟🔶💷🍥 🍚🕤👦🍻🔥🍹 👄🌜🐑🌀🐃🔪🕦 🌟🐶🍞🕥🌛 👮🐄🏬🎴👂💼📵\\\\n🌋📐🐲👥 🔒🏭🔭💿🎫🎄 💓🐓🎐🎁👔📟 💌🍇🎶👷🎬 🌌💀🎸💡 📔🐢💁🔊👘🐳🌞 🎩📝💟🍼💦🔄 🕒🍼🏧🎄🔃💐. 🎆🌜👗👿 🐁🌑💮👙🎌👞\\\\n🏫📙🌌🕙🐥 👓🌑💎💸📹📒 👋🐎🍡🎾👸🗽 📢📓🌍🏮📳🔈 👶🐷🐭🎿🔴🗾🏬 🌆🔈🍡💞💭🎨. \\";
 "
 `;
 
@@ -67,7 +762,7 @@ exports[`builderz working for single package pure 5`] = `
 `;
 
 exports[`builderz working for single package pure 6`] = `
-"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?n(exports):\\"function\\"==typeof define&&define.amd?define([\\"exports\\"],n):n(((e=e||self).pure=e.pure||{},e.pure.min=e.pure.min||{},e.pure.min.umd=e.pure.min.umd||{},e.pure.min.umd.js={}))}(this,(function(e){\\"use strict\\";e.foo=function(){return\\"hello world\\"},Object.defineProperty(e,\\"__esModule\\",{value:!0})}));
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?n(exports):\\"function\\"==typeof define&&define.amd?define([\\"exports\\"],n):n(((e=e||self).pure=e.pure||{},e.pure.min=e.pure.min||{},e.pure.min.umd=e.pure.min.umd||{},e.pure.min.umd.js={}))}(this,function(e){\\"use strict\\";e.foo=function(){return\\"hello world\\"},Object.defineProperty(e,\\"__esModule\\",{value:!0})});
 //# sourceMappingURL=pure.min.umd.js.map
 "
 `;
@@ -93,5 +788,27 @@ exports[`builderz working for single package pure 7`] = `
 
 })));
 //# sourceMappingURL=pure.umd.js.map
+"
+`;
+
+exports[`builderz working for single package shebang 1`] = `2`;
+
+exports[`builderz working for single package shebang 2`] = `
+"#!/usr/bin/env node
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function foo() {
+  return \\"hello world\\";
+}
+
+exports.foo = foo;
+"
+`;
+
+exports[`builderz working for single package shebang 3`] = `
+"#!/usr/bin/env node
+\\"use strict\\";Object.defineProperty(exports,\\"__esModule\\",{value:!0}),exports.foo=function(){return\\"hello world\\"};
 "
 `;

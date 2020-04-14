@@ -11,22 +11,22 @@ import { NotEmptyArr } from "../../utils";
  * @param {boolean} flags.IS_PROD
  *
  * @param {string} camelizedName - camelized package name
- * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ * @param {string} buildFormat - type of build (cjs|umd|etc)
  *
  * @returns {string} name with full extension
  */
-function getBundleName({ outputName, BUILD_FORMAT, flags: { IS_PROD } }) {
+function getBundleName({ buildName, buildFormat, flags: { IS_PROD } }) {
   let ext;
 
-  if (BUILD_FORMAT === UMD) {
+  if (buildFormat === UMD) {
     ext = "umd.js";
-  } else if (BUILD_FORMAT === CJS) {
+  } else if (buildFormat === CJS) {
     ext = "cjs.js";
-  } else if (BUILD_FORMAT === ES) {
+  } else if (buildFormat === ES) {
     ext = "esm.js";
   }
 
-  const fname = `${outputName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
+  const fname = `${buildName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
 
   return fname;
 }
@@ -43,39 +43,37 @@ function getBundleName({ outputName, BUILD_FORMAT, flags: { IS_PROD } }) {
  * @param {Object} json.peerDependencies
  *
  * @param {string} distPath - where bundle will be located
- * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
+ * @param {string} buildFormat - type of build (cjs|umd|etc)
  *
  * @returns {Object} contains input option for the package.
  */
 function getOutput({
   flags,
-  outputName,
+  outputBuild: { buildPath, buildName, buildFormat },
   json: { peerDependencies },
-  buildPath,
-  BUILD_FORMAT,
   isSourcemap,
   banner,
 }) {
   const { IS_PROD } = flags;
 
   const name = getBundleName({
-    outputName,
-    BUILD_FORMAT,
+    buildName,
+    buildFormat,
     flags: { IS_PROD },
   });
 
   const output = {
     file: join(buildPath, name),
-    format: BUILD_FORMAT,
+    format: buildFormat,
     name,
     interop: false,
   };
 
-  if (BUILD_FORMAT === UMD) {
+  if (buildFormat === UMD) {
     output.globals = getGlobal(peerDependencies);
   }
 
-  if ((IS_PROD || BUILD_FORMAT === UMD) && isSourcemap) {
+  if ((IS_PROD || buildFormat === UMD) && isSourcemap) {
     output.sourcemap = true;
   }
 

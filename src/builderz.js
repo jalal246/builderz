@@ -50,6 +50,10 @@ async function builderz(opts, { isInitOpts = true } = {}) {
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
+  if (allPkgJson.length === 0) {
+    error(`Builderz has not found any valid package.json`);
+  }
+
   /**
    * Sort packages before bump to production.
    */
@@ -83,15 +87,21 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const alias = state.extractAlias();
 
-      const outputName = state.extractName();
+      const buildName = state.extractName();
 
       const banner = state.opts[BANNER];
       const isSourcemap = state.opts[SOURCE_MAP];
       const isSilent = state.opts[SILENT];
 
       await state.bundleOpt.reduce(
-        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
+        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }, idx) => {
           await bundleOptPromise;
+
+          const outputBuild = {
+            buildPath,
+            buildName,
+            buildFormat: BUILD_FORMAT,
+          };
 
           const input = await getInput({
             flags: {
@@ -102,21 +112,20 @@ async function builderz(opts, { isInitOpts = true } = {}) {
               peerDependencies,
               dependencies,
             },
+            outputBuild,
             entries,
-            BUILD_FORMAT,
             alias,
+            idx,
           });
 
           const output = await getOutput({
             flags: {
               IS_PROD,
             },
-            outputName,
             json: {
               peerDependencies,
             },
-            buildPath,
-            BUILD_FORMAT,
+            outputBuild,
             isSourcemap,
             banner,
           });
