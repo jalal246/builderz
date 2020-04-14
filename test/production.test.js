@@ -9,16 +9,17 @@ jest.setTimeout(30000);
 // ["basic-multi-entries-json", "pure", "alias"];
 describe("builderz working for single package", () => {
   it.each([
-    // "basic-multi-entries-json",
-    // "pure",
-    // "alias",
-    // "basic-json",
-    // "shebang",
-    // "pretty",
-    // "no-pkg-name",
+    "basic-multi-entries-json",
+    "pure",
+    "alias",
+    "basic",
+    "basic-json",
+    "shebang",
+    "pretty",
+    "no-pkg-name",
     "basic-css",
   ])("%s", async (pkgName) => {
-    const pathPure = resolve(__dirname, "samples", pkgName);
+    const pathPure = resolve(__dirname, "fixtures", pkgName);
     const distPath = resolve(pathPure, "dist");
 
     try {

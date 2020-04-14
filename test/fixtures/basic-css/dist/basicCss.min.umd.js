@@ -1,0 +1,2 @@
+!function(s,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):((s=s||self).basicCss=s.basicCss||{},s.basicCss.min=s.basicCss.min||{},s.basicCss.min.umd=s.basicCss.min.umd||{},s.basicCss.min.umd.js=e())}(this,function(){"use strict";return function(){const s=document.createElement("div");return s.className="testing",s}});
+//# sourceMappingURL=basicCss.min.umd.js.map
