@@ -1,2 +1,2 @@
-var e={test:"true"};export default function(...r){return(t=e)&&t.then||(t=Promise.resolve(t)),t;var t}
+function n(n,t,r,e,u,o,i){try{var c=n[o](i),a=c.value}catch(n){return void r(n)}c.done?t(a):Promise.resolve(a).then(e,u)}function t(t){return function(){var r=this,e=arguments;return new Promise(function(u,o){var i=t.apply(r,e);function c(t){n(i,u,o,c,a,"next",t)}function a(t){n(i,u,o,c,a,"throw",t)}c(void 0)})}}var r={test:"true"};function e(){return(e=t(function*(...n){return r})).apply(this,arguments)}export default function(){return e.apply(this,arguments)}
 //# sourceMappingURL=basicJson.min.esm.js.map

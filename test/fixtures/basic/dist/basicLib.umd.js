@@ -1,62 +1,68 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, (global.basicLib = global.basicLib || {}, global.basicLib.umd = global.basicLib.umd || {}, global.basicLib.umd.js = factory()));
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, (global.basicLib = global.basicLib || {}, global.basicLib.umd = global.basicLib.umd || {}, global.basicLib.umd.js = factory()));
 }(this, (function () { 'use strict';
 
-	function _async(f) {
-	  return function () {
-	    for (var args = [], i = 0; i < arguments.length; i++) {
-	      args[i] = arguments[i];
-	    }
+  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    try {
+      var info = gen[key](arg);
+      var value = info.value;
+    } catch (error) {
+      reject(error);
+      return;
+    }
 
-	    try {
-	      return Promise.resolve(f.apply(this, args));
-	    } catch (e) {
-	      return Promise.reject(e);
-	    }
-	  };
-	}
+    if (info.done) {
+      resolve(value);
+    } else {
+      Promise.resolve(value).then(_next, _throw);
+    }
+  }
 
-	const two = _async(function (...args) {
-	  return args.reduce((total, value) => total + value, 0);
-	});
+  function _asyncToGenerator(fn) {
+    return function () {
+      var self = this,
+          args = arguments;
+      return new Promise(function (resolve, reject) {
+        var gen = fn.apply(self, args);
 
-	function _await(value, then, direct) {
-	  if (direct) {
-	    return then ? then(value) : value;
-	  }
+        function _next(value) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+        }
 
-	  if (!value || !value.then) {
-	    value = Promise.resolve(value);
-	  }
+        function _throw(err) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+        }
 
-	  return then ? value.then(then) : value;
-	}
+        _next(undefined);
+      });
+    };
+  }
 
-	function _async$1(f) {
-	  return function () {
-	    for (var args = [], i = 0; i < arguments.length; i++) {
-	      args[i] = arguments[i];
-	    }
+  function two() {
+    return _two.apply(this, arguments);
+  }
 
-	    try {
-	      return Promise.resolve(f.apply(this, args));
-	    } catch (e) {
-	      return Promise.reject(e);
-	    }
-	  };
-	}
+  function _two() {
+    _two = _asyncToGenerator(function* (...args) {
+      return args.reduce((total, value) => total + value, 0);
+    });
+    return _two.apply(this, arguments);
+  }
 
-	var index = _async$1(function (...args) {
-	  return _await(two(...args), function (_two) {
-	    return _await(two(...args), function (_two2) {
-	      return [_two, _two2];
-	    });
-	  });
-	});
+  function index () {
+    return _ref.apply(this, arguments);
+  }
 
-	return index;
+  function _ref() {
+    _ref = _asyncToGenerator(function* (...args) {
+      return [yield two(...args), yield two(...args)];
+    });
+    return _ref.apply(this, arguments);
+  }
+
+  return index;
 
 })));
 //# sourceMappingURL=basicLib.umd.js.map

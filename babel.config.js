@@ -13,7 +13,7 @@ module.exports = (api) => {
     ],
     plugins: [
       "@babel/plugin-transform-classes",
-      "babel-plugin-transform-async-to-promises",
+      "@babel/plugin-transform-async-to-generator",
     ],
   };
 };

@@ -8,14 +8,14 @@ import { NotEmptyArr } from "../../utils";
  * Gets full bundle name camelized with extension
  *
  * @param {Object} flags
- * @param {boolean} flags.IS_PROD
+ * @param {boolean} flags.isProd
  *
  * @param {string} camelizedName - camelized package name
  * @param {string} buildFormat - type of build (cjs|umd|etc)
  *
  * @returns {string} name with full extension
  */
-function getBundleName({ buildName, buildFormat, flags: { IS_PROD } }) {
+function getBundleName({ buildName, buildFormat, flags: { isProd } }) {
   let ext;
 
   if (buildFormat === UMD) {
@@ -26,7 +26,7 @@ function getBundleName({ buildName, buildFormat, flags: { IS_PROD } }) {
     ext = "esm.js";
   }
 
-  const fname = `${buildName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
+  const fname = `${buildName}.${isProd ? `min.${ext}` : `${ext}`}`;
 
   return fname;
 }
@@ -35,7 +35,7 @@ function getBundleName({ buildName, buildFormat, flags: { IS_PROD } }) {
  * Gets build
  *
  * @param {Object} flags
- * @param {boolean} flags.IS_PROD
+ * @param {boolean} flags.isProd
  *
  * @param {string} outputName -  package output name
  *
@@ -54,12 +54,12 @@ function getOutput({
   isSourcemap,
   banner,
 }) {
-  const { IS_PROD } = flags;
+  const { isProd } = flags;
 
   const name = getBundleName({
     buildName,
     buildFormat,
-    flags: { IS_PROD },
+    flags: { isProd },
   });
 
   const output = {
@@ -73,7 +73,7 @@ function getOutput({
     output.globals = getGlobal(peerDependencies);
   }
 
-  if ((IS_PROD || buildFormat === UMD) && isSourcemap) {
+  if ((isProd || buildFormat === UMD) && isSourcemap) {
     output.sourcemap = true;
   }
 

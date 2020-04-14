@@ -1,53 +1,59 @@
-function _async(f) {
-  return function () {
-    for (var args = [], i = 0; i < arguments.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    try {
-      return Promise.resolve(f.apply(this, args));
-    } catch (e) {
-      return Promise.reject(e);
-    }
-  };
-}
-
-const two = _async(function (...args) {
-  return args.reduce((total, value) => total + value, 0);
-});
-
-function _await(value, then, direct) {
-  if (direct) {
-    return then ? then(value) : value;
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
   }
 
-  if (!value || !value.then) {
-    value = Promise.resolve(value);
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
   }
-
-  return then ? value.then(then) : value;
 }
 
-function _async$1(f) {
+function _asyncToGenerator(fn) {
   return function () {
-    for (var args = [], i = 0; i < arguments.length; i++) {
-      args[i] = arguments[i];
-    }
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
 
-    try {
-      return Promise.resolve(f.apply(this, args));
-    } catch (e) {
-      return Promise.reject(e);
-    }
-  };
-}
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
 
-var index = _async$1(function (...args) {
-  return _await(two(...args), function (_two) {
-    return _await(two(...args), function (_two2) {
-      return [_two, _two2];
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
     });
+  };
+}
+
+function two() {
+  return _two.apply(this, arguments);
+}
+
+function _two() {
+  _two = _asyncToGenerator(function* (...args) {
+    return args.reduce((total, value) => total + value, 0);
   });
-});
+  return _two.apply(this, arguments);
+}
+
+function index () {
+  return _ref.apply(this, arguments);
+}
+
+function _ref() {
+  _ref = _asyncToGenerator(function* (...args) {
+    return [yield two(...args), yield two(...args)];
+  });
+  return _ref.apply(this, arguments);
+}
 
 export default index;

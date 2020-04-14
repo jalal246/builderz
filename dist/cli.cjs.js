@@ -14,6 +14,7 @@ var commonjs = require('@rollup/plugin-commonjs');
 var json = require('@rollup/plugin-json');
 var aliasPlugin = require('@rollup/plugin-alias');
 var multiEntry = require('@rollup/plugin-multi-entry');
+var postcss = require('rollup-plugin-postcss');
 var babel = require('rollup-plugin-babel');
 var rollupPluginTerser = require('rollup-plugin-terser');
 var analyze = require('rollup-plugin-analyzer');
@@ -23,377 +24,40 @@ var validateAccess = require('validate-access');
 var shellQuote = require('shell-quote');
 var isEmptyObj = require('lodash.isempty');
 
-const UMD = "umd";
-const CJS = "cjs";
-const ES = "es";
-const IS_SILENT = "isSilent";
-const FORMATS = "formats";
-const MINIFY = "minify";
-const CLEAN_BUILD = "cleanBuild";
-const CAMEL_CASE = "camelCase";
-const BUILD_NAME = "buildName";
-const OUTPUT = "output";
-const PKG_PATHS = "pkgPaths";
-const PKG_NAMES = "pkgNames";
-const ALIAS = "alias";
-const ENTRIES = "entries";
-const BANNER = "banner";
-const types = {
-  [IS_SILENT]: "boolean",
-  [FORMATS]: "array",
-  [MINIFY]: "boolean",
-  [CLEAN_BUILD]: "boolean",
-  [CAMEL_CASE]: "boolean",
-  [BUILD_NAME]: "string",
-  [OUTPUT]: "string",
-  [PKG_PATHS]: "array",
-  [PKG_NAMES]: "array",
-  [ALIAS]: "array",
-  [ENTRIES]: "array",
-  [BANNER]: "string"
-};
-function getVarTypes(varName) {
-  return types[varName];
-}
-
-/**
- * Returns plugins according to passed flags.
- *
- * @param {boolean} [IS_SILENT=true]
- * @param {boolean} [IS_PROD=true]
- * @param {string} BUILD_FORMAT
- * @returns {Array} plugins
- */
-
-function getPlugins({
-  // TODO: why those are capital? with default values?
-  IS_SILENT = true,
-  IS_PROD = true,
-  isMultiEntries,
-  BUILD_FORMAT,
-  alias
-}) {
-  const essentialPlugins = [
-  /**
-   * Beeps when a build ends with errors.
-   */
-  beep(), babel({
-    runtimeHelpers: true,
-    babelrc: true
-  }), isMultiEntries ? multiEntry() : null, alias.length > 0 ? aliasPlugin({
-    entries: alias
-  }) : null,
-  /**
-   * Automatically installs dependencies that are imported by a bundle, even
-   * if not yet in package.json.
-   */
-  auto(),
-  /**
-   * Convert CommonJS modules to ES6, so they can be included in a Rollup
-   * bundle.
-   */
-  commonjs(),
-  /**
-   * Locates modules using the Node resolution algorithm, for using third
-   * party modules in node_modules.
-   */
-  resolve({
-    preferBuiltins: true,
-    extensions: [".mjs", ".js", ".jsx", ".json", ".node"]
-  }),
-  /**
-   * Converts .json files to ES6 modules.
-   */
-  json()].filter(Boolean);
-
-  if (!IS_SILENT) {
-    essentialPlugins.push(analyze({
-      summaryOnly: true
-    }));
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
   }
 
-  if (IS_PROD) {
-    essentialPlugins.push(
-    /**
-     * Minify generated es bundle.
-     */
-    rollupPluginTerser.terser({
-      // default undefined
-      ecma: 5,
-      // default false
-      sourcemap: true,
-      // display warnings when dropping unreachable code or unused declarations etc
-      warnings: true,
-      compress: {
-        // default: false
-        // true to discard calls to console.* functions.
-        drop_console: true,
-        // default: false
-        // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
-        keep_infinity: true
-      },
-      // pass an empty object {} or a previously used nameCache object
-      // if you wish to cache mangled variable
-      // and property names across multiple invocations of minify
-      nameCache: {},
-      mangle: {
-        properties: false
-      },
-      // true if to enable top level variable
-      // and function name mangling
-      // and to drop unused variables and functions.
-      toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES
-    }));
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
   }
-
-  return essentialPlugins;
 }
 
-/**
- * Resolves external dependencies and peerDependencies for package input
- * according to build format.
- *
- * @param {Object} json.peerDependencies
- * @param {Object} json.dependencies
- * @param {string} BUILD_FORMAT
- *
- * @returns {function} - function resolver
- */
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
 
-function getExternal({
-  peerDependencies,
-  dependencies,
-  BUILD_FORMAT
-}) {
-  const external = [];
-  /**
-   * Always exclude peer deps.
-   */
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
 
-  if (peerDependencies) {
-    external.push(...Object.keys(peerDependencies));
-  }
-  /**
-   * Add dependencies to bundle when umd
-   */
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
 
-
-  if (BUILD_FORMAT !== UMD) {
-    external.push(...Object.keys(dependencies));
-  }
-
-  return external.length === 0 ? () => false : id => new RegExp(`^(${external.join("|")})($|/)`).test(id);
-}
-
-/**
- * Gets build input
- *
- * @param {Object} flags
- * @param {boolean} flags.IS_SILENT
- * @param {boolean} flags.IS_PROD
- *
- * @param {Object} json
- * @param {Object} json.peerDependencies
- * @param {Object} json.dependencies
- *
- * @param {string} sourcePath - where package is located
- * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
- *
- * @returns {Object} contains input option for the package.
- */
-
-function genInput({
-  flags: {
-    IS_SILENT,
-    IS_PROD
-  },
-  json: {
-    peerDependencies,
-    dependencies
-  },
-  entries,
-  BUILD_FORMAT,
-  alias
-}) {
-  const external = getExternal({
-    peerDependencies,
-    dependencies,
-    BUILD_FORMAT
-  });
-  const isMultiEntries = Array.isArray(entries);
-  const plugins = getPlugins({
-    IS_SILENT,
-    IS_PROD,
-    BUILD_FORMAT,
-    isMultiEntries,
-    alias
-  });
-  return {
-    input: entries,
-    external,
-    plugins
-  };
-}
-
-/**
- * Don't include peerDependencies in a bundle.
- * Called when umd.
- *
- * @param {Object} peerDependencies
- * @returns Array of external deps not included in bundle.
- */
-
-function getGlobal(peerDependencies = {}) {
-  return Object.keys(peerDependencies).reduce((deps, dep) => {
-    // eslint-disable-next-line
-    deps[dep] = camelize(dep);
-    return deps;
-  }, {});
-}
-
-function NotEmptyArr(arr) {
-  return arr.length > 0;
-}
-/**
- * Checks if passed arr is type array and not empty
- *
- * @param {Array} arr
- * @returns {boolean}
- */
-
-
-function isValidArr(arr) {
-  return Array.isArray(arr) && NotEmptyArr(arr);
-}
-/**
- * Modify package name in package.json to name the output build correctly.
- * remove @
- * replace / with -
- * remove - and capitalize the first letter after it
- *
- * @param {string} name - package name in package.json
- * @returns {string} modified name for bundle
- */
-
-
-function camelizeOutputBuild(name) {
-  return camelize(name.replace("@", "").replace("/", "-"));
-}
-/**
- * Gen bundle format and minify options
- *
- * @param {Array} customFormats
- * @param {boolean} isMinify
- * @returns {Object[]} bundle output options
- */
-
-
-function getBundleOpt(customFormats, isMinify) {
-  const DEFAULT_FORMATS = [UMD, CJS, ES];
-  const gen = [];
-  const buildFormat = NotEmptyArr(customFormats) ? customFormats : DEFAULT_FORMATS;
-  const minifyingProcess = NotEmptyArr(customFormats) && isBoolean(isMinify) ? [isMinify] : [true, false];
-  buildFormat.forEach(format => {
-    minifyingProcess.forEach(bool => {
-      gen.push({
-        BUILD_FORMAT: format,
-        IS_PROD: bool
-      });
+      _next(undefined);
     });
-  });
-  return gen;
-}
-
-/**
- * Gets full bundle name camelized with extension
- *
- * @param {Object} flags
- * @param {boolean} flags.IS_PROD
- *
- * @param {string} camelizedName - camelized package name
- * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
- *
- * @returns {string} name with full extension
- */
-
-function getBundleName({
-  outputName,
-  BUILD_FORMAT,
-  flags: {
-    IS_PROD
-  }
-}) {
-  let ext;
-
-  if (BUILD_FORMAT === UMD) {
-    ext = "umd.js";
-  } else if (BUILD_FORMAT === CJS) {
-    ext = "cjs.js";
-  } else if (BUILD_FORMAT === ES) {
-    ext = "esm.js";
-  }
-
-  const fname = `${outputName}.${IS_PROD ? `min.${ext}` : `${ext}`}`;
-  return fname;
-}
-/**
- * Gets build
- *
- * @param {Object} flags
- * @param {boolean} flags.IS_PROD
- *
- * @param {string} outputName -  package output name
- *
- * @param {Object} json
- * @param {Object} json.peerDependencies
- *
- * @param {string} distPath - where bundle will be located
- * @param {string} BUILD_FORMAT - type of build (cjs|umd|etc)
- *
- * @returns {Object} contains input option for the package.
- */
-
-
-function getOutput({
-  flags,
-  outputName,
-  json: {
-    peerDependencies
-  },
-  buildPath,
-  BUILD_FORMAT,
-  banner
-}) {
-  const {
-    IS_PROD
-  } = flags;
-  const name = getBundleName({
-    outputName,
-    BUILD_FORMAT,
-    flags: {
-      IS_PROD
-    }
-  });
-  const output = {
-    file: path.join(buildPath, name),
-    format: BUILD_FORMAT,
-    name,
-    interop: false
   };
-
-  if (BUILD_FORMAT === UMD) {
-    output.globals = getGlobal(peerDependencies);
-  }
-
-  if (IS_PROD || BUILD_FORMAT === UMD) {
-    output.sourcemap = true;
-  }
-
-  if (banner && NotEmptyArr(banner)) {
-    output.banner = banner;
-  }
-
-  return output;
 }
 
 function _classCallCheck(instance, Constructor) {
@@ -495,48 +159,482 @@ function _createSuper(Derived) {
   };
 }
 
-const {
-  program
-} = require("commander");
+const UMD = "umd";
+const CJS = "cjs";
+const ES = "es";
+const SILENT = "silent";
+const FORMATS = "formats";
+const MINIFY = "minify";
+const SOURCE_MAP = "sourcemap";
+const CLEAN_BUILD = "cleanBuild";
+const CAMEL_CASE = "camelCase";
+const BUILD_NAME = "buildName";
+const OUTPUT = "output";
+const PKG_PATHS = "pkgPaths";
+const PKG_NAMES = "pkgNames";
+const ALIAS = "alias";
+const ENTRIES = "entries";
+const BANNER = "banner"; // export const optsTypes = {
+//   [SILENT]: "boolean",
+//   [FORMATS]: "array",
+//   [MINIFY]: "boolean",
+//   [CLEAN_BUILD]: "boolean",
+//   [CAMEL_CASE]: "boolean",
+//   [BUILD_NAME]: "string",
+//   [OUTPUT]: "string",
+//   [PKG_PATHS]: "array",
+//   [PKG_NAMES]: "array",
+//   [ALIAS]: "array",
+//   [ENTRIES]: "array",
+//   [BANNER]: "string",
+// };
+
+const defaultOpts = {
+  [SILENT]: true,
+  [FORMATS]: [],
+  [MINIFY]: undefined,
+  [SOURCE_MAP]: true,
+  [CLEAN_BUILD]: false,
+  [CAMEL_CASE]: true,
+  [BUILD_NAME]: "dist",
+  [OUTPUT]: undefined,
+  [PKG_PATHS]: [],
+  [PKG_NAMES]: [],
+  [ALIAS]: [],
+  [ENTRIES]: [],
+  [BANNER]: undefined
+};
+
 /**
- * Converts string to Array.
+ * Returns plugins according to passed flags.
  *
- * @param {string} value
- * @returns {Array}
+ * @param {boolean} [isSilent=true]
+ * @param {boolean} [isProd=true]
+ * @param {string} buildFormat
+ * @returns {Array} plugins
  */
 
+function getPlugins({
+  isSilent,
+  isProd,
+  isMultiEntries,
+  buildFormat,
+  buildPath,
+  buildName,
+  alias,
+  idx
+}) {
+  const essentialPlugins = [
+  /**
+   * Beeps when a build ends with errors.
+   */
+  beep(), babel({
+    runtimeHelpers: true,
+    babelrc: true
+  }), isMultiEntries ? multiEntry() : null, alias.length > 0 ? aliasPlugin({
+    entries: alias
+  }) : null,
+  /**
+   * Automatically installs dependencies that are imported by a bundle, even
+   * if not yet in package.json.
+   */
+  auto(),
+  /**
+   * Convert CommonJS modules to ES6, so they can be included in a Rollup
+   * bundle.
+   */
+  commonjs(),
+  /**
+   * Locates modules using the Node resolution algorithm, for using third
+   * party modules in node_modules.
+   */
+  resolve({
+    preferBuiltins: true,
+    extensions: [".mjs", ".js", ".jsx", ".json", ".node"]
+  }),
+  /**
+   * Converts .json files to ES6 modules.
+   */
+  json(), postcss({
+    inject: false,
+    extract: idx === 0 && path.join(buildPath, `${buildName}.css`)
+  }),
+  /**
+   * Minify generated bundle.
+   */
+  isProd ? rollupPluginTerser.terser({
+    // default undefined
+    ecma: 5,
+    // default false
+    sourcemap: true,
+    // display warnings when dropping unreachable code or unused declarations etc
+    warnings: true,
+    compress: {
+      // default: false
+      // true to discard calls to console.* functions.
+      drop_console: true,
+      // default: false
+      // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
+      keep_infinity: true,
+      // default: 1
+      // maximum number of times to run compress. In some cases more than
+      // one pass leads to further compressed cod Keep in mind more passes
+      // will take more time.
+      passes: 10
+    },
+    output: {
+      // default: true
+      // pass false if you do not want to wrap function expressions that are
+      // passed as arguments, in parenthesis.
+      // turning it to false in the sake of size.
+      wrap_func_args: false
+    },
+    // pass an empty object {} or a previously used nameCache object
+    // if you wish to cache mangled variable
+    // and property names across multiple invocations of minify
+    nameCache: {},
+    mangle: {
+      properties: false
+    },
+    // true if to enable top level variable
+    // and function name mangling
+    // and to drop unused variables and functions.
+    toplevel: buildFormat === CJS || buildFormat === ES
+  }) : null].filter(Boolean);
 
-function string2Arr(value) {
-  return value.split(",");
-}
-/**
- * Extracts string to suit plugins entries
- * {@link https://www.npmjs.com/package/@rollup/plugin-alias}
- *
- * @param {string[]} alias - batman=../../../batman
- * @returns {Object[]} - {find, replacement}
- */
-
-
-function parseAlias(aliasStr) {
-  const alias = string2Arr(aliasStr).map(str => {
-    const [key, value] = str.split("=");
-    return {
-      find: key,
-      replacement: value
-    };
-  });
-  return alias;
-}
-
-function resolveArgs(argv) {
-  program.option("-s, --silent <boolean>", "Silent mode, mutes build massages", true).option("-f, --formats <list>", "Specific build format", string2Arr, []).option("-m, --minify <boolean>", "Minify bundle works only if format is provided", false).option("-c, --camel-case <boolean>", "Add camel-cased output file", true).option("-l, --clean-build <boolean>", "Clean previous build folder", false).option("-b, --build-name <string>", "Specific folder build name", "dist").option("-o, --output <string>", "Custom output name").option("-w, --pkg-paths <list>", "Provide custom paths not in the root/src", string2Arr, []).option("-n, --pkg-names <list>", "Building specific package[s], in workspace", string2Arr, []).option("-a, --alias <list>", "Package Alias", parseAlias, []).option("-e, --entries <list>", "Add multi entries instead of default src/index.", parseAlias, []).option("-r, --banner <string>", "Add banner to output");
-
-  if (argv) {
-    program.allowUnknownOption();
+  if (!isSilent) {
+    essentialPlugins.push(analyze({
+      summaryOnly: true
+    }));
   }
 
-  return program.parse(argv || process.argv);
+  return essentialPlugins;
+}
+
+/**
+ * Resolves external dependencies and peerDependencies for package input
+ * according to build format.
+ *
+ * @param {Object} json.peerDependencies
+ * @param {Object} json.dependencies
+ * @param {string} buildFormat
+ *
+ * @returns {function} - function resolver
+ */
+
+function getExternal({
+  peerDependencies,
+  dependencies,
+  buildFormat
+}) {
+  const external = [];
+  /**
+   * Always exclude peer deps.
+   */
+
+  if (peerDependencies) {
+    external.push(...Object.keys(peerDependencies));
+  }
+  /**
+   * Add dependencies to bundle when umd
+   */
+
+
+  if (buildFormat !== UMD) {
+    external.push(...Object.keys(dependencies));
+  }
+
+  return external.length === 0 ? () => false : id => new RegExp(`^(${external.join("|")})($|/)`).test(id);
+}
+
+/**
+ * Gets build input
+ *
+ * @param {Object} flags
+ * @param {boolean} flags.isSilent
+ * @param {boolean} flags.isProd
+ *
+ * @param {Object} json
+ * @param {Object} json.peerDependencies
+ * @param {Object} json.dependencies
+ *
+ * @param {string} sourcePath - where package is located
+ * @param {string} buildFormat - type of build (cjs|umd|etc)
+ *
+ * @returns {Object} contains input option for the package.
+ */
+
+function genInput({
+  flags: {
+    isSilent,
+    isProd
+  },
+  json: {
+    peerDependencies,
+    dependencies
+  },
+  outputBuild: {
+    buildPath,
+    buildName,
+    buildFormat
+  },
+  entries,
+  alias,
+  idx
+}) {
+  const external = getExternal({
+    peerDependencies,
+    dependencies,
+    buildFormat
+  });
+  const isMultiEntries = Array.isArray(entries);
+  const plugins = getPlugins({
+    isSilent,
+    isProd,
+    buildFormat,
+    buildPath,
+    buildName,
+    isMultiEntries,
+    alias,
+    idx
+  });
+  return {
+    input: entries,
+    external,
+    plugins
+  };
+}
+
+/**
+ * Don't include peerDependencies in a bundle.
+ * Called when umd.
+ *
+ * @param {Object} peerDependencies
+ * @returns Array of external deps not included in bundle.
+ */
+
+function getGlobal(peerDependencies = {}) {
+  return Object.keys(peerDependencies).reduce((deps, dep) => {
+    // eslint-disable-next-line
+    deps[dep] = camelize(dep);
+    return deps;
+  }, {});
+}
+
+function NotEmptyArr(arr) {
+  return arr.length > 0;
+}
+/**
+ * Checks if passed arr is type array and not empty
+ *
+ * @param {Array} arr
+ * @returns {boolean}
+ */
+
+
+function isValidArr(arr) {
+  return Array.isArray(arr) && NotEmptyArr(arr);
+}
+/**
+ * Modify package name in package.json to name the output build correctly.
+ * remove @
+ * replace / with -
+ * remove - and capitalize the first letter after it
+ *
+ * @param {string} name - package name in package.json
+ * @returns {string} modified name for bundle
+ */
+
+
+function camelizeOutputBuild(name) {
+  return camelize(name.replace("@", "").replace("/", "-"));
+}
+/**
+ * Gen bundle format and minify options
+ *
+ * @param {Array} customFormats
+ * @param {boolean} isMinify
+ * @returns {Object[]} bundle output options
+ */
+
+
+function getBundleOpt(customFormats, isMinify) {
+  const DEFAULT_FORMATS = [UMD, CJS, ES];
+  const gen = [];
+  const buildFormat = NotEmptyArr(customFormats) ? customFormats : DEFAULT_FORMATS;
+  const minifyingProcess = NotEmptyArr(customFormats) && isBoolean(isMinify) ? [isMinify] : [true, false];
+  buildFormat.forEach(format => {
+    minifyingProcess.forEach(bool => {
+      gen.push({
+        buildFormat: format,
+        isProd: bool
+      });
+    });
+  });
+  return gen;
+}
+
+/**
+ * Gets full bundle name camelized with extension
+ *
+ * @param {Object} flags
+ * @param {boolean} flags.isProd
+ *
+ * @param {string} camelizedName - camelized package name
+ * @param {string} buildFormat - type of build (cjs|umd|etc)
+ *
+ * @returns {string} name with full extension
+ */
+
+function getBundleName({
+  buildName,
+  buildFormat,
+  flags: {
+    isProd
+  }
+}) {
+  let ext;
+
+  if (buildFormat === UMD) {
+    ext = "umd.js";
+  } else if (buildFormat === CJS) {
+    ext = "cjs.js";
+  } else if (buildFormat === ES) {
+    ext = "esm.js";
+  }
+
+  const fname = `${buildName}.${isProd ? `min.${ext}` : `${ext}`}`;
+  return fname;
+}
+/**
+ * Gets build
+ *
+ * @param {Object} flags
+ * @param {boolean} flags.isProd
+ *
+ * @param {string} outputName -  package output name
+ *
+ * @param {Object} json
+ * @param {Object} json.peerDependencies
+ *
+ * @param {string} distPath - where bundle will be located
+ * @param {string} buildFormat - type of build (cjs|umd|etc)
+ *
+ * @returns {Object} contains input option for the package.
+ */
+
+
+function getOutput({
+  flags,
+  outputBuild: {
+    buildPath,
+    buildName,
+    buildFormat
+  },
+  json: {
+    peerDependencies
+  },
+  isSourcemap,
+  banner
+}) {
+  const {
+    isProd
+  } = flags;
+  const name = getBundleName({
+    buildName,
+    buildFormat,
+    flags: {
+      isProd
+    }
+  });
+  const output = {
+    file: path.join(buildPath, name),
+    format: buildFormat,
+    name,
+    interop: false
+  };
+
+  if (buildFormat === UMD) {
+    output.globals = getGlobal(peerDependencies);
+  }
+
+  if ((isProd || buildFormat === UMD) && isSourcemap) {
+    output.sourcemap = true;
+  }
+
+  if (banner && NotEmptyArr(banner)) {
+    output.banner = banner;
+  }
+
+  return output;
+}
+
+const yargs = require("yargs");
+
+function resolveArgs(args) {
+  yargs.option("silent", {
+    alias: "s",
+    describe: "Silent mode, mutes build massages",
+    type: "boolean" // default: true,
+
+  }).option("formats", {
+    alias: "f",
+    describe: "Specific build format",
+    type: "array" // default: [],
+
+  }).option("minify", {
+    alias: "m",
+    describe: "Minify bundle works only if format is provided",
+    type: "boolean" // default: false,
+
+  }).option("sourcemap", {
+    describe: "Enable sourcemap in output",
+    type: "boolean" // default: true,
+
+  }).option("camel-case", {
+    alias: "c",
+    describe: "Add camel-cased output file",
+    type: "boolean" // default: true,
+
+  }).option("clean-build", {
+    alias: "l",
+    describe: "Clean previous build folder",
+    type: "boolean" // default: false,
+
+  }).option("build-name", {
+    alias: "b",
+    describe: "Specific folder build name",
+    type: "string" // default: "dist",
+
+  }).option("output", {
+    alias: "o",
+    describe: "Custom output name",
+    type: "string"
+  }).option("pkg-paths", {
+    alias: "w",
+    describe: "Provide custom paths not in the root/src",
+    type: "array" // default: [],
+
+  }).option("pkg-names", {
+    alias: "n",
+    describe: "Building specific package[s], in workspace",
+    type: "array" // default: [],
+
+  }).option("alias", {
+    alias: "a",
+    describe: "Provide custom paths not in the root/srcPackage Alias",
+    type: "array" // default: [],
+
+  }).option("entries", {
+    alias: "e",
+    describe: "Add multi entries instead of default src/index" // default: [],
+
+  }).option("banner", {
+    alias: "r",
+    describe: "Add banner to output",
+    type: "string"
+  });
+  return args ? yargs.parse(args) : yargs.default().argv;
 }
 
 /**
@@ -546,68 +644,14 @@ function resolveArgs(argv) {
  */
 
 let State = /*#__PURE__*/function () {
-  _createClass(State, null, [{
-    key: "boolean",
-
-    /**
-     * Gets boolean option exists in pkgBuildOpts or generalOpts. pkgBuildOpts have
-     * always the priority.
-     *
-     * @static
-     * @param {Object} pkgBuildOpts
-     * @param {Object} generalOpts
-     * @param {string} argName
-     * @returns {boolean|undefined}
-     * @memberof State
-     */
-    value: function boolean(pkgBuildOpts, pkgJson, generalOpts, argName) {
-      return isBoolean(pkgBuildOpts[argName]) ? pkgBuildOpts[argName] : isBoolean(pkgJson[argName]) ? pkgJson[argName] : generalOpts[argName];
-    }
-    /**
-     * Gets array option exists in pkgBuildOpts or generalOpts. pkgBuildOpts have
-     * always the priority.
-     *
-     * @static
-     * @param {Object} pkgBuildOpts
-     * @param {Object} generalOpts
-     * @param {string} argName
-     * @returns {Array}
-     * @memberof State
-     */
-
-  }, {
-    key: "array",
-    value: function array(pkgBuildOpts, pkgJson, generalOpts, argName) {
-      return isValidArr(pkgBuildOpts[argName]) ? pkgBuildOpts[argName] : isValidArr(pkgJson[argName]) ? pkgJson[argName] : generalOpts[argName];
-    }
-    /**
-     * Gets string option exists in pkgBuildOpts or generalOpts. pkgBuildOpts have
-     * always the priority.
-     *
-     * @static
-     * @param {Object} pkgBuildOpts
-     * @param {Object} generalOpts
-     * @param {string} argName
-     * @returns {string}
-     * @memberof State
-     */
-
-  }, {
-    key: "string",
-    value: function string(pkgBuildOpts, pkgJson, generalOpts, argName) {
-      return pkgBuildOpts[argName] ? pkgBuildOpts[argName] : pkgJson[argName] ? pkgJson[argName] : generalOpts[argName];
-    }
-    /**
-     * Creates an instance of State.
-     *
-     * @param {Object} opts
-     * @param {boolean} isInit
-     * @memberof State
-     */
-
-  }]);
-
-  function State(generalOpts, isInit) {
+  /**
+   * Creates an instance of State.
+   *
+   * @param {Object} opts
+   * @param {boolean} isInit
+   * @memberof State
+   */
+  function State(generalOpts) {
     _classCallCheck(this, State);
 
     /**
@@ -619,44 +663,35 @@ let State = /*#__PURE__*/function () {
      */
 
     this.pkgJsonOpts = {};
-    /**
-     * general options passed when running builderz.
-     */
-
-    this.generalOpts = {
-      [IS_SILENT]: true,
-      [FORMATS]: [],
-      [MINIFY]: undefined,
-      [CLEAN_BUILD]: false,
-      [CAMEL_CASE]: true,
-      [BUILD_NAME]: "dist",
-      [OUTPUT]: undefined,
-      [PKG_PATHS]: [],
-      [PKG_NAMES]: [],
-      [ALIAS]: [],
-      [ENTRIES]: [],
-      [BANNER]: undefined
-    };
-    if (isInit) this.initializer(generalOpts);else this.generalOpts = generalOpts;
+    this.generalOpts = generalOpts;
   }
   /**
-   * Initialize generalOpts.
+   * Assign global opts to current. This step is done for every cycle.
    *
-   * @param {Object} inputOpts
    * @memberof State
    */
 
 
   _createClass(State, [{
-    key: "initializer",
-    value: function initializer(inputOpts) {
-      Object.keys(inputOpts).forEach(inOption => {
-        const input = inputOpts[inOption];
+    key: "initOpts",
+    value: function initOpts() {
+      this.opts = { ...this.generalOpts
+      };
+    }
+  }, {
+    key: "setOptsFrom",
+    value: function setOptsFrom(obj) {
+      /**
+       * Parsing empty object throws an error/
+       */
+      if (!isEmptyObj(obj)) {
+        const parsedBuildArgs = shellQuote.parse(obj);
 
-        if (input !== undefined) {
-          this.generalOpts[inOption] = inputOpts[inOption];
+        if (isValidArr(parsedBuildArgs)) {
+          const parsedArgv = resolveArgs(parsedBuildArgs);
+          Object.assign(this.opts, parsedArgv);
         }
-      });
+      }
     }
     /**
      * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
@@ -669,47 +704,9 @@ let State = /*#__PURE__*/function () {
   }, {
     key: "extractBundleOpt",
     value: function extractBundleOpt() {
-      const format = this.get(FORMATS);
-      const isMinify = this.get(MINIFY);
-      this.bundleOpt = getBundleOpt(format, isMinify);
-    }
-    /**
-     * Sets package local option
-     *
-     * @param {Object} pkgBuildOpts
-     * @memberof State
-     */
-
-  }, {
-    key: "setPkgBuildOpts",
-    value: function setPkgBuildOpts() {
-      const {
-        scripts: {
-          build: buildArgs
-        } = {}
-      } = this.pkgJsonOpts;
-      /**
-       * Parsing empty object throws an error/
-       */
-
-      if (!isEmptyObj(buildArgs)) {
-        const parsedBuildArgs = shellQuote.parse(buildArgs);
-
-        if (isValidArr(parsedBuildArgs)) {
-          /**
-           * For some unknown reason, resolveArgs doesn't work correctly when
-           * passing args without string first. So, yeah, I did it this way.
-           */
-          parsedBuildArgs.unshift("builderz");
-          this.pkgBuildOpts = resolveArgs(parsedBuildArgs).opts();
-        }
-      }
-      /**
-       * As soon as we get local options we can extract bundle option.
-       */
-
-
-      this.extractBundleOpt();
+      const formats = this.opts[FORMATS];
+      const isMinify = this.opts[MINIFY];
+      this.bundleOpt = getBundleOpt(formats, isMinify);
     }
     /**
      * Sets package local option
@@ -721,7 +718,35 @@ let State = /*#__PURE__*/function () {
   }, {
     key: "setPkgJsonOpts",
     value: function setPkgJsonOpts(pkgJson) {
-      this.pkgJsonOpts = pkgJson;
+      const {
+        name: pkgName,
+        scripts: {
+          build
+        } = {},
+        builderz
+      } = pkgJson;
+      this.pkgName = pkgName;
+      this.initOpts();
+      /**
+       * Extracting other options if there are any.
+       */
+
+      this.setOptsFrom(build);
+
+      if (!isEmptyObj(builderz)) {
+        Object.assign(this.opts, builderz);
+      }
+
+      Object.keys(defaultOpts).forEach(key => {
+        if (this.opts[key] === undefined) {
+          this.opts[key] = defaultOpts[key];
+        }
+      });
+      /**
+       * As soon as we get local options we can extract bundle options.
+       */
+
+      this.extractBundleOpt();
     }
   }, {
     key: "setPkgPath",
@@ -733,12 +758,6 @@ let State = /*#__PURE__*/function () {
 
       this.shouldPathResolved = relativePath.length !== 0;
       this.pkgPath = pkgPath;
-    }
-  }, {
-    key: "get",
-    value: function get(argName) {
-      const type = getVarTypes(argName);
-      return State[type](this.pkgBuildOpts, this.pkgJsonOpts, this.generalOpts, argName);
     }
   }]);
 
@@ -767,12 +786,9 @@ let StateHandler = /*#__PURE__*/function (_State) {
      * @memberof StateHandler
      */
     value: function extractName() {
-      const {
-        name
-      } = this.pkgJsonOpts;
-      const outputOpt = this.get(OUTPUT);
-      const chosen = outputOpt || name;
-      return this.get(CAMEL_CASE) ? camelizeOutputBuild(chosen) : chosen;
+      const outputOpt = this.opts[OUTPUT];
+      const chosen = outputOpt || this.pkgName || path.basename(this.pkgPath);
+      return this.opts[CAMEL_CASE] ? camelizeOutputBuild(chosen) : chosen;
     }
     /**
      * Revolves path taking into consideration current package path.
@@ -785,7 +801,7 @@ let StateHandler = /*#__PURE__*/function (_State) {
   }, {
     key: "resolvePath",
     value: function resolvePath(...args) {
-      return this.shouldPathResolved ? path.resolve(this.pkgPath, ...args) : path.resolve(this.pkgPath, ...args);
+      return path.resolve(this.pkgPath, ...args);
     }
     /**
      * Extracts entries based on valid options if found. Otherwise, it returns
@@ -798,7 +814,7 @@ let StateHandler = /*#__PURE__*/function (_State) {
   }, {
     key: "extractEntries",
     value: function extractEntries() {
-      const entriesOpt = this.get(ENTRIES);
+      const entriesOpt = this.opts[ENTRIES];
       const {
         isValid,
         isSrc,
@@ -832,7 +848,7 @@ let StateHandler = /*#__PURE__*/function (_State) {
   }, {
     key: "extractAlias",
     value: function extractAlias() {
-      const alias = this.get(ALIAS); // const alias = [
+      let alias = this.opts[ALIAS]; // const alias = [
       //   { find: "utils", replacement: "localPkgPath/../../../utils" },
       //   { find: "batman-1.0.0", replacement: "localPkgPath/joker-1.5.0" },
       // ];
@@ -841,13 +857,31 @@ let StateHandler = /*#__PURE__*/function (_State) {
        * If there's local alias passed in package, let's resolve the pass.
        */
 
-      alias.forEach(({
-        replacement
-      }, i) => {
-        /**
-         * Assuming we're working in `src` by default.
-         */
-        alias[i].replacement = this.resolvePath(this.isSrc ? "src" : null, replacement);
+      alias = alias.map(str => {
+        let find;
+        let replacement;
+
+        if (typeof str === "string") {
+          // eslint-disable-next-line prefer-const
+          [find, replacement] = str.split("=");
+        } else {
+          ({
+            find,
+            replacement
+          } = str);
+        }
+
+        if (this.shouldPathResolved) {
+          /**
+           * Assuming we're working in `src` by default.
+           */
+          replacement = this.resolvePath(this.isSrc ? "src" : null, replacement);
+        }
+
+        return {
+          find,
+          replacement
+        };
       });
       return alias;
     }
@@ -863,113 +897,145 @@ let StateHandler = /*#__PURE__*/function (_State) {
  * @param {Object} outputOptions
  */
 
-async function build(inputOptions, outputOptions) {
-  try {
-    /**
-     * create a bundle
-     */
-    const bundle = await rollup.rollup(inputOptions);
-    /**
-     * write the bundle to disk
-     */
-
-    await bundle.write(outputOptions);
-  } catch (err) {
-    error.error(err);
-  }
+function build(_x, _x2) {
+  return _build.apply(this, arguments);
 }
 
-async function builderz(opts, {
-  isInitOpts = true
-} = {}) {
-  const state = new StateHandler(opts, isInitOpts);
-  const {
-    buildName,
-    pkgPaths,
-    pkgNames
-  } = state.generalOpts;
-  const {
-    json: allPkgJson,
-    pkgInfo: allPkgInfo
-  } = NotEmptyArr(pkgNames) ? getInfo.getJsonByName(...pkgNames) : getInfo.getJsonByPath(...pkgPaths);
-  /**
-   * Sort packages before bump to production.
-   */
+function _build() {
+  _build = _asyncToGenerator(function* (inputOptions, outputOptions) {
+    try {
+      /**
+       * create a bundle
+       */
+      const bundle = yield rollup.rollup(inputOptions);
+      /**
+       * write the bundle to disk
+       */
 
-  const {
-    sorted,
-    unSorted
-  } = packageSorter(allPkgJson);
+      yield bundle.write(outputOptions);
+    } catch (err) {
+      error.error(err);
+    }
+  });
+  return _build.apply(this, arguments);
+}
 
-  if (NotEmptyArr(unSorted)) {
-    error.error(`Unable to sort packages: ${unSorted}`);
-  }
+function builderz(_x3) {
+  return _builderz.apply(this, arguments);
+}
 
-  try {
-    await sorted.reduce(async (sortedPromise, json) => {
-      await sortedPromise;
-      state.setPkgJsonOpts(json);
-      state.setPkgBuildOpts();
-      const {
-        name,
-        peerDependencies = {},
-        dependencies = {}
-      } = json;
-      const {
-        isSilent
-      } = state.generalOpts;
-      const pkgInfo = allPkgInfo[name];
-      const {
-        path: pkgPath
-      } = pkgInfo;
-      state.setPkgPath(pkgPath);
-      const buildPath = path.resolve(pkgPath, buildName);
-      console.log("builderz -> state.get(CLEAN_BUILD)", state.get(CLEAN_BUILD));
+function _builderz() {
+  _builderz = _asyncToGenerator(function* (opts, {
+    isInitOpts = true
+  } = {}) {
+    const state = new StateHandler(opts, isInitOpts);
+    const {
+      pkgPaths = [],
+      pkgNames
+    } = state.generalOpts;
+    const {
+      json: allPkgJson,
+      pkgInfo: allPkgInfo
+    } = isValidArr(pkgNames) ? getInfo.getJsonByName(...pkgNames) : getInfo.getJsonByPath(...pkgPaths);
 
-      if (state.get(CLEAN_BUILD)) {
-        await del(buildPath);
-      }
+    if (allPkgJson.length === 0) {
+      error.error(`Builderz has not found any valid package.json`);
+    }
+    /**
+     * Sort packages before bump to production.
+     */
 
-      const entries = state.extractEntries();
-      const alias = state.extractAlias();
-      const outputName = state.extractName();
-      const banner = state.get(BANNER);
-      await state.bundleOpt.reduce(async (bundleOptPromise, {
-        IS_PROD,
-        BUILD_FORMAT
-      }) => {
-        await bundleOptPromise;
-        const input = await genInput({
-          flags: {
-            IS_SILENT: isSilent,
-            IS_PROD
-          },
-          json: {
-            peerDependencies,
-            dependencies
-          },
-          entries,
-          BUILD_FORMAT,
-          alias
+
+    const {
+      sorted,
+      unSorted
+    } = packageSorter(allPkgJson);
+
+    if (NotEmptyArr(unSorted)) {
+      error.error(`Unable to sort packages: ${unSorted}`);
+    }
+
+    try {
+      yield sorted.reduce( /*#__PURE__*/function () {
+        var _ref = _asyncToGenerator(function* (sortedPromise, json) {
+          yield sortedPromise;
+          state.setPkgJsonOpts(json);
+          const {
+            name,
+            peerDependencies = {},
+            dependencies = {}
+          } = json;
+          const pkgInfo = allPkgInfo[name];
+          const {
+            path: pkgPath
+          } = pkgInfo;
+          state.setPkgPath(pkgPath);
+          const buildPath = path.resolve(pkgPath, state.opts[BUILD_NAME]);
+
+          if (state.opts[CLEAN_BUILD]) {
+            yield del(buildPath);
+          }
+
+          const entries = state.extractEntries();
+          const alias = state.extractAlias();
+          const buildName = state.extractName();
+          const banner = state.opts[BANNER];
+          const isSourcemap = state.opts[SOURCE_MAP];
+          const isSilent = state.opts[SILENT];
+          yield state.bundleOpt.reduce( /*#__PURE__*/function () {
+            var _ref2 = _asyncToGenerator(function* (bundleOptPromise, {
+              isProd,
+              buildFormat
+            }, idx) {
+              yield bundleOptPromise;
+              const outputBuild = {
+                buildPath,
+                buildName,
+                buildFormat
+              };
+              const input = yield genInput({
+                flags: {
+                  isSilent,
+                  isProd
+                },
+                json: {
+                  peerDependencies,
+                  dependencies
+                },
+                outputBuild,
+                entries,
+                alias,
+                idx
+              });
+              const output = yield getOutput({
+                flags: {
+                  isProd
+                },
+                json: {
+                  peerDependencies
+                },
+                outputBuild,
+                isSourcemap,
+                banner
+              });
+              yield build(input, output);
+            });
+
+            return function (_x6, _x7, _x8) {
+              return _ref2.apply(this, arguments);
+            };
+          }(), Promise.resolve());
         });
-        const output = await getOutput({
-          flags: {
-            IS_PROD
-          },
-          outputName,
-          json: {
-            peerDependencies
-          },
-          buildPath,
-          BUILD_FORMAT,
-          banner
-        });
-        await build(input, output);
-      }, Promise.resolve());
-    }, Promise.resolve());
-  } catch (err) {
-    console.error(err);
-  }
+
+        return function (_x4, _x5) {
+          return _ref.apply(this, arguments);
+        };
+      }(), Promise.resolve());
+    } catch (err) {
+      console.error(err);
+    }
+  });
+  return _builderz.apply(this, arguments);
 }
 
 const globalArgs = resolveArgs();

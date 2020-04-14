@@ -44,7 +44,7 @@ async function build(inputOptions, outputOptions) {
 async function builderz(opts, { isInitOpts = true } = {}) {
   const state = new StateHandler(opts, isInitOpts);
 
-  const { pkgPaths, pkgNames } = state.generalOpts;
+  const { pkgPaths = [], pkgNames } = state.generalOpts;
 
   const { json: allPkgJson, pkgInfo: allPkgInfo } = isValidArr(pkgNames)
     ? getJsonByName(...pkgNames)
@@ -94,19 +94,19 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       const isSilent = state.opts[SILENT];
 
       await state.bundleOpt.reduce(
-        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }, idx) => {
+        async (bundleOptPromise, { isProd, buildFormat }, idx) => {
           await bundleOptPromise;
 
           const outputBuild = {
             buildPath,
             buildName,
-            buildFormat: BUILD_FORMAT,
+            buildFormat,
           };
 
           const input = await getInput({
             flags: {
-              IS_SILENT: isSilent,
-              IS_PROD,
+              isSilent,
+              isProd,
             },
             json: {
               peerDependencies,
@@ -120,7 +120,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
           const output = await getOutput({
             flags: {
-              IS_PROD,
+              isProd,
             },
             json: {
               peerDependencies,

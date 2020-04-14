@@ -1,2 +1,2 @@
-"use strict";var e={test:"true"};module.exports=function(...r){return(t=e)&&t.then||(t=Promise.resolve(t)),t;var t};
+"use strict";function t(t,n,r,e,u,o,i){try{var c=t[o](i),s=c.value}catch(t){return void r(t)}c.done?n(s):Promise.resolve(s).then(e,u)}function n(n){return function(){var r=this,e=arguments;return new Promise(function(u,o){var i=n.apply(r,e);function c(n){t(i,u,o,c,s,"next",n)}function s(n){t(i,u,o,c,s,"throw",n)}c(void 0)})}}var r={test:"true"};function e(){return(e=n(function*(...t){return r})).apply(this,arguments)}module.exports=function(){return e.apply(this,arguments)};
 //# sourceMappingURL=basicJson.min.cjs.js.map

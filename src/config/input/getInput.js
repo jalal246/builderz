@@ -5,8 +5,8 @@ import getExternal from "./getInputExternal";
  * Gets build input
  *
  * @param {Object} flags
- * @param {boolean} flags.IS_SILENT
- * @param {boolean} flags.IS_PROD
+ * @param {boolean} flags.isSilent
+ * @param {boolean} flags.isProd
  *
  * @param {Object} json
  * @param {Object} json.peerDependencies
@@ -18,7 +18,7 @@ import getExternal from "./getInputExternal";
  * @returns {Object} contains input option for the package.
  */
 function genInput({
-  flags: { IS_SILENT, IS_PROD },
+  flags: { isSilent, isProd },
   json: { peerDependencies, dependencies },
   outputBuild: { buildPath, buildName, buildFormat },
   entries,
@@ -34,8 +34,8 @@ function genInput({
   const isMultiEntries = Array.isArray(entries);
 
   const plugins = getPlugins({
-    IS_SILENT,
-    IS_PROD,
+    isSilent,
+    isProd,
     buildFormat,
     buildPath,
     buildName,

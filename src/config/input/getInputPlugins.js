@@ -17,15 +17,14 @@ import { CJS, ES } from "../../constants";
 /**
  * Returns plugins according to passed flags.
  *
- * @param {boolean} [IS_SILENT=true]
- * @param {boolean} [IS_PROD=true]
+ * @param {boolean} [isSilent=true]
+ * @param {boolean} [isProd=true]
  * @param {string} buildFormat
  * @returns {Array} plugins
  */
 function getPlugins({
-  // TODO: why those are capital? with default values?
-  IS_SILENT = true,
-  IS_PROD = true,
+  isSilent,
+  isProd,
   isMultiEntries,
   buildFormat,
   buildPath,
@@ -81,7 +80,7 @@ function getPlugins({
     /**
      * Minify generated bundle.
      */
-    IS_PROD
+    isProd
       ? terser({
           // default undefined
           ecma: 5,
@@ -133,7 +132,7 @@ function getPlugins({
       : null,
   ].filter(Boolean);
 
-  if (!IS_SILENT) {
+  if (!isSilent) {
     essentialPlugins.push(analyze({ summaryOnly: true }));
   }
 

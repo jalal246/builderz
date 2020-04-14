@@ -1,31 +1,62 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, (global.basicJson = global.basicJson || {}, global.basicJson.umd = global.basicJson.umd || {}, global.basicJson.umd.js = factory()));
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, (global.basicJson = global.basicJson || {}, global.basicJson.umd = global.basicJson.umd || {}, global.basicJson.umd.js = factory()));
 }(this, (function () { 'use strict';
 
-	var test = "true";
-	var two = {
-		test: test
-	};
+  function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+    try {
+      var info = gen[key](arg);
+      var value = info.value;
+    } catch (error) {
+      reject(error);
+      return;
+    }
 
-	function _await(value, then, direct) {
-	  if (direct) {
-	    return then ? then(value) : value;
-	  }
+    if (info.done) {
+      resolve(value);
+    } else {
+      Promise.resolve(value).then(_next, _throw);
+    }
+  }
 
-	  if (!value || !value.then) {
-	    value = Promise.resolve(value);
-	  }
+  function _asyncToGenerator(fn) {
+    return function () {
+      var self = this,
+          args = arguments;
+      return new Promise(function (resolve, reject) {
+        var gen = fn.apply(self, args);
 
-	  return then ? value.then(then) : value;
-	}
+        function _next(value) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+        }
 
-	var index = (function (...args) {
-	  return _await(two);
-	});
+        function _throw(err) {
+          asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+        }
 
-	return index;
+        _next(undefined);
+      });
+    };
+  }
+
+  var test = "true";
+  var two = {
+  	test: test
+  };
+
+  function index () {
+    return _ref.apply(this, arguments);
+  }
+
+  function _ref() {
+    _ref = _asyncToGenerator(function* (...args) {
+      return two;
+    });
+    return _ref.apply(this, arguments);
+  }
+
+  return index;
 
 })));
 //# sourceMappingURL=basicJson.umd.js.map
