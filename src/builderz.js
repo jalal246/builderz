@@ -87,7 +87,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const alias = state.extractAlias();
 
-      const outputName = state.extractName();
+      const buildName = state.extractName();
 
       const banner = state.opts[BANNER];
       const isSourcemap = state.opts[SOURCE_MAP];
@@ -96,6 +96,12 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       await state.bundleOpt.reduce(
         async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }, idx) => {
           await bundleOptPromise;
+
+          const outputBuild = {
+            buildPath,
+            buildName,
+            buildFormat: BUILD_FORMAT,
+          };
 
           const input = await getInput({
             flags: {
@@ -106,8 +112,8 @@ async function builderz(opts, { isInitOpts = true } = {}) {
               peerDependencies,
               dependencies,
             },
+            outputBuild,
             entries,
-            BUILD_FORMAT,
             alias,
             idx,
           });
@@ -116,12 +122,10 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             flags: {
               IS_PROD,
             },
-            outputName,
             json: {
               peerDependencies,
             },
-            buildPath,
-            BUILD_FORMAT,
+            outputBuild,
             isSourcemap,
             banner,
           });

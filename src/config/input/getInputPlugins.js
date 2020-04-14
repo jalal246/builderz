@@ -1,3 +1,4 @@
+import { join } from "path";
 import beep from "@rollup/plugin-beep";
 import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
@@ -18,7 +19,7 @@ import { CJS, ES } from "../../constants";
  *
  * @param {boolean} [IS_SILENT=true]
  * @param {boolean} [IS_PROD=true]
- * @param {string} BUILD_FORMAT
+ * @param {string} buildFormat
  * @returns {Array} plugins
  */
 function getPlugins({
@@ -26,7 +27,9 @@ function getPlugins({
   IS_SILENT = true,
   IS_PROD = true,
   isMultiEntries,
-  BUILD_FORMAT,
+  buildFormat,
+  buildPath,
+  buildName,
   alias,
   idx,
 }) {
@@ -70,7 +73,10 @@ function getPlugins({
      */
     json(),
 
-    postcss({ inject: false, extract: idx === 0 }),
+    postcss({
+      inject: false,
+      extract: idx === 0 && join(buildPath, `${buildName}.css`),
+    }),
   ].filter(Boolean);
 
   if (!IS_SILENT) {
@@ -114,7 +120,7 @@ function getPlugins({
         // true if to enable top level variable
         // and function name mangling
         // and to drop unused variables and functions.
-        toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES,
+        toplevel: buildFormat === CJS || buildFormat === ES,
       })
     );
   }

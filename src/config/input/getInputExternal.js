@@ -6,11 +6,11 @@ import { UMD } from "../../constants";
  *
  * @param {Object} json.peerDependencies
  * @param {Object} json.dependencies
- * @param {string} BUILD_FORMAT
+ * @param {string} buildFormat
  *
  * @returns {function} - function resolver
  */
-function getExternal({ peerDependencies, dependencies, BUILD_FORMAT }) {
+function getExternal({ peerDependencies, dependencies, buildFormat }) {
   const external = [];
 
   /**
@@ -23,13 +23,13 @@ function getExternal({ peerDependencies, dependencies, BUILD_FORMAT }) {
   /**
    * Add dependencies to bundle when umd
    */
-  if (BUILD_FORMAT !== UMD) {
+  if (buildFormat !== UMD) {
     external.push(...Object.keys(dependencies));
   }
 
   return external.length === 0
     ? () => false
-    : id => new RegExp(`^(${external.join("|")})($|/)`).test(id);
+    : (id) => new RegExp(`^(${external.join("|")})($|/)`).test(id);
 }
 
 export default getExternal;
