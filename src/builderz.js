@@ -1,19 +1,23 @@
 import { resolve } from "path";
 import { rollup } from "rollup";
 import { error } from "@mytools/print";
-import { parse } from "shell-quote";
 import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
-import isEmptyObj from "lodash.isempty";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr } from "./utils";
+import { NotEmptyArr, isValidArr } from "./utils";
 
-import State from "./store";
+import {
+  CLEAN_BUILD,
+  BANNER,
+  SILENT,
+  BUILD_NAME,
+  SOURCE_MAP,
+} from "./constants";
 
-import resolveArgs from "./resolveArgs";
+import StateHandler from "./store";
 
 /**
  * Write bundle.
@@ -38,13 +42,17 @@ async function build(inputOptions, outputOptions) {
 }
 
 async function builderz(opts, { isInitOpts = true } = {}) {
-  const state = new State(opts, isInitOpts);
+  const state = new StateHandler(opts, isInitOpts);
 
-  const { buildName, pkgPaths, pkgNames } = state.generalOpts;
+  const { pkgPaths = [], pkgNames } = state.generalOpts;
 
-  const { json: allPkgJson, pkgInfo: allPkgInfo } = NotEmptyArr(pkgNames)
+  const { json: allPkgJson, pkgInfo: allPkgInfo } = isValidArr(pkgNames)
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
+
+  if (allPkgJson.length === 0) {
+    error(`Builderz has not found any valid package.json`);
+  }
 
   /**
    * Sort packages before bump to production.
@@ -59,86 +67,66 @@ async function builderz(opts, { isInitOpts = true } = {}) {
     await sorted.reduce(async (sortedPromise, json) => {
       await sortedPromise;
 
-      const {
-        name,
-        peerDependencies = {},
-        dependencies = {},
-        scripts: { build: buildArgs } = {},
-        entries: entriesJson = [],
-      } = json;
+      state.setPkgJsonOpts(json);
 
-      let localOpts = {};
-
-      /**
-       * Parsing empty object throws an error/
-       */
-      if (!isEmptyObj(buildArgs)) {
-        const parsedBuildArgs = parse(buildArgs);
-
-        if (NotEmptyArr(parsedBuildArgs)) {
-          /**
-           * For some unknown reason, resolveArgs doesn't work correctly when
-           * passing args without string first. So, yeah, I did it this way.
-           */
-          parsedBuildArgs.unshift("builderz");
-
-          localOpts = resolveArgs(parsedBuildArgs).opts();
-        }
-      }
-
-      /**
-       * Setting options allowing extracts functions to work properly.
-       */
-      state.setLocal(localOpts);
-
-      const { isSilent } = state.generalOpts;
+      const { name, peerDependencies = {}, dependencies = {} } = json;
 
       const pkgInfo = allPkgInfo[name];
 
       const { path: pkgPath } = pkgInfo;
 
-      const buildPath = resolve(pkgPath, buildName);
+      state.setPkgPath(pkgPath);
 
-      if (state.get("boolean", "cleanBuild")) {
+      const buildPath = resolve(pkgPath, state.opts[BUILD_NAME]);
+
+      if (state.opts[CLEAN_BUILD]) {
         await del(buildPath);
       }
 
-      const entries = state.extractEntries(entriesJson, pkgPath);
+      const entries = state.extractEntries();
 
-      const alias = state.extractAlias(pkgPath);
+      const alias = state.extractAlias();
 
-      const outputName = state.extractName(name);
+      const buildName = state.extractName();
 
-      const banner = state.get("string", "banner");
+      const banner = state.opts[BANNER];
+      const isSourcemap = state.opts[SOURCE_MAP];
+      const isSilent = state.opts[SILENT];
 
       await state.bundleOpt.reduce(
-        async (bundleOptPromise, { IS_PROD, BUILD_FORMAT }) => {
+        async (bundleOptPromise, { isProd, buildFormat }, idx) => {
           await bundleOptPromise;
+
+          const outputBuild = {
+            buildPath,
+            buildName,
+            buildFormat,
+          };
 
           const input = await getInput({
             flags: {
-              IS_SILENT: isSilent,
-              IS_PROD,
+              isSilent,
+              isProd,
             },
             json: {
               peerDependencies,
               dependencies,
             },
+            outputBuild,
             entries,
-            BUILD_FORMAT,
             alias,
+            idx,
           });
 
           const output = await getOutput({
             flags: {
-              IS_PROD,
+              isProd,
             },
-            outputName,
             json: {
               peerDependencies,
             },
-            buildPath,
-            BUILD_FORMAT,
+            outputBuild,
+            isSourcemap,
             banner,
           });
 

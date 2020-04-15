@@ -1,4 +1,4 @@
-module.exports = api => {
+module.exports = (api) => {
   api.cache(true);
   return {
     presets: [
@@ -11,6 +11,9 @@ module.exports = api => {
         },
       ],
     ],
-    plugins: ["@babel/plugin-transform-classes"],
+    plugins: [
+      "@babel/plugin-transform-classes",
+      "@babel/plugin-transform-async-to-generator",
+    ],
   };
 };

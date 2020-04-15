@@ -1,6 +1,0 @@
-{
-  "name": "css-modules--string",
-  "scripts": {
-    "build": "microbundle --no-sourcemap --css-modules '_contains_this_[hash]'"
-  }
-}

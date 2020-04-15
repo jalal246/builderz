@@ -1,7 +1,0 @@
-{
-  "name": "basic-multi-entries-json",
-  "entries": [
-    "src/a.js",
-    "src/b.js"
-  ]
-}

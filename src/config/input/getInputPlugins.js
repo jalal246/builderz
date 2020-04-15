@@ -1,3 +1,4 @@
+import { join } from "path";
 import beep from "@rollup/plugin-beep";
 import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
@@ -5,6 +6,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
 import multiEntry from "@rollup/plugin-multi-entry";
+import postcss from "rollup-plugin-postcss";
 
 import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
@@ -15,18 +17,20 @@ import { CJS, ES } from "../../constants";
 /**
  * Returns plugins according to passed flags.
  *
- * @param {boolean} [IS_SILENT=true]
- * @param {boolean} [IS_PROD=true]
- * @param {string} BUILD_FORMAT
+ * @param {boolean} [isSilent=true]
+ * @param {boolean} [isProd=true]
+ * @param {string} buildFormat
  * @returns {Array} plugins
  */
 function getPlugins({
-  // TODO: why those are capital? with default values?
-  IS_SILENT = true,
-  IS_PROD = true,
+  isSilent,
+  isProd,
   isMultiEntries,
-  BUILD_FORMAT,
-  alias
+  buildFormat,
+  buildPath,
+  buildName,
+  alias,
+  idx,
 }) {
   const essentialPlugins = [
     /**
@@ -36,7 +40,7 @@ function getPlugins({
 
     babel({
       runtimeHelpers: true,
-      babelrc: true
+      babelrc: true,
     }),
 
     isMultiEntries ? multiEntry() : null,
@@ -60,59 +64,76 @@ function getPlugins({
      */
     resolve({
       preferBuiltins: true,
-      extensions: [".mjs", ".js", ".jsx", ".json", ".node"]
+      extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
 
     /**
      * Converts .json files to ES6 modules.
      */
-    json()
+    json(),
+
+    postcss({
+      inject: false,
+      extract: idx === 0 && join(buildPath, `${buildName}.css`),
+    }),
+
+    /**
+     * Minify generated bundle.
+     */
+    isProd
+      ? terser({
+          // default undefined
+          ecma: 5,
+
+          // default false
+          sourcemap: true,
+
+          // display warnings when dropping unreachable code or unused declarations etc
+          warnings: true,
+
+          compress: {
+            // default: false
+            // true to discard calls to console.* functions.
+            drop_console: true,
+
+            // default: false
+            // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
+            keep_infinity: true,
+
+            // default: 1
+            // maximum number of times to run compress. In some cases more than
+            // one pass leads to further compressed cod Keep in mind more passes
+            // will take more time.
+            passes: 10,
+          },
+
+          output: {
+            // default: true
+            // pass false if you do not want to wrap function expressions that are
+            // passed as arguments, in parenthesis.
+            // turning it to false in the sake of size.
+            wrap_func_args: false,
+          },
+
+          // pass an empty object {} or a previously used nameCache object
+          // if you wish to cache mangled variable
+          // and property names across multiple invocations of minify
+          nameCache: {},
+
+          mangle: {
+            properties: false,
+          },
+
+          // true if to enable top level variable
+          // and function name mangling
+          // and to drop unused variables and functions.
+          toplevel: buildFormat === CJS || buildFormat === ES,
+        })
+      : null,
   ].filter(Boolean);
 
-  if (!IS_SILENT) {
+  if (!isSilent) {
     essentialPlugins.push(analyze({ summaryOnly: true }));
-  }
-
-  if (IS_PROD) {
-    essentialPlugins.push(
-      /**
-       * Minify generated es bundle.
-       */
-      terser({
-        // default undefined
-        ecma: 5,
-
-        // default false
-        sourcemap: true,
-
-        // display warnings when dropping unreachable code or unused declarations etc
-        warnings: true,
-
-        compress: {
-          // default: false
-          // true to discard calls to console.* functions.
-          drop_console: true,
-
-          // default: false
-          // true to prevent Infinity from being compressed into 1/0, which may cause performance issues on Chrome.
-          keep_infinity: true
-        },
-
-        // pass an empty object {} or a previously used nameCache object
-        // if you wish to cache mangled variable
-        // and property names across multiple invocations of minify
-        nameCache: {},
-
-        mangle: {
-          properties: false
-        },
-
-        // true if to enable top level variable
-        // and function name mangling
-        // and to drop unused variables and functions.
-        toplevel: BUILD_FORMAT === CJS || BUILD_FORMAT === ES
-      })
-    );
   }
 
   return essentialPlugins;
