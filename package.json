@@ -64,6 +64,7 @@
     "@rollup/plugin-json": "^4.0.1",
     "@rollup/plugin-multi-entry": "^3.0.0",
     "@rollup/plugin-node-resolve": "^7.0.0",
+    "babel-plugin-macros": "^2.8.0",
     "camelize": "^1.0.0",
     "del": "^5.1.0",
     "get-info": "^2.4.0",

@@ -30,7 +30,6 @@ const basicPreset = {
      */
     require.resolve("@babel/plugin-syntax-dynamic-import"),
 
-    // require.resolve("babel-plugin-transform-async-to-promises"),
     [
       require.resolve("babel-plugin-transform-async-to-promises"),
       {
@@ -39,11 +38,7 @@ const basicPreset = {
       },
     ],
 
-    /**
-     * A plugin that enables the re-use of Babel's injected helper code to save
-     * on code size.
-     */
-    // require.resolve("@babel/plugin-transform-runtime"),
+    require.resolve("babel-plugin-macros"),
   ],
 };
 
