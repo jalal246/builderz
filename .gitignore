@@ -4,5 +4,6 @@ node_modules
 .changelog
 build
 dist
+./dist
 draft
 samples
