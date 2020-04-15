@@ -65,11 +65,11 @@ function getOutput({
   const output = {
     file: join(buildPath, name),
     format: buildFormat,
-    name,
     interop: false,
   };
 
   if (buildFormat === UMD) {
+    output.name = buildName;
     output.globals = getGlobal(peerDependencies);
   }
 
