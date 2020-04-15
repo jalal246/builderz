@@ -1,1 +1,0 @@
-{"version":3,"file":"basicCss.min.umd.js","sources":["../src/index.js"],"sourcesContent":["import './two.css';\r\n\r\nexport default function() {\r\n\tconst el = document.createElement('div');\r\n\tel.className = 'testing';\r\n\treturn el;\r\n}\r\n"],"names":["el","document","createElement","className"],"mappings":"wTAEe,iBACRA,EAAKC,SAASC,cAAc,cAClCF,EAAGG,UAAY,UACRH"}

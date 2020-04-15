@@ -1,1 +1,0 @@
-{"version":3,"file":"basicJson.min.umd.js","sources":["../src/index.js"],"sourcesContent":["import two from './two.json';\r\n\r\nexport default async function(...args) {\r\n\treturn two;\r\n}\r\n"],"names":["args","two"],"mappings":"8pBAEe,aAAkBA,UACzBC"}
