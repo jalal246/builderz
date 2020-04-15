@@ -12,6 +12,8 @@ import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
+import basicPreset from "../babel";
+
 import { CJS, ES } from "../../constants";
 
 /**
@@ -26,6 +28,7 @@ function getPlugins({
   isSilent,
   isProd,
   isMultiEntries,
+  presets = basicPreset,
   buildFormat,
   buildPath,
   buildName,
@@ -40,7 +43,8 @@ function getPlugins({
 
     babel({
       runtimeHelpers: true,
-      babelrc: true,
+      ...presets,
+      // babelrc: true,
     }),
 
     isMultiEntries ? multiEntry() : null,

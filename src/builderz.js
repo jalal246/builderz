@@ -89,9 +89,11 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const buildName = state.extractName();
 
-      const banner = state.opts[BANNER];
-      const isSourcemap = state.opts[SOURCE_MAP];
-      const isSilent = state.opts[SILENT];
+      const {
+        [BANNER]: banner,
+        [SOURCE_MAP]: isSourcemap,
+        [SILENT]: isSilent,
+      } = state.opts;
 
       await state.bundleOpt.reduce(
         async (bundleOptPromise, { isProd, buildFormat }, idx) => {

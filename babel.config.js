@@ -11,9 +11,6 @@ module.exports = (api) => {
         },
       ],
     ],
-    plugins: [
-      "@babel/plugin-transform-classes",
-      "@babel/plugin-transform-async-to-generator",
-    ],
+    // plugins: ["@babel/plugin-transform-classes"],
   };
 };
