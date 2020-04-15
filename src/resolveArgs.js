@@ -77,7 +77,7 @@ function resolveArgs(args) {
       type: "string",
     });
 
-  return args ? yargs.parse(args) : yargs.default().argv;
+  return args ? yargs.parse(args) : yargs.argv;
 }
 
 export default resolveArgs;

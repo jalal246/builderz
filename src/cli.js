@@ -6,7 +6,7 @@ const globalArgs = resolveArgs();
 
 function run() {
   try {
-    builderz(globalArgs.opts(), { isInitOpts: false });
+    builderz(globalArgs, { isInitOpts: false });
   } catch (err) {
     error(err);
   }
