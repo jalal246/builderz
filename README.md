@@ -19,7 +19,7 @@ npm install builderz
 "build": "builderz"
 ```
 
-### Super easy customization
+## Easy to customize
 
 In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required arguments.
@@ -77,7 +77,7 @@ builderz(options);
 
 It does multiple things to save you some time and lets you focus on developing, that includes:
 
-1. Gets all validate packages by path or even names, by looking into the workplace - for monorepo
+1. Gets all validate packages by path or even names, by looking into the workplace for monorepo
    and root directory for one single package.
 
 2. Extract `JSON` from each package found in the workplace. To get essential
@@ -85,13 +85,13 @@ It does multiple things to save you some time and lets you focus on developing, 
 
 3. Cleans build folders if required.
 
-4. Creates camelize output name, bundles according to given name or just leave
+4. Creates camelize output name, bundles according to given name or just leaves
    it as it is with the original name in package.json
 
 5. If monorepo, sorts packages according to `core/dependency`, so core comes first
    and so on.
 
-6. Validate entries and aut-detect if `src/entry` or `./entry`
+6. Validates entries and aut-detect if `src/entry` or `./entry`
 
 7. Creates a distension path for each project found.
 
