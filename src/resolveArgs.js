@@ -75,6 +75,18 @@ function resolveArgs(args) {
       alias: "r",
       describe: "Add banner to output",
       type: "string",
+    })
+    .option("es-module", {
+      alias: "e",
+      describe: "Define Property exports",
+      type: "boolean",
+      // default: [],
+    })
+    .option("strict", {
+      alias: "t",
+      describe: "Enable Strict Mode",
+      type: "boolean",
+      // default: [],
     });
 
   return args ? yargs.parse(args) : yargs.argv;

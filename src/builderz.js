@@ -92,9 +92,22 @@ async function builderz(opts, { isInitOpts = true } = {}) {
       const buildName = state.extractName();
 
       const {
+        /**
+         * banner is also used for adding shebang
+         */
         [BANNER]: banner,
+
         [SOURCE_MAP]: isSourcemap,
         [SILENT]: isSilent,
+
+        /**
+         * strict & esModule are false by default to save some size for partial production.
+         *
+         * Instead of adding:
+         * Object.defineProperty(exports, "__esModule", {value: true }) && "strict_mode"
+         * for each package. We can produce bundled code without them and
+         * enables it only when it is necessary.
+         */
         [ES_MODEL]: esModule,
         [STRICT]: strict,
       } = state.opts;
