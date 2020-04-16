@@ -2,38 +2,10 @@
 
 > Zero Configuration JavaScript Bundler
 
-`build/er/z` is built originally to bundle monorepos for one-step production.
-Expanded later to cover more build cases with a wide variety of options.
-
-It implements rollup, taking advantage of its simplicity and customization to
-build one step production can be don using `builderz`.
-
-`Builderz` does multiple things to save you some time and lets you focus on developing,
-that includes:
-
-1. Gets all validate packages by path or even names, by looking into the workplace - for monorepo
-   and root directory for one single package.
-
-2. Extract `JSON` from each package found in the workplace. To get essential
-   production information.
-
-3. Cleans build folders if required.
-
-4. Creates camelize output name, bundles according to given name or just leave
-   it as it is with the original name in package.json
-
-5. If monorepo, sorts packages according to `core/dependency`, so core comes first
-   and so on.
-
-6. Validate entries and aut-detect if `src/entry` or `./entry`
-
-7. Creates a distension path for each project found.
-
-8. If there's no targeted format, it generates default formats `(CJS, UMD, ES)`
-   one cycle minified with a map and the second is not.
-
-9. Highly customized. Reads local package build args first, resolves local paths. Prioritize
-   local args to global ones.
+`build/er/z` is built originally to bundle monorepos, expanded later to cover
+more build cases with a wide variety of options. It implements rollup, taking
+advantage of its simplicity and customization to build
+one-step production bundler.
 
 ## Install
 
@@ -44,7 +16,7 @@ npm install builderz
 ## Easy to use
 
 In your `packages.json` to compile to a CommonJS module (cjs) and minify the
-bundle just pass the required args.
+bundle just pass the required arguments.
 
 ```json
 "build": "builderz --formats=cjs --minify"
@@ -60,7 +32,6 @@ Or even:
 "builderz":{
    "formats": ["cjs"],
    "minify": true,
-   // ...
 }
 ```
 
@@ -95,6 +66,32 @@ builderz(options);
   -t, --strict <string>        Enable Strict Mode (default: false)
   -h, --help                   display help for command
 ```
+
+It does multiple things to save you some time and lets you focus on developing, that includes:
+
+1. Gets all validate packages by path or even names, by looking into the workplace - for monorepo
+   and root directory for one single package.
+
+2. Extract `JSON` from each package found in the workplace. To get essential
+   production information.
+
+3. Cleans build folders if required.
+
+4. Creates camelize output name, bundles according to given name or just leave
+   it as it is with the original name in package.json
+
+5. If monorepo, sorts packages according to `core/dependency`, so core comes first
+   and so on.
+
+6. Validate entries and aut-detect if `src/entry` or `./entry`
+
+7. Creates a distension path for each project found.
+
+8. If there's no targeted format, it generates default formats `(CJS, UMD, ES)`
+   one cycle minified with a map and the second is not.
+
+9. Highly customized. Reads local package build args first, resolves local paths. Prioritize
+   local args to global ones.
 
 ### Test
 
