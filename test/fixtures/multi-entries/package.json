@@ -1,5 +1,5 @@
 {
-  "name": "basic-multi-entries-json",
+  "name": "multi-entries",
   "scripts": {
     "build": "--no-minify --formats=cjs"
   },

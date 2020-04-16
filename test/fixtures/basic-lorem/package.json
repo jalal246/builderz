@@ -1,5 +1,5 @@
 {
-  "name": "pretty",
+  "name": "basic-lorem",
   "builderz": {
     "formats": [
       "cjs"
