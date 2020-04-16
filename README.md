@@ -15,6 +15,12 @@ npm install builderz
 
 ## Easy to use
 
+```json
+"build": "builderz"
+```
+
+### Super easy customization
+
 In your `packages.json` to compile to a CommonJS module (cjs) and minify the
 bundle just pass the required arguments.
 
@@ -35,7 +41,7 @@ Or even:
 }
 ```
 
-### Using Build Script
+Of course you cane import it as build package somewhere in your project:
 
 ```js
 const builderz = require("builderz");
@@ -66,6 +72,8 @@ builderz(options);
   -t, --strict <string>        Enable Strict Mode (default: false)
   -h, --help                   display help for command
 ```
+
+### Under the hood
 
 It does multiple things to save you some time and lets you focus on developing, that includes:
 
