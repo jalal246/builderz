@@ -15,6 +15,8 @@ import {
   SILENT,
   BUILD_NAME,
   SOURCE_MAP,
+  STRICT,
+  ES_MODEL,
 } from "./constants";
 
 import StateHandler from "./store";
@@ -93,6 +95,8 @@ async function builderz(opts, { isInitOpts = true } = {}) {
         [BANNER]: banner,
         [SOURCE_MAP]: isSourcemap,
         [SILENT]: isSilent,
+        [ES_MODEL]: esModule,
+        [STRICT]: strict,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -130,6 +134,8 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             outputBuild,
             isSourcemap,
             banner,
+            esModule,
+            strict,
           });
 
           await build(input, output);

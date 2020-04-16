@@ -53,6 +53,8 @@ function getOutput({
   json: { peerDependencies },
   isSourcemap,
   banner,
+  esModule,
+  strict,
 }) {
   const { isProd } = flags;
 
@@ -65,6 +67,8 @@ function getOutput({
   const output = {
     file: join(buildPath, name),
     format: buildFormat,
+    esModule,
+    strict,
     interop: false,
   };
 
