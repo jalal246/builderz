@@ -1,5 +1,5 @@
 {
-  "name": "alias-mapping",
+  "name": "alias-pkg",
   "scripts": {
     "build": "--no-sourcemap --no-minify --alias=./constants=./constants-debug --formats=cjs"
   }

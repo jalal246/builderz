@@ -53,6 +53,8 @@ function getOutput({
   json: { peerDependencies },
   isSourcemap,
   banner,
+  esModule,
+  strict,
 }) {
   const { isProd } = flags;
 
@@ -65,11 +67,13 @@ function getOutput({
   const output = {
     file: join(buildPath, name),
     format: buildFormat,
-    name,
+    esModule,
+    strict,
     interop: false,
   };
 
   if (buildFormat === UMD) {
+    output.name = buildName;
     output.globals = getGlobal(peerDependencies);
   }
 

@@ -15,6 +15,8 @@ export const BUILD_NAME = "buildName";
 export const OUTPUT = "output";
 export const PKG_PATHS = "pkgPaths";
 export const PKG_NAMES = "pkgNames";
+export const ES_MODEL = "esModule";
+export const STRICT = "strict";
 export const ALIAS = "alias";
 export const ENTRIES = "entries";
 export const BANNER = "banner";
@@ -45,6 +47,8 @@ export const defaultOpts = {
   [OUTPUT]: undefined,
   [PKG_PATHS]: [],
   [PKG_NAMES]: [],
+  [ES_MODEL]: false,
+  [STRICT]: false,
   [ALIAS]: [],
   [ENTRIES]: [],
   [BANNER]: undefined,

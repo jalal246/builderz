@@ -15,6 +15,8 @@ import {
   SILENT,
   BUILD_NAME,
   SOURCE_MAP,
+  STRICT,
+  ES_MODEL,
 } from "./constants";
 
 import StateHandler from "./store";
@@ -89,9 +91,26 @@ async function builderz(opts, { isInitOpts = true } = {}) {
 
       const buildName = state.extractName();
 
-      const banner = state.opts[BANNER];
-      const isSourcemap = state.opts[SOURCE_MAP];
-      const isSilent = state.opts[SILENT];
+      const {
+        /**
+         * banner is also used for adding shebang
+         */
+        [BANNER]: banner,
+
+        [SOURCE_MAP]: isSourcemap,
+        [SILENT]: isSilent,
+
+        /**
+         * strict & esModule are false by default to save some size for partial production.
+         *
+         * Instead of adding:
+         * Object.defineProperty(exports, "__esModule", {value: true }) && "strict_mode"
+         * for each package. We can produce bundled code without them and
+         * enables it only when it is necessary.
+         */
+        [ES_MODEL]: esModule,
+        [STRICT]: strict,
+      } = state.opts;
 
       await state.bundleOpt.reduce(
         async (bundleOptPromise, { isProd, buildFormat }, idx) => {
@@ -128,6 +147,8 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             outputBuild,
             isSourcemap,
             banner,
+            esModule,
+            strict,
           });
 
           await build(input, output);

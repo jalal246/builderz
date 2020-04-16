@@ -1,23 +1,20 @@
 /* eslint-disable no-console */
 import { resolve } from "path";
 import { readdirSync, readFileSync } from "fs";
-// import del from "del";
 import builderz from "../src";
 
 jest.setTimeout(30000);
 
-// ["basic-multi-entries-json", "pure", "alias"];
 describe("builderz working for single package", () => {
   it.each([
-    "basic-multi-entries-json",
-    "pure",
-    "alias",
-    "basic",
-    "basic-json",
-    "shebang",
-    "pretty",
-    "no-pkg-name",
+    "alias-pkg",
     "basic-css",
+    "basic-json",
+    "basic-lorem",
+    "basic-pkg",
+    "multi-entries",
+    "no-name",
+    "shebang",
   ])("%s", async (pkgName) => {
     const pathPure = resolve(__dirname, "fixtures", pkgName);
     const distPath = resolve(pathPure, "dist");
