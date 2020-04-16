@@ -64,6 +64,8 @@ bundle just pass the required args.
   -a, --alias <list>           Package Alias (default: [])
   -e, --entries <list>         Add multi entries instead of default src/index. (default: [])
   -r, --banner <string>        Add banner to output
+  -d, --es-module <string>     Define Property exports (default: false)
+  -t, --strict <string>        Enable Strict Mode (default: false)
   -h, --help                   display help for command
 ```
 

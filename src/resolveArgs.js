@@ -77,7 +77,7 @@ function resolveArgs(args) {
       type: "string",
     })
     .option("es-module", {
-      alias: "e",
+      alias: "d",
       describe: "Define Property exports",
       type: "boolean",
       // default: [],
