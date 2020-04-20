@@ -85,7 +85,25 @@ function getBundleOpt(customFormats, isMinify) {
 
   return gen;
 }
+
+function escapeRegExpCharacters(str) {
+  const regExpCharacters = /[\\^$.*+?()[\]{}|]/g;
+
+  str.replace(regExpCharacters, "\\$&");
+}
+
+function extToRegExp(extensions) {
+  const extReplaced = extensions.map(escapeRegExpCharacters);
+
+  const arrToStrExt = extReplaced.join("|");
+
+  const extRegExp = new RegExp(`(${arrToStrExt})$`);
+
+  return extRegExp;
+}
+
 export {
+  extToRegExp,
   isValidArr,
   NotEmptyArr,
   camelizeOutputBuild,
