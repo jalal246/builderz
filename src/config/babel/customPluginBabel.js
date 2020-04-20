@@ -2,7 +2,6 @@ import * as babel from "@babel/core";
 import { createFilter } from "@rollup/pluginutils";
 
 const unpackOptions = ({
-  extensions = babel.DEFAULT_EXTENSIONS,
   // rollup uses sourcemap, babel uses sourceMaps
   // just normalize them here so people don't have to worry about it
   sourcemap = true,
@@ -11,7 +10,6 @@ const unpackOptions = ({
   sourceMaps = true,
   ...rest
 } = {}) => ({
-  extensions,
   plugins: [],
   sourceMaps: sourcemap && sourcemaps && sourceMap && sourceMaps,
   ...rest,
@@ -44,7 +42,7 @@ async function transformBabel(code, options) {
  * @param {Object} options
  * @returns
  */
-function rollupPluginBabel(options) {
+function customPluginBabel(options) {
   const { include, exclude, ...rest } = unpackOptions(options);
 
   const filter = createFilter(include, exclude);
@@ -65,4 +63,4 @@ function rollupPluginBabel(options) {
   };
 }
 
-export default rollupPluginBabel;
+export default customPluginBabel;

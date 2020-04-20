@@ -117,6 +117,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
           await bundleOptPromise;
 
           const outputBuild = {
+            pkgPath,
             buildPath,
             buildName,
             buildFormat,

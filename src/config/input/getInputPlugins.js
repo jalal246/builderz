@@ -8,9 +8,11 @@ import aliasPlugin from "@rollup/plugin-alias";
 import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
 
-import babel from "rollup-plugin-babel";
+// import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
+
+import babel from "../babel/customPluginBabel";
 
 import basicPreset from "../babel";
 
@@ -32,6 +34,7 @@ function getPlugins({
   buildFormat,
   buildPath,
   buildName,
+  pkgPath,
   alias,
   idx,
 }) {
@@ -41,11 +44,13 @@ function getPlugins({
      */
     beep(),
 
-    babel({
-      runtimeHelpers: true,
-      ...presets,
-      // babelrc: true,
-    }),
+    // babel({
+    //   runtimeHelpers: true,
+    //   ...presets,
+    //   babelrc: true,
+    // }),
+
+    babel({ ...presets, cwd: pkgPath }),
 
     isMultiEntries ? multiEntry() : null,
 

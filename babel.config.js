@@ -11,6 +11,6 @@ module.exports = (api) => {
         },
       ],
     ],
-    // plugins: ["@babel/plugin-transform-classes"],
+    plugins: ["@babel/plugin-transform-classes"],
   };
 };
