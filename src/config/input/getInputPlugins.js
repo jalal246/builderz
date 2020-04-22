@@ -7,6 +7,7 @@ import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
 import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
+import typescript from "rollup-plugin-typescript2";
 
 // import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
@@ -30,7 +31,8 @@ function getPlugins({
   isSilent,
   isProd,
   isMultiEntries,
-  presets = basicPreset,
+  isEnableBasicPreset = true,
+  presets = isEnableBasicPreset ? basicPreset : {},
   buildFormat,
   buildPath,
   buildName,
@@ -44,13 +46,7 @@ function getPlugins({
      */
     beep(),
 
-    // babel({
-    //   runtimeHelpers: true,
-    //   ...presets,
-    //   babelrc: true,
-    // }),
-
-    babel({ ...presets, cwd: pkgPath }),
+    babel({ cwd: pkgPath }),
 
     isMultiEntries ? multiEntry() : null,
 
@@ -75,6 +71,8 @@ function getPlugins({
       preferBuiltins: true,
       extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
+
+    typescript(),
 
     /**
      * Converts .json files to ES6 modules.

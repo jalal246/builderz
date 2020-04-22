@@ -298,6 +298,70 @@ exports[`builderz working for single package basic-pkg 7`] = `
 "
 `;
 
+exports[`builderz working for single package basic-ts 1`] = `10`;
+
+exports[`builderz working for single package basic-ts 2`] = `
+"class Car {
+  drive(distance) {
+    return true;
+  }
+
+}
+
+module.exports = Car;
+"
+`;
+
+exports[`builderz working for single package basic-ts 3`] = `
+"class Car {
+  drive(distance) {
+    return true;
+  }
+
+}
+
+export default Car;
+"
+`;
+
+exports[`builderz working for single package basic-ts 4`] = `
+"module.exports=class{drive(e){return!0}};
+//# sourceMappingURL=basicTs.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic-ts 5`] = `
+"export default class{drive(e){return!0}}
+//# sourceMappingURL=basicTs.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-ts 6`] = `
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=class{drive(e){return!0}}:\\"function\\"==typeof define&&define.amd?define(function(){return class{drive(e){return!0}}}):(e=e||self).basicTs=class{drive(e){return!0}}}(this);
+//# sourceMappingURL=basicTs.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-ts 7`] = `
+"(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, global.basicTs = factory());
+}(this, (function () {
+  class Car {
+    drive(distance) {
+      return true;
+    }
+
+  }
+
+  return Car;
+
+})));
+//# sourceMappingURL=basicTs.umd.js.map
+"
+`;
+
 exports[`builderz working for single package multi-entries 1`] = `1`;
 
 exports[`builderz working for single package multi-entries 2`] = `

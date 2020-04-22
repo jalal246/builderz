@@ -20,7 +20,7 @@ import getExternal from "./getInputExternal";
 function genInput({
   flags: { isSilent, isProd },
   json: { peerDependencies, dependencies },
-  outputBuild: { buildPath, buildName, buildFormat },
+  outputBuild: { pkgPath, buildPath, buildName, buildFormat },
   entries,
   alias,
   idx,
@@ -36,6 +36,7 @@ function genInput({
   const plugins = getPlugins({
     isSilent,
     isProd,
+    pkgPath,
     buildFormat,
     buildPath,
     buildName,

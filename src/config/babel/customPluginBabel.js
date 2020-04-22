@@ -53,7 +53,10 @@ function customPluginBabel(options) {
         return null;
       }
 
-      const babelOptions = { ...rest, filename };
+      const babelOptions = {
+        ...rest,
+        filename,
+      };
 
       return (async () => {
         const res = await transformBabel(code, babelOptions);
