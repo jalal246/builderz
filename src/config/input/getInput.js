@@ -21,6 +21,7 @@ function genInput({
   flags: { isSilent, isProd },
   json: { peerDependencies, dependencies },
   outputBuild: { pkgPath, buildPath, buildName, buildFormat },
+  babel,
   entries,
   alias,
   idx,
@@ -41,6 +42,7 @@ function genInput({
     buildPath,
     buildName,
     isMultiEntries,
+    babel,
     alias,
     idx,
   });

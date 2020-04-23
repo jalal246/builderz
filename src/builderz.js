@@ -17,6 +17,7 @@ import {
   SOURCE_MAP,
   STRICT,
   ES_MODEL,
+  BABEL,
 } from "./constants";
 
 import StateHandler from "./store";
@@ -110,6 +111,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
          */
         [ES_MODEL]: esModule,
         [STRICT]: strict,
+        [BABEL]: babel,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -135,6 +137,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             outputBuild,
             entries,
             alias,
+            babel,
             idx,
           });
 
