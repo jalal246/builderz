@@ -9,13 +9,10 @@ import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
 import typescript from "rollup-plugin-typescript2";
 
-// import babel from "rollup-plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
-import babel from "../babel/customPluginBabel";
-
-import basicPreset from "../babel";
+import babel from "../babel";
 
 import { CJS, ES } from "../../constants";
 
@@ -32,7 +29,7 @@ function getPlugins({
   isProd,
   isMultiEntries,
   isEnableBasicPreset = true,
-  presets = isEnableBasicPreset ? basicPreset : {},
+  babel: babelConfig,
   buildFormat,
   buildPath,
   buildName,
@@ -40,13 +37,23 @@ function getPlugins({
   alias,
   idx,
 }) {
+  let plugins = null;
+  let presets = null;
+
+  if (isEnableBasicPreset) {
+    plugins = babel.getPlugins();
+    presets = babel.presets();
+  }
+
+  const { babelPlugin } = babel;
+
   const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
      */
     beep(),
 
-    babel({ cwd: pkgPath }),
+    babelPlugin({ ...babelConfig, cwd: pkgPath }, plugins, presets),
 
     isMultiEntries ? multiEntry() : null,
 
