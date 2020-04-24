@@ -1,4 +1,5 @@
 import { join } from "path";
+
 import beep from "@rollup/plugin-beep";
 import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
@@ -8,11 +9,10 @@ import aliasPlugin from "@rollup/plugin-alias";
 import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
 import typescript from "rollup-plugin-typescript2";
-
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
-import babel from "../babel";
+import { babelPlugin, getBabelPlugins, getBabelPresets } from "../babel";
 
 import { CJS, ES } from "../../constants";
 
@@ -25,10 +25,11 @@ import { CJS, ES } from "../../constants";
  * @returns {Array} plugins
  */
 function getPlugins({
-  isSilent,
+  isSilent, // TODO: group them
   isProd,
   isMultiEntries,
-  isESM,
+  isESM, // TODO: add it to opts
+  isTypeScripts = true, //  TODO: fix this
   babel: babelConfig,
   buildFormat,
   buildPath,
@@ -40,17 +41,20 @@ function getPlugins({
   let plugins = null;
   let presets = null;
 
-  const { isEnablePreset, isEnablePlugins, ...restBabelConfig } = babelConfig;
+  const {
+    //  TODO: fix this
+    isEnablePreset = true,
+    isEnablePlugins = true,
+    ...restBabelConfig
+  } = babelConfig;
 
   if (isEnablePreset) {
-    presets = babel.presets(isESM);
+    presets = getBabelPresets(isESM);
   }
 
   if (isEnablePlugins) {
-    plugins = babel.getPlugins(isESM);
+    plugins = getBabelPlugins(isESM);
   }
-
-  const { babelPlugin } = babel;
 
   const essentialPlugins = [
     /**
@@ -84,7 +88,7 @@ function getPlugins({
       extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
 
-    typescript(),
+    isTypeScripts ? typescript() : null,
 
     /**
      * Converts .json files to ES6 modules.

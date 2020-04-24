@@ -26,7 +26,7 @@ const unpackOptions = ({
  * @param {Object} options
  * @returns
  */
-function babelPlugin(options, presets, plugins) {
+function babelPlugin(options, plugins, presets) {
   const { include, exclude, ...rest } = unpackOptions(options);
 
   const filter = createFilter(include, exclude);
@@ -42,7 +42,7 @@ function babelPlugin(options, presets, plugins) {
         filename,
       };
 
-      return babelTransformer(code, babelOptions, presets, plugins);
+      return babelTransformer(code, babelOptions, plugins, presets);
     },
   };
 }
