@@ -1,5 +1,5 @@
-import * as babel from "@babel/core";
 import { createFilter } from "@rollup/pluginutils";
+import babelTransformer from "./babelTransformer";
 
 const unpackOptions = ({
   // rollup uses sourcemap, babel uses sourceMaps
@@ -22,27 +22,11 @@ const unpackOptions = ({
 });
 
 /**
- * Transforms the passed in code. Returning an object with the generated code,
- * source map, and AST.
- *
- * @see {@link https://babeljs.io/docs/en/babel-core#transformsync}
- *
- * @param {string} code
- * @param {Object} options
- * @returns
- */
-async function transformBabel(code, options) {
-  const res = await babel.transformAsync(code, options);
-
-  return res;
-}
-
-/**
  * @see {@link https://rollupjs.org/guide/en/#transformers}
  * @param {Object} options
  * @returns
  */
-function customPluginBabel(options) {
+function babelPlugin(options, presets, plugins) {
   const { include, exclude, ...rest } = unpackOptions(options);
 
   const filter = createFilter(include, exclude);
@@ -58,12 +42,9 @@ function customPluginBabel(options) {
         filename,
       };
 
-      return (async () => {
-        const res = await transformBabel(code, babelOptions);
-        return res;
-      })();
+      return babelTransformer(code, babelOptions, presets, plugins);
     },
   };
 }
 
-export default customPluginBabel;
+export default babelPlugin;
