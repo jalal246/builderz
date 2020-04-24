@@ -1,4 +1,4 @@
-function getPlugins() {
+function getPlugins(isESM) {
   return [
     /**
      * This plugin transforms static class properties as well as properties
@@ -16,20 +16,24 @@ function getPlugins() {
       name: "@babel/plugin-syntax-dynamic-import",
     },
 
-    {
-      name: "babel-plugin-transform-async-to-promises",
-      options: {
-        inlineHelpers: true,
-        hoist: true,
-      },
-    },
+    isESM
+      ? {
+          name: "babel-plugin-transform-async-to-promises",
+          options: {
+            inlineHelpers: true,
+            hoist: true,
+          },
+        }
+      : null,
 
-    {
-      name: "@babel/plugin-transform-regenerator",
-      options: {
-        async: false,
-      },
-    },
+    isESM
+      ? {
+          name: "@babel/plugin-transform-regenerator",
+          options: {
+            async: false,
+          },
+        }
+      : null,
 
     {
       name: "babel-plugin-macros",
@@ -37,8 +41,10 @@ function getPlugins() {
   ].filter(Boolean);
 }
 
-function getPresets() {
-  return [{ name: "@babel/preset-env", options: { modules: false } }];
+function getPresets(isESM) {
+  return [
+    isESM ? { name: "@babel/preset-modules" } : { name: "@babel/preset-env" },
+  ];
 }
 
 export { getPlugins, getPresets };

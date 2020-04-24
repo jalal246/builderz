@@ -28,7 +28,7 @@ function getPlugins({
   isSilent,
   isProd,
   isMultiEntries,
-  isEnableBasicPreset = true,
+  isESM,
   babel: babelConfig,
   buildFormat,
   buildPath,
@@ -40,9 +40,14 @@ function getPlugins({
   let plugins = null;
   let presets = null;
 
-  if (isEnableBasicPreset) {
-    plugins = babel.getPlugins();
-    presets = babel.presets();
+  const { isEnablePreset, isEnablePlugins, ...restBabelConfig } = babelConfig;
+
+  if (isEnablePreset) {
+    presets = babel.presets(isESM);
+  }
+
+  if (isEnablePlugins) {
+    plugins = babel.getPlugins(isESM);
   }
 
   const { babelPlugin } = babel;
@@ -53,7 +58,7 @@ function getPlugins({
      */
     beep(),
 
-    babelPlugin({ ...babelConfig, cwd: pkgPath }, plugins, presets),
+    babelPlugin({ ...restBabelConfig, cwd: pkgPath }, plugins, presets),
 
     isMultiEntries ? multiEntry() : null,
 
