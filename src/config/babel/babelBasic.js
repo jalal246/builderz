@@ -1,44 +1,44 @@
-const { resolve } = require;
-
-const basicPreset = {
-  presets: [[resolve("@babel/preset-env"), { modules: false }]],
-
-  plugins: [
-    [resolve("@babel/plugin-transform-runtime"), { absoluteRuntime: true }],
-
-    [
-      /**
-       * By default, this plugin uses Babel's extends helper which polyfills
-       * Object.assign. Enabling useBuiltIns option will use Object.assign
-       * directly.
-       */
-      resolve("@babel/plugin-proposal-object-rest-spread"),
-      {
-        useBuiltIns: true,
-      },
-    ],
-
+function getPlugins() {
+  return [
     /**
      * This plugin transforms static class properties as well as properties
      * declared with the property initializer syntax.
      */
-    [resolve("@babel/plugin-proposal-class-properties"), { loose: true }],
+    {
+      name: "@babel/plugin-proposal-class-properties",
+      options: { loose: true },
+    },
 
     /**
      * Currently, @babel/preset-env is unaware that using import().
      */
-    resolve("@babel/plugin-syntax-dynamic-import"),
+    {
+      name: "@babel/plugin-syntax-dynamic-import",
+    },
 
-    [
-      resolve("babel-plugin-transform-async-to-promises"),
-      {
+    {
+      name: "babel-plugin-transform-async-to-promises",
+      options: {
         inlineHelpers: true,
         hoist: true,
       },
-    ],
+    },
 
-    resolve("babel-plugin-macros"),
-  ],
-};
+    {
+      name: "@babel/plugin-transform-regenerator",
+      options: {
+        async: false,
+      },
+    },
 
-export default basicPreset;
+    {
+      name: "babel-plugin-macros",
+    },
+  ].filter(Boolean);
+}
+
+function getPresets() {
+  return [{ name: "@babel/preset-env", options: { modules: false } }];
+}
+
+export { getPlugins, getPresets };
