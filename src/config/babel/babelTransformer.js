@@ -1,7 +1,7 @@
 import * as babel from "@babel/core";
 
 function createConfigItems(type, items) {
-  return items.map(({ name, options = {} }) => {
+  return items.map(({ name, options }) => {
     return babel.createConfigItem([require.resolve(name), options], { type });
   });
 }
@@ -14,14 +14,13 @@ async function babelTransformer(inputCode, babelOptions, plugins, presets) {
    */
   const { options } = babel.loadPartialConfig(babelOptions);
 
-  // if (plugins) {
-  //   console.log("babelTransformer -> plugins", plugins);
-  //   options.plugins.push(...createConfigItems("plugin", plugins));
-  // }
+  if (plugins) {
+    options.plugins.push(...createConfigItems("plugin", plugins));
+  }
 
-  // if (presets) {
-  //   options.presets.push(...createConfigItems("preset", presets));
-  // }
+  if (presets) {
+    options.presets.push(...createConfigItems("preset", presets));
+  }
 
   /**
    * file is ignored by babel
@@ -30,7 +29,7 @@ async function babelTransformer(inputCode, babelOptions, plugins, presets) {
     return null;
   }
 
-  const { code, map } = await babel.transformAsync(inputCode, babelOptions);
+  const { code, map } = await babel.transformAsync(inputCode, options);
 
   return {
     code,

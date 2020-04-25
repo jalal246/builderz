@@ -17,23 +17,23 @@ function getPlugins(isESM) {
     },
 
     isESM
-      ? {
+      ? null
+      : {
           name: "babel-plugin-transform-async-to-promises",
           options: {
             inlineHelpers: true,
             hoist: true,
           },
-        }
-      : null,
+        },
 
     isESM
-      ? {
+      ? null
+      : {
           name: "@babel/plugin-transform-regenerator",
           options: {
             async: false,
           },
-        }
-      : null,
+        },
 
     {
       name: "babel-plugin-macros",
