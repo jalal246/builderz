@@ -66,6 +66,7 @@
     "@rollup/plugin-node-resolve": "^7.0.0",
     "@rollup/pluginutils": "^3.0.9",
     "babel-plugin-macros": "^2.8.0",
+    "babel-plugin-transform-async-to-promises": "^0.8.15",
     "camelize": "^1.0.0",
     "del": "^5.1.0",
     "get-info": "^2.4.0",
@@ -73,10 +74,8 @@
     "lodash.isempty": "^4.4.0",
     "move-position": "^1.0.0",
     "package-sorter": "^1.1.1",
-    "regenerator-runtime": "^0.13.5",
     "rollup": "^1.29.1",
     "rollup-plugin-analyzer": "^3.2.2",
-    "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-postcss": "^2.6.2",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.27.0",
@@ -86,6 +85,7 @@
     "yargs": "^15.3.1"
   },
   "devDependencies": {
+    "@babel/plugin-external-helpers": "^7.8.3",
     "@babel/plugin-transform-async-to-generator": "^7.8.3",
     "@babel/plugin-transform-classes": "^7.9.5",
     "@babel/preset-typescript": "^7.9.0",

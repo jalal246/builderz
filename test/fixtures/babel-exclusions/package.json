@@ -1,0 +1,12 @@
+{
+  "name": "babel-exclusions",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "babel": {
+      "exclude": "**/foo.js"
+    },
+    "minify": false
+  }
+}

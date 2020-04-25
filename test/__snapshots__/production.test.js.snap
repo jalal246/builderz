@@ -9,6 +9,51 @@ console.log('DEBUG should be true: ', DEBUG);
 "
 `;
 
+exports[`builderz working for single package basic-babel 1`] = `10`;
+
+exports[`builderz working for single package basic-babel 2`] = `
+"const answer = 42;
+console.log(\`the answer is \${answer}\`);
+"
+`;
+
+exports[`builderz working for single package basic-babel 3`] = `
+"const answer = 42;
+console.log(\`the answer is \${answer}\`);
+"
+`;
+
+exports[`builderz working for single package basic-babel 4`] = `
+"
+//# sourceMappingURL=basicBabel.min.cjs.js.map
+"
+`;
+
+exports[`builderz working for single package basic-babel 5`] = `
+"
+//# sourceMappingURL=basicBabel.min.esm.js.map
+"
+`;
+
+exports[`builderz working for single package basic-babel 6`] = `
+"\\"function\\"==typeof define&&define.amd&&define(function(){});
+//# sourceMappingURL=basicBabel.min.umd.js.map
+"
+`;
+
+exports[`builderz working for single package basic-babel 7`] = `
+"(function (factory) {
+	typeof define === 'function' && define.amd ? define(factory) :
+	factory();
+}((function () {
+	const answer = 42;
+	console.log(\`the answer is \${answer}\`);
+
+})));
+//# sourceMappingURL=basicBabel.umd.js.map
+"
+`;
+
 exports[`builderz working for single package basic-css 1`] = `11`;
 
 exports[`builderz working for single package basic-css 2`] = `

@@ -19,6 +19,7 @@ export const ES_MODEL = "esModule";
 export const STRICT = "strict";
 export const ALIAS = "alias";
 export const ENTRIES = "entries";
+export const BABEL = "babel";
 export const BANNER = "banner";
 
 // export const optsTypes = {
@@ -51,5 +52,6 @@ export const defaultOpts = {
   [STRICT]: false,
   [ALIAS]: [],
   [ENTRIES]: [],
+  [BABEL]: [],
   [BANNER]: undefined,
 };

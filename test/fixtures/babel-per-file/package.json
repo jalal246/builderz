@@ -1,5 +1,5 @@
 {
-  "name": "basic-ts",
+  "name": "babel-per-file",
   "builderz": {
     "formats": [
       "cjs"

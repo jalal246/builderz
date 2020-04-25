@@ -1,0 +1,24 @@
+{
+	"editor.formatOnSave": true,
+	"editor.fontSize": 13,
+	"cSpell.words": [
+		"LGPL",
+		"builderz",
+		"camelized",
+		"corename",
+		"dflex",
+		"docx",
+		"folo",
+		"hashbang",
+		"interop",
+		"isboolean",
+		"isempty",
+		"mytools",
+		"toplevel",
+		"unsortable",
+		"withcontext"
+	],
+	"eslint.packageManager": "yarn",
+	"eslint.alwaysShowStatus": true,
+	"eslint.debug": true
+}
