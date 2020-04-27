@@ -1,7 +1,7 @@
 {
-  "name": "multi-entries",
+  "name": "plugin-multi-entries",
   "scripts": {
-    "build": "--no-minify --formats=cjs"
+    "build": "--no-minify --formats cjs"
   },
   "builderz": {
     "entries": [
