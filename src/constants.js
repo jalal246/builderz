@@ -52,6 +52,9 @@ export const defaultOpts = {
   [STRICT]: false,
   [ALIAS]: [],
   [ENTRIES]: [],
-  [BABEL]: [],
+  [BABEL]: {
+    enablePreset: true,
+    enablePlugins: true,
+  },
   [BANNER]: undefined,
 };

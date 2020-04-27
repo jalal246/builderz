@@ -24,16 +24,16 @@ function createConfigItems(type, items) {
  * @returns {Objects} { code, map}
  */
 async function babelTransformer(inputCode, babelOptions) {
-  const { isEnablePreset, isEnablePlugins, isESM, ...rest } = babelOptions;
+  const { enablePreset, enablePlugins, isESM, ...rest } = babelOptions;
 
   let plugins;
   let presets;
 
-  if (isEnablePreset) {
+  if (enablePreset) {
     presets = getPresets(isESM);
   }
 
-  if (isEnablePlugins) {
+  if (enablePlugins) {
     plugins = getPlugins(isESM);
   }
 
