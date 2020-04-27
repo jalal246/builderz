@@ -32,7 +32,7 @@ function getPlugins({
   babel: babelConfig,
   pkgPath,
 }) {
-  const { isSilent, isProd, isMultiEntries, isTypeScripts } = flags;
+  const { isSilent, isProd, isMultiEntries, isTypeScript } = flags;
 
   const { buildFormat, buildPath, buildName } = outputBuild;
 
@@ -68,7 +68,7 @@ function getPlugins({
       extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
 
-    isTypeScripts ? typescript() : null,
+    isTypeScript ? typescript() : null,
 
     /**
      * Converts .json files to ES6 modules.

@@ -1,5 +1,3 @@
-import Car from "./car";
+const x: number = 0;
 
-let Ferrari = new Car();
-
-export default Ferrari;
+export default x;

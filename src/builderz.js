@@ -112,6 +112,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
         [ES_MODEL]: esModule,
         [STRICT]: strict,
         [BABEL]: babel,
+        isTypeScript,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -127,6 +128,7 @@ async function builderz(opts, { isInitOpts = true } = {}) {
           const flags = {
             isSilent,
             isProd,
+            isTypeScript,
             isMultiEntries: Array.isArray(entries),
           };
 
