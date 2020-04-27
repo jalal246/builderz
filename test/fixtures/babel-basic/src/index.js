@@ -1,2 +1,3 @@
-const answer = 42;
-console.log(`the answer is ${answer}`);
+const foo = 42;
+
+export default foo;

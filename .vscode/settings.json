@@ -14,6 +14,8 @@
 		"isboolean",
 		"isempty",
 		"mytools",
+		"sdecs",
+		"sname",
 		"toplevel",
 		"unsortable",
 		"withcontext"

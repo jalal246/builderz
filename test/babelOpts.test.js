@@ -3,15 +3,16 @@ import { resolve } from "path";
 
 import perFile from "./utils";
 
-describe("builderz working for single package", () => {
-  it.each([
-    "babel-basic",
-    "babel-exclusions",
-    "babel-loose",
-    "babel-per-file",
-    "babel-reads-presets",
-    "babel-reads-ts",
-  ])("%s", async (pkgName) => {
+describe.only.each`
+  pkgName                  | desc
+  ${"babel-basic"}         | ${"simple input"}
+  ${"babel-exclusions"}    | ${"excluding files"}
+  ${"babel-loose"}         | ${"loose property"}
+  ${"babel-per-file"}      | ${"files has different config"}
+  ${"babel-reads-presets"} | ${"embedded presets"}
+  ${"babel-reads-ts"}      | ${"ability to read external config and detect ts"}
+`("tests $pkgName for testing: $desc", ({ pkgName }) => {
+  it("passes", async () => {
     const pathPure = resolve(__dirname, "fixtures", pkgName);
     const distPath = resolve(pathPure, "dist");
 

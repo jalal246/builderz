@@ -1,1 +1,3 @@
-export const foo = () => 42;
+const foo = () => 42;
+
+export default foo;
