@@ -1,3 +1,9 @@
+/**
+ * getPlugins
+ *
+ * @param {boolean} isESM
+ * @returns {Array}
+ */
 function getPlugins(isESM) {
   return [
     /**
@@ -41,6 +47,12 @@ function getPlugins(isESM) {
   ].filter(Boolean);
 }
 
+/**
+ * getPresets
+ *
+ * @param {boolean} isESM
+ * @returns {Array}
+ */
 function getPresets(isESM) {
   return [
     isESM ? { name: "@babel/preset-modules" } : { name: "@babel/preset-env" },

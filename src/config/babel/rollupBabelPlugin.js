@@ -22,11 +22,14 @@ const unpackOptions = ({
 });
 
 /**
+ *
  * @see {@link https://rollupjs.org/guide/en/#transformers}
- * @param {Object} options
- * @returns
+ * @param {Object} options - babel options passed by user
+ * @param {Array} plugins - essential plugins
+ * @param {Array} presets - essential presets
+ * @returns {Objects} { code, map}
  */
-function babelPlugin(options, plugins, presets) {
+function babelPlugin(options) {
   const { include, exclude, ...rest } = unpackOptions(options);
 
   const filter = createFilter(include, exclude);
@@ -42,7 +45,7 @@ function babelPlugin(options, plugins, presets) {
         filename,
       };
 
-      return babelTransformer(code, babelOptions, plugins, presets);
+      return babelTransformer(code, babelOptions);
     },
   };
 }

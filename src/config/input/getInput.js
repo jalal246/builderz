@@ -18,9 +18,10 @@ import getExternal from "./getInputExternal";
  * @returns {Object} contains input option for the package.
  */
 function genInput({
-  flags: { isSilent, isProd },
+  flags,
   json: { peerDependencies, dependencies },
-  outputBuild: { pkgPath, buildPath, buildName, buildFormat },
+  outputBuild,
+  pkgPath,
   babel,
   entries,
   alias,
@@ -29,22 +30,16 @@ function genInput({
   const external = getExternal({
     peerDependencies,
     dependencies,
-    buildFormat,
+    buildFormat: outputBuild.buildFormat,
   });
 
-  const isMultiEntries = Array.isArray(entries);
-
   const plugins = getPlugins({
-    isSilent,
-    isProd,
-    pkgPath,
-    buildFormat,
-    buildPath,
-    buildName,
-    isMultiEntries,
-    babel,
+    flags,
+    outputBuild,
     alias,
     idx,
+    babel,
+    pkgPath,
   });
 
   return {

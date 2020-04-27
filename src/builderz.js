@@ -119,22 +119,25 @@ async function builderz(opts, { isInitOpts = true } = {}) {
           await bundleOptPromise;
 
           const outputBuild = {
-            pkgPath,
             buildPath,
             buildName,
             buildFormat,
           };
 
+          const flags = {
+            isSilent,
+            isProd,
+            isMultiEntries: Array.isArray(entries),
+          };
+
           const input = await getInput({
-            flags: {
-              isSilent,
-              isProd,
-            },
+            flags,
             json: {
               peerDependencies,
               dependencies,
             },
             outputBuild,
+            pkgPath,
             entries,
             alias,
             babel,

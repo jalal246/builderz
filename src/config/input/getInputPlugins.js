@@ -12,7 +12,7 @@ import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
-import { babelPlugin, getBabelPlugins, getBabelPresets } from "../babel";
+import babelPlugin from "../babel";
 
 import { CJS, ES } from "../../constants";
 
@@ -25,36 +25,16 @@ import { CJS, ES } from "../../constants";
  * @returns {Array} plugins
  */
 function getPlugins({
-  isSilent, // TODO: group them
-  isProd,
-  isMultiEntries,
-  isESM, // TODO: add it to opts
-  isTypeScripts = true, //  TODO: fix this
-  babel: babelConfig,
-  buildFormat,
-  buildPath,
-  buildName,
-  pkgPath,
+  flags,
+  outputBuild,
   alias,
   idx,
+  babel: babelConfig,
+  pkgPath,
 }) {
-  let plugins = null;
-  let presets = null;
+  const { isSilent, isProd, isMultiEntries, isTypeScripts } = flags;
 
-  const {
-    //  TODO: fix this
-    isEnablePreset = true,
-    isEnablePlugins = true,
-    ...restBabelConfig
-  } = babelConfig;
-
-  if (isEnablePreset) {
-    presets = getBabelPresets(isESM);
-  }
-
-  if (isEnablePlugins) {
-    plugins = getBabelPlugins(isESM);
-  }
+  const { buildFormat, buildPath, buildName } = outputBuild;
 
   const essentialPlugins = [
     /**
@@ -62,7 +42,7 @@ function getPlugins({
      */
     beep(),
 
-    babelPlugin({ ...restBabelConfig, cwd: pkgPath }, plugins, presets),
+    babelPlugin({ ...babelConfig, cwd: pkgPath }),
 
     isMultiEntries ? multiEntry() : null,
 
