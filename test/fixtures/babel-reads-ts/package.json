@@ -1,5 +1,5 @@
 {
-  "name": "babel-runtime-helpers",
+  "name": "babel-reads-ts",
   "builderz": {
     "formats": [
       "cjs"

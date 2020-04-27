@@ -1,9 +1,0 @@
-{
-  "name": "babel-helpers",
-  "builderz": {
-    "formats": [
-      "cjs"
-    ],
-    "minify": false
-  }
-}

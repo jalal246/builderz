@@ -5,6 +5,8 @@
       "cjs"
     ],
     "babel": {
+      "enablePreset": false,
+      "enablePlugins": false,
       "exclude": "**/foo.js"
     },
     "minify": false

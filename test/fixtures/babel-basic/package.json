@@ -4,6 +4,10 @@
     "formats": [
       "cjs"
     ],
-    "minify": false
+    "minify": false,
+    "babel": {
+      "enablePreset": false,
+      "enablePlugins": false
+    }
   }
 }

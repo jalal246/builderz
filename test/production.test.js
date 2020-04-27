@@ -3,6 +3,8 @@ import { resolve } from "path";
 import { readdirSync, readFileSync } from "fs";
 import builderz from "../src";
 
+import perFile from "./utils";
+
 jest.setTimeout(30000);
 
 describe("builderz working for single package", () => {
@@ -11,9 +13,9 @@ describe("builderz working for single package", () => {
     // "basic-css",
     // "basic-json",
     // "basic-lorem",
-    // "basic-pkg",
+    "basic-pkg",
     // "basic-ts",
-    "typescript",
+    // "typescript",
     // "multi-entries",
     // "no-name",
     // "shebang",
@@ -22,27 +24,27 @@ describe("builderz working for single package", () => {
     const pathPure = resolve(__dirname, "fixtures", pkgName);
     const distPath = resolve(pathPure, "dist");
 
-    try {
-      await builderz({
-        cleanBuild: true,
-        pkgPaths: [resolve(__dirname, pathPure)],
-      });
+    await perFile(pathPure, distPath);
 
-      const files = readdirSync(distPath);
-      expect(files.length).toMatchSnapshot();
+    // try {
+    //   await builderz({
+    //     cleanBuild: true,
+    //     pkgPaths: [resolve(__dirname, pathPure)],
+    //   });
 
-      files
-        .filter((file) => !/\.map$/.test(file))
-        .sort((file) => (/modern/.test(file) ? 1 : 0))
-        .forEach((file) => {
-          expect(
-            readFileSync(resolve(distPath, file)).toString("utf8")
-          ).toMatchSnapshot();
-        });
+    //   const files = readdirSync(distPath);
+    //   expect(files.length).toMatchSnapshot();
 
-      // await del(distPath);
-    } catch (err) {
-      console.error(err);
-    }
+    //   files
+    //     .filter((file) => !/\.map$/.test(file))
+    //     .sort((file) => (/modern/.test(file) ? 1 : 0))
+    //     .forEach((file) => {
+    //       expect(
+    //         readFileSync(resolve(distPath, file)).toString("utf8")
+    //       ).toMatchSnapshot();
+    //     });
+    // } catch (err) {
+    //   console.error(err);
+    // }
   });
 });
