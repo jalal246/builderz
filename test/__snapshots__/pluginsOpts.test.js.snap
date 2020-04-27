@@ -3,49 +3,19 @@
 exports[`tests plugin-alias for testing: alias passes 1`] = `1`;
 
 exports[`tests plugin-alias for testing: alias passes 2`] = `
-"const DEBUG = true;
+"var DEBUG = true;
 
 console.log('DEBUG should be true: ', DEBUG);
 "
 `;
 
-exports[`tests plugin-css-basic for testing: bundling basic css passes 1`] = `10`;
+exports[`tests plugin-css-basic for testing: bundling basic css passes 1`] = `11`;
 
 exports[`tests plugin-css-basic for testing: bundling basic css passes 2`] = `
-"function styleInject(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (!css || typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
-
-var css_248z = \\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\";
-styleInject(css_248z);
-
-function index() {
-	const el = document.createElement('div');
-	el.className = 'testing';
-	return el;
+"function index () {
+  var el = document.createElement('div');
+  el.className = 'testing';
+  return el;
 }
 
 module.exports = index;
@@ -53,107 +23,56 @@ module.exports = index;
 `;
 
 exports[`tests plugin-css-basic for testing: bundling basic css passes 3`] = `
-"function styleInject(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (!css || typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
+".testing {
+	display: flex;
+	color: red;
+	background: blue;
 }
+"
+`;
 
-var css_248z = \\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\";
-styleInject(css_248z);
-
-function index() {
-	const el = document.createElement('div');
-	el.className = 'testing';
-	return el;
+exports[`tests plugin-css-basic for testing: bundling basic css passes 4`] = `
+"function index () {
+  var el = document.createElement('div');
+  el.className = 'testing';
+  return el;
 }
 
 export default index;
 "
 `;
 
-exports[`tests plugin-css-basic for testing: bundling basic css passes 4`] = `
-"!function(e,t){void 0===t&&(t={});var n=t.insertAt;if(\\"undefined\\"!=typeof document){var d=document.head||document.getElementsByTagName(\\"head\\")[0],r=document.createElement(\\"style\\");r.type=\\"text/css\\",\\"top\\"===n&&d.firstChild?d.insertBefore(r,d.firstChild):d.appendChild(r),r.styleSheet?r.styleSheet.cssText=e:r.appendChild(document.createTextNode(e))}}(\\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\"),module.exports=function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e};
+exports[`tests plugin-css-basic for testing: bundling basic css passes 5`] = `
+"module.exports=function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e};
 //# sourceMappingURL=pluginCssBasic.min.cjs.js.map
 "
 `;
 
-exports[`tests plugin-css-basic for testing: bundling basic css passes 5`] = `
-"!function(e,t){void 0===t&&(t={});var n=t.insertAt;if(\\"undefined\\"!=typeof document){var d=document.head||document.getElementsByTagName(\\"head\\")[0],r=document.createElement(\\"style\\");r.type=\\"text/css\\",\\"top\\"===n&&d.firstChild?d.insertBefore(r,d.firstChild):d.appendChild(r),r.styleSheet?r.styleSheet.cssText=e:r.appendChild(document.createTextNode(e))}}(\\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\");export default function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
+exports[`tests plugin-css-basic for testing: bundling basic css passes 6`] = `
+"export default function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
 //# sourceMappingURL=pluginCssBasic.min.esm.js.map
 "
 `;
 
-exports[`tests plugin-css-basic for testing: bundling basic css passes 6`] = `
-"!function(e,t){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=t():\\"function\\"==typeof define&&define.amd?define(t):(e=e||self).pluginCssBasic=t()}(this,function(){return function(e,t){void 0===t&&(t={});var n=t.insertAt;if(\\"undefined\\"!=typeof document){var d=document.head||document.getElementsByTagName(\\"head\\")[0],o=document.createElement(\\"style\\");o.type=\\"text/css\\",\\"top\\"===n&&d.firstChild?d.insertBefore(o,d.firstChild):d.appendChild(o),o.styleSheet?o.styleSheet.cssText=e:o.appendChild(document.createTextNode(e))}}(\\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\"),function(){const e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}});
+exports[`tests plugin-css-basic for testing: bundling basic css passes 7`] = `
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=e||self).pluginCssBasic=n()}(this,function(){return function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}});
 //# sourceMappingURL=pluginCssBasic.min.umd.js.map
 "
 `;
 
-exports[`tests plugin-css-basic for testing: bundling basic css passes 7`] = `
+exports[`tests plugin-css-basic for testing: bundling basic css passes 8`] = `
 "(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.pluginCssBasic = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, global.pluginCssBasic = factory());
 }(this, (function () {
-  function styleInject(css, ref) {
-    if ( ref === void 0 ) ref = {};
-    var insertAt = ref.insertAt;
+	function index () {
+	  var el = document.createElement('div');
+	  el.className = 'testing';
+	  return el;
+	}
 
-    if (!css || typeof document === 'undefined') { return; }
-
-    var head = document.head || document.getElementsByTagName('head')[0];
-    var style = document.createElement('style');
-    style.type = 'text/css';
-
-    if (insertAt === 'top') {
-      if (head.firstChild) {
-        head.insertBefore(style, head.firstChild);
-      } else {
-        head.appendChild(style);
-      }
-    } else {
-      head.appendChild(style);
-    }
-
-    if (style.styleSheet) {
-      style.styleSheet.cssText = css;
-    } else {
-      style.appendChild(document.createTextNode(css));
-    }
-  }
-
-  var css_248z = \\".testing {\\\\r\\\\n\\\\tdisplay: flex;\\\\r\\\\n\\\\tcolor: red;\\\\r\\\\n\\\\tbackground: blue;\\\\r\\\\n}\\\\r\\\\n\\";
-  styleInject(css_248z);
-
-  function index() {
-  	const el = document.createElement('div');
-  	el.className = 'testing';
-  	return el;
-  }
-
-  return index;
+	return index;
 
 })));
 //# sourceMappingURL=pluginCssBasic.umd.js.map

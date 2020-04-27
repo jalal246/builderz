@@ -1,5 +1,6 @@
 import { createFilter } from "@rollup/pluginutils";
 import babelTransformer from "./babelTransformer";
+import extRegExp from "./utils";
 
 const unpackOptions = ({
   // rollup uses sourcemap, babel uses sourceMaps
@@ -30,12 +31,18 @@ const unpackOptions = ({
  * @returns {Objects} { code, map}
  */
 function babelPlugin(options) {
-  const { include, exclude, ...rest } = unpackOptions(options);
+  const { include, exclude, extensions, ...rest } = unpackOptions(options);
 
   const filter = createFilter(include, exclude);
 
+  const extensionRegExp = extRegExp(extensions);
+
   return {
     transform(code, filename) {
+      if (!extensionRegExp.test(filename)) {
+        return null;
+      }
+
       if (!filter(filename)) {
         return null;
       }
