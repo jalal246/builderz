@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests shebang for testing: adding shebang to output file passes 1`] = `2`;
+
+exports[`tests shebang for testing: adding shebang to output file passes 2`] = `
+"#!/usr/bin/env node
+function foo() {
+  return \\"hello world\\";
+}
+
+exports.foo = foo;
+"
+`;
+
+exports[`tests shebang for testing: adding shebang to output file passes 3`] = `
+"#!/usr/bin/env node
+exports.foo=function(){return\\"hello world\\"};
+"
+`;
