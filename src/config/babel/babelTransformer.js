@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import * as babel from "@babel/core";
-import merge from "babel-merge";
+import path from "path";
 import { getPlugins, getPresets } from "./babelPresets";
 import { isValidArr } from "../../utils";
 
@@ -18,35 +18,48 @@ function createConfigItems(type, items) {
   });
 }
 
-function d0(type = "preset", getter = getPresets, isESM, options) {
-  const presets = createConfigItems(type, [getter](isESM));
-
-  const typPlural = `${type}s`;
-
-  if (!isValidArr(options[typPlural])) {
-    options[typPlural] = presets;
-
-    return options;
-  }
-
-  options[typPlural].forEach((preset, i) => {
+function findConflict(type, embeddedPresets, userPresets) {
+  userPresets.forEach((preset, i) => {
     const {
       file: { resolved },
     } = preset;
 
-    const conflicted = presets.findIndex(
-      ({ file: { resolved: id } }) => id === resolved
+    const indx = embeddedPresets.findIndex(
+      ({ file: { resolved: id } }) => path.relative(id, resolved) === 0
     );
 
-    if (conflicted !== -1 && presets[conflicted].options) {
-      options[typPlural][i].options = Object.assign(
-        presets[conflicted].options,
-        options[typPlural][i].options
+    if (indx !== -1 && embeddedPresets[indx].options) {
+      const merged = babel.createConfigItem(
+        [
+          require.resolve(embeddedPresets[indx].file.resolved),
+          Object.assign(embeddedPresets[indx].options, userPresets[i].options),
+        ],
+        { type }
       );
-    }
-  });
 
-  return options;
+      return { indx, merged };
+    }
+
+    return null;
+  });
+}
+
+function presetsHandler(type, presets, isESM) {
+  const getter = type === "preset" ? getPlugins : getPresets;
+
+  const embeddedPresets = createConfigItems(type, getter.call(this, isESM));
+
+  if (!isValidArr(presets)) {
+    return embeddedPresets;
+  }
+
+  const result = findConflict(type, embeddedPresets, presets);
+
+  if (result) {
+    presets[result.indx] = result.merged;
+  }
+
+  return presets;
 }
 
 /**
@@ -68,49 +81,12 @@ async function babelTransformer(inputCode, babelOptions) {
   const { options } = babel.loadPartialConfig(rest);
 
   if (enablePreset) {
-    const presets = createConfigItems("preset", getPresets(isESM));
-
-    if (!isValidArr(options.presets)) {
-      options.presets = presets;
-    } else {
-      options.presets.forEach((preset, i) => {
-        const {
-          file: { resolved, request },
-        } = preset;
-
-        const conflicted = presets.findIndex(
-          ({ file: { resolved: id } }) => id === resolved
-        );
-
-        if (conflicted !== -1 && presets[conflicted].options) {
-          options.presets[i] = babel.createConfigItem(
-            [
-              require.resolve(presets[conflicted].file.resolved),
-              Object.assign(
-                presets[conflicted].options,
-                options.presets[i].options
-              ),
-            ],
-            { type: "preset" }
-          );
-        }
-      });
-    }
+    options.presets = presetsHandler("preset", options.presets, isESM);
   }
 
-  // if (enablePlugins) {
-  //   const plugins = createConfigItems("plugin", getPlugins(isESM));
-
-  //   if (isValidArr(options.plugins)) {
-  //     options.overrides = [
-  //       {
-  //         plugins,
-  //       },
-  //     ];
-  //   } else {
-  //     options.plugins.push(...plugins);
-  //   }
-  // }
+  if (enablePlugins) {
+    options.plugins = presetsHandler("plugin", options.plugins, isESM);
+  }
 
   /**
    * file is ignored by babel
