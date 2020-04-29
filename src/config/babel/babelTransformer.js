@@ -18,48 +18,78 @@ function createConfigItems(type, items) {
   });
 }
 
-function findConflict(type, embeddedPresets, userPresets) {
-  userPresets.forEach((preset, i) => {
+/**
+ * Find if there's any conflict in preset or plugin and resolves it.
+ *
+ * @param {string} type - "preset" | "plugin"
+ * @param {Array} injectedPresets injected presets or plugins
+ * @param {Array} presets - presets or plugins got from babelrc
+ */
+function conflictResolver(type, injectedPresets, presets) {
+  const indexes = {};
+
+  const merged = presets.map((preset, i) => {
     const {
       file: { resolved },
     } = preset;
 
-    const indx = embeddedPresets.findIndex(
+    const indx = injectedPresets.findIndex(
       ({ file: { resolved: id } }) => path.relative(id, resolved) === 0
     );
 
-    if (indx !== -1 && embeddedPresets[indx].options) {
-      const merged = babel.createConfigItem(
-        [
-          require.resolve(embeddedPresets[indx].file.resolved),
-          Object.assign(embeddedPresets[indx].options, userPresets[i].options),
-        ],
-        { type }
-      );
+    /**
+     * If there's a duplication and injectedPresets have options resolves this
+     * duplication. Otherwise, just ignore it.
+     */
+    if (indx !== -1) {
+      indexes[indx] = true;
 
-      return { indx, merged };
+      if (injectedPresets[indx].options) {
+        return babel.createConfigItem(
+          [
+            require.resolve(injectedPresets[indx].file.resolved),
+            Object.assign(injectedPresets[indx].options, presets[i].options),
+          ],
+          { type }
+        );
+      }
     }
 
-    return null;
+    return preset;
   });
+
+  if (indexes.length === injectedPresets.length) return merged;
+
+  injectedPresets.forEach((injectedPreset, i) => {
+    if (indexes[i]) {
+      merged.push(injectedPreset);
+    }
+  });
+
+  return merged;
 }
 
+/**
+ *
+ *
+ * @param {*} type
+ * @param {*} presets
+ * @param {*} isESM
+ * @returns
+ */
 function presetsHandler(type, presets, isESM) {
   const getter = type === "preset" ? getPlugins : getPresets;
 
-  const embeddedPresets = createConfigItems(type, getter.call(this, isESM));
+  const injectedPresets = createConfigItems(type, getter.call(this, isESM));
 
+  /**
+   * If presets is empty, there's no need for resolving any conflict.
+   */
   if (!isValidArr(presets)) {
-    return embeddedPresets;
+    return injectedPresets;
   }
 
-  const result = findConflict(type, embeddedPresets, presets);
-
-  if (result) {
-    presets[result.indx] = result.merged;
-  }
-
-  return presets;
+  return conflictResolver(type, injectedPresets, presets);
 }
 
 /**
@@ -84,9 +114,9 @@ async function babelTransformer(inputCode, babelOptions) {
     options.presets = presetsHandler("preset", options.presets, isESM);
   }
 
-  if (enablePlugins) {
-    options.plugins = presetsHandler("plugin", options.plugins, isESM);
-  }
+  // if (enablePlugins) {
+  //   options.plugins = presetsHandler("plugin", options.plugins, isESM);
+  // }
 
   /**
    * file is ignored by babel
