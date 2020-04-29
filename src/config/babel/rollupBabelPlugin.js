@@ -9,6 +9,7 @@ const unpackOptions = ({
   sourcemaps = true,
   sourceMap = true,
   sourceMaps = true,
+  isESM,
   ...rest
 } = {}) => ({
   plugins: [],
@@ -16,7 +17,7 @@ const unpackOptions = ({
   ...rest,
   caller: {
     name: "custom-plugin-babel",
-    supportsStaticESM: true,
+    supportsStaticESM: !isESM,
     supportsDynamicImport: true,
     ...rest.caller,
   },
