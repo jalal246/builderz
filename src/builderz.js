@@ -72,6 +72,11 @@ async function builderz(opts) {
 
       state.setPkgJsonOpts(json);
 
+      /**
+       * As soon as we get local options we can extract bundle options.
+       */
+      state.extractBundleOpt();
+
       const { name, peerDependencies = {}, dependencies = {} } = json;
 
       const pkgInfo = allPkgInfo[name];

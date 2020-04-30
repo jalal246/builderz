@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
-import { parse } from "shell-quote";
 import isEmptyObj from "lodash.isempty";
 import { relative } from "path";
 
+import yargs from "yargs";
 import resolveArgs from "../resolveArgs";
 import { FORMATS, MINIFY, defaultOpts } from "../constants";
 import { isValidArr, getBundleOpt } from "../utils";
@@ -24,28 +24,8 @@ class State {
     this.generalOpts = generalOpts;
   }
 
-  /**
-   * Assign global opts to current. This step is done for every cycle.
-   *
-   * @memberof State
-   */
-  resetOpts() {
-    this.opts = { ...this.generalOpts };
-  }
-
-  setOptsFrom(obj) {
-    /**
-     * Parsing empty object throws an error/
-     */
-    if (!isEmptyObj(obj)) {
-      const parsedBuildArgs = parse(obj);
-
-      if (isValidArr(parsedBuildArgs)) {
-        const parsedArgv = resolveArgs(parsedBuildArgs);
-
-        Object.assign(this.opts, parsedArgv);
-      }
-    }
+  mergeOpts(newOpts) {
+    Object.assign(this.opts, newOpts);
   }
 
   /**
@@ -63,9 +43,9 @@ class State {
   }
 
   /**
-   * Sets package local option
+   * Sets package local option according to its package.json
    *
-   * @param {Object} pkgBuildOpts
+   * @param {Object} pkgJson
    * @memberof State
    */
   setPkgJsonOpts(pkgJson) {
@@ -73,15 +53,22 @@ class State {
 
     this.pkgName = pkgName;
 
-    this.resetOpts();
+    /**
+     * Resets opts for each new package.
+     */
+    this.opts = { ...this.generalOpts };
 
     /**
      * Extracting other options if there are any.
      */
-    this.setOptsFrom(build);
+    if (!isEmptyObj(build)) {
+      const parsedArgv = resolveArgs(build);
+
+      this.mergeOpts(parsedArgv);
+    }
 
     if (!isEmptyObj(builderz)) {
-      Object.assign(this.opts, builderz);
+      this.mergeOpts(builderz);
     }
 
     Object.keys(defaultOpts).forEach((key) => {
@@ -89,11 +76,6 @@ class State {
         this.opts[key] = defaultOpts[key];
       }
     });
-
-    /**
-     * As soon as we get local options we can extract bundle options.
-     */
-    this.extractBundleOpt();
   }
 
   setPkgPath(pkgPath) {
