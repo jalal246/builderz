@@ -21,16 +21,6 @@ class State {
    * @memberof State
    */
   constructor(generalOpts) {
-    /**
-     * package build options in build script.
-     */
-    this.pkgBuildOpts = {};
-
-    /**
-     * package Json options in packages.json as properties.
-     */
-    this.pkgJsonOpts = {};
-
     this.generalOpts = generalOpts;
   }
 
@@ -39,7 +29,7 @@ class State {
    *
    * @memberof State
    */
-  initOpts() {
+  resetOpts() {
     this.opts = { ...this.generalOpts };
   }
 
@@ -83,7 +73,7 @@ class State {
 
     this.pkgName = pkgName;
 
-    this.initOpts();
+    this.resetOpts();
 
     /**
      * Extracting other options if there are any.
