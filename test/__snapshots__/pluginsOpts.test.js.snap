@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests plugin-alias for testing: alias passes 1`] = `1`;
+
+exports[`tests plugin-alias for testing: alias passes 2`] = `
+"var DEBUG = true;
+
+console.log('DEBUG should be true: ', DEBUG);
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 1`] = `11`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 2`] = `
+"function index () {
+  var el = document.createElement('div');
+  el.className = 'testing';
+  return el;
+}
+
+module.exports = index;
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 3`] = `
+".testing {
+	display: flex;
+	color: red;
+	background: blue;
+}
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 4`] = `
+"function index () {
+  var el = document.createElement('div');
+  el.className = 'testing';
+  return el;
+}
+
+export default index;
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 5`] = `
+"module.exports=function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e};
+//# sourceMappingURL=pluginCssBasic.min.cjs.js.map
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 6`] = `
+"export default function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
+//# sourceMappingURL=pluginCssBasic.min.esm.js.map
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 7`] = `
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=e||self).pluginCssBasic=n()}(this,function(){return function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}});
+//# sourceMappingURL=pluginCssBasic.min.umd.js.map
+"
+`;
+
+exports[`tests plugin-css-basic for testing: bundling basic css passes 8`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, global.pluginCssBasic = factory());
+}(this, (function () {
+	function index () {
+	  var el = document.createElement('div');
+	  el.className = 'testing';
+	  return el;
+	}
+
+	return index;
+
+})));
+//# sourceMappingURL=pluginCssBasic.umd.js.map
+"
+`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 1`] = `10`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 2`] = `
+"var test = \\"true\\";
+var two = {
+	test: test
+};
+
+var index = (function () {
+  return Promise.resolve(two);
+});
+
+module.exports = index;
+"
+`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 3`] = `
+"var test = \\"true\\";
+var two = {
+	test: test
+};
+
+var index = (function () {
+  return Promise.resolve(two);
+});
+
+export default index;
+"
+`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 4`] = `
+"var e={test:\\"true\\"};module.exports=function(){return Promise.resolve(e)};
+//# sourceMappingURL=pluginJsonBasic.min.cjs.js.map
+"
+`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 5`] = `
+"var e={test:\\"true\\"};export default function(){return Promise.resolve(e)}
+//# sourceMappingURL=pluginJsonBasic.min.esm.js.map
+"
+`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 6`] = `
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=e||self).pluginJsonBasic=n()}(this,function(){var e={test:\\"true\\"};return function(){return Promise.resolve(e)}});
+//# sourceMappingURL=pluginJsonBasic.min.umd.js.map
+"
+`;
+
+exports[`tests plugin-json-basic for testing: bundling json passes 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, global.pluginJsonBasic = factory());
+}(this, (function () {
+	var test = \\"true\\";
+	var two = {
+		test: test
+	};
+
+	var index = (function () {
+	  return Promise.resolve(two);
+	});
+
+	return index;
+
+})));
+//# sourceMappingURL=pluginJsonBasic.umd.js.map
+"
+`;
+
+exports[`tests plugin-multi-entries for testing: multi-entries passes 1`] = `1`;
+
+exports[`tests plugin-multi-entries for testing: multi-entries passes 2`] = `
+"console.log('i am a');
+
+console.log('i am b');
+"
+`;

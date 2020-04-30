@@ -58,7 +58,7 @@ builderz(options);
   -s, --silent <boolean>       Silent mode, mutes build massages (default: true)
   -f, --formats <list>         Specific build format (default: [])
   -m, --minify <boolean>       Minify bundle works only if format is provided (default: false)
-  -m, --sourcemap <boolean>    Enable sourcemap in output
+   --sourcemap <boolean>       Enable sourcemap in output
   -c, --camel-case <boolean>   Add camel-cased output file (default: true)
   -l, --clean-build <boolean>  Clean previous build folder (default: false)
   -b, --build-name <string>    Specific folder build name (default: "dist")

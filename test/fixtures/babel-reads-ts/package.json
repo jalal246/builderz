@@ -1,0 +1,9 @@
+{
+  "name": "babel-reads-ts",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false
+  }
+}

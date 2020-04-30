@@ -17,6 +17,7 @@ import {
   SOURCE_MAP,
   STRICT,
   ES_MODEL,
+  BABEL,
 } from "./constants";
 
 import StateHandler from "./store";
@@ -110,6 +111,8 @@ async function builderz(opts, { isInitOpts = true } = {}) {
          */
         [ES_MODEL]: esModule,
         [STRICT]: strict,
+        [BABEL]: babel,
+        isTypeScript,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -122,18 +125,24 @@ async function builderz(opts, { isInitOpts = true } = {}) {
             buildFormat,
           };
 
+          const flags = {
+            isSilent,
+            isProd,
+            isTypeScript,
+            isMultiEntries: Array.isArray(entries),
+          };
+
           const input = await getInput({
-            flags: {
-              isSilent,
-              isProd,
-            },
+            flags,
             json: {
               peerDependencies,
               dependencies,
             },
             outputBuild,
+            pkgPath,
             entries,
             alias,
+            babel,
             idx,
           });
 

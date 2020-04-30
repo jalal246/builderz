@@ -1,0 +1,13 @@
+{
+  "name": "babel-loose",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "babel": {
+      "enablePreset": false,
+      "enablePlugins": false
+    },
+    "minify": false
+  }
+}

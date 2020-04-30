@@ -1,0 +1,238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests babel-basic for testing: simple input passes 1`] = `1`;
+
+exports[`tests babel-basic for testing: simple input passes 2`] = `
+"var foo = 42;
+
+module.exports = foo;
+"
+`;
+
+exports[`tests babel-exclusions for testing: excluding files passes 1`] = `1`;
+
+exports[`tests babel-exclusions for testing: excluding files passes 2`] = `
+"const foo = () => 42;
+
+module.exports = foo;
+"
+`;
+
+exports[`tests babel-loose for testing: loose property passes 1`] = `1`;
+
+exports[`tests babel-loose for testing: loose property passes 2`] = `
+"var Foo = /*#__PURE__*/function () {
+  function Foo() {}
+
+  var _proto = Foo.prototype;
+
+  _proto.bar = function bar() {};
+
+  return Foo;
+}();
+
+module.exports = Foo;
+"
+`;
+
+exports[`tests babel-overrides-plugin for testing: overrides plugins & adds the rest of injected ones passes 1`] = `1`;
+
+exports[`tests babel-overrides-plugin for testing: overrides plugins & adds the rest of injected ones passes 2`] = `
+"function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\\"Cannot call a class as a function\\"); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var FooBar = function FooBar() {
+  _classCallCheck(this, FooBar);
+
+  _defineProperty(this, \\"x\\", \\"bar\\");
+
+  _defineProperty(this, \\"y\\", void 0);
+};
+
+_defineProperty(FooBar, \\"a\\", \\"foo\\");
+
+_defineProperty(FooBar, \\"b\\", void 0);
+
+var index = (function () {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(args);
+});
+
+module.exports = index;
+"
+`;
+
+exports[`tests babel-overrides-preset for testing: overrides presets only passes 1`] = `1`;
+
+exports[`tests babel-overrides-preset for testing: overrides presets only passes 2`] = `
+"var Foo = /*#__PURE__*/function () {
+  function Foo() {}
+
+  var _proto = Foo.prototype;
+
+  _proto.bar = function bar() {};
+
+  return Foo;
+}();
+
+module.exports = Foo;
+"
+`;
+
+exports[`tests babel-per-file for testing: files has different config passes 1`] = `1`;
+
+exports[`tests babel-per-file for testing: files has different config passes 2`] = `
+"class Foo {}
+
+var Bar = function Bar() {};
+
+exports.Bar = Bar;
+exports.Foo = Foo;
+"
+`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 1`] = `10`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 2`] = `
+"var two = function two() {
+  try {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return Promise.resolve(args.reduce(function (total, value) {
+      return total + value;
+    }, 0));
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+var index = (function () {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  try {
+    return Promise.resolve(two.apply(void 0, args)).then(function (_two) {
+      return Promise.resolve(two.apply(void 0, args)).then(function (_two2) {
+        return [_two, _two2];
+      });
+    });
+  } catch (e) {
+    return Promise.reject(e);
+  }
+});
+
+module.exports = index;
+"
+`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 3`] = `
+"var two = function two() {
+  try {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return Promise.resolve(args.reduce(function (total, value) {
+      return total + value;
+    }, 0));
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+var index = (function () {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  try {
+    return Promise.resolve(two.apply(void 0, args)).then(function (_two) {
+      return Promise.resolve(two.apply(void 0, args)).then(function (_two2) {
+        return [_two, _two2];
+      });
+    });
+  } catch (e) {
+    return Promise.reject(e);
+  }
+});
+
+export default index;
+"
+`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 4`] = `
+"var r=function(){try{for(var r=arguments.length,e=new Array(r),n=0;n<r;n++)e[n]=arguments[n];return Promise.resolve(e.reduce(function(r,e){return r+e},0))}catch(r){return Promise.reject(r)}};module.exports=function(){for(var e=arguments.length,n=new Array(e),t=0;t<e;t++)n[t]=arguments[t];try{return Promise.resolve(r.apply(void 0,n)).then(function(e){return Promise.resolve(r.apply(void 0,n)).then(function(r){return[e,r]})})}catch(r){return Promise.reject(r)}};
+//# sourceMappingURL=babelReadsPresets.min.cjs.js.map
+"
+`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 5`] = `
+"var r=function(){try{for(var r=arguments.length,e=new Array(r),t=0;t<r;t++)e[t]=arguments[t];return Promise.resolve(e.reduce(function(r,e){return r+e},0))}catch(r){return Promise.reject(r)}};export default function(){for(var e=arguments.length,t=new Array(e),n=0;n<e;n++)t[n]=arguments[n];try{return Promise.resolve(r.apply(void 0,t)).then(function(e){return Promise.resolve(r.apply(void 0,t)).then(function(r){return[e,r]})})}catch(r){return Promise.reject(r)}}
+//# sourceMappingURL=babelReadsPresets.min.esm.js.map
+"
+`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 6`] = `
+"!function(e,r){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=r():\\"function\\"==typeof define&&define.amd?define(r):(e=e||self).babelReadsPresets=r()}(this,function(){var e=function(){try{for(var e=arguments.length,r=new Array(e),n=0;n<e;n++)r[n]=arguments[n];return Promise.resolve(r.reduce(function(e,r){return e+r},0))}catch(e){return Promise.reject(e)}};return function(){for(var r=arguments.length,n=new Array(r),t=0;t<r;t++)n[t]=arguments[t];try{return Promise.resolve(e.apply(void 0,n)).then(function(r){return Promise.resolve(e.apply(void 0,n)).then(function(e){return[r,e]})})}catch(e){return Promise.reject(e)}}});
+//# sourceMappingURL=babelReadsPresets.min.umd.js.map
+"
+`;
+
+exports[`tests babel-reads-presets for testing: embedded presets passes 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, global.babelReadsPresets = factory());
+}(this, (function () {
+	var two = function two() {
+	  try {
+	    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return Promise.resolve(args.reduce(function (total, value) {
+	      return total + value;
+	    }, 0));
+	  } catch (e) {
+	    return Promise.reject(e);
+	  }
+	};
+
+	var index = (function () {
+	  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	    args[_key] = arguments[_key];
+	  }
+
+	  try {
+	    return Promise.resolve(two.apply(void 0, args)).then(function (_two) {
+	      return Promise.resolve(two.apply(void 0, args)).then(function (_two2) {
+	        return [_two, _two2];
+	      });
+	    });
+	  } catch (e) {
+	    return Promise.reject(e);
+	  }
+	});
+
+	return index;
+
+})));
+//# sourceMappingURL=babelReadsPresets.umd.js.map
+"
+`;
+
+exports[`tests babel-reads-ts for testing: ability to read external config and detect ts passes 1`] = `1`;
+
+exports[`tests babel-reads-ts for testing: ability to read external config and detect ts passes 2`] = `
+"var x = 0;
+
+module.exports = x;
+"
+`;

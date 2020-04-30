@@ -51,6 +51,7 @@ class StateHandler extends State {
     });
 
     this.isSrc = isSrc;
+    this.isTypeScript = ext === "ts";
 
     if (isValidArr(entriesOpt)) {
       return entriesOpt.map((entry) => this.resolvePath(entry));

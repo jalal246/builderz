@@ -1,4 +1,5 @@
 import { join } from "path";
+
 import beep from "@rollup/plugin-beep";
 import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
@@ -7,12 +8,11 @@ import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
 import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
-
-import babel from "rollup-plugin-babel";
+import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import analyze from "rollup-plugin-analyzer";
 
-import basicPreset from "../babel";
+import babelPlugin from "../babel";
 
 import { CJS, ES } from "../../constants";
 
@@ -25,27 +25,24 @@ import { CJS, ES } from "../../constants";
  * @returns {Array} plugins
  */
 function getPlugins({
-  isSilent,
-  isProd,
-  isMultiEntries,
-  presets = basicPreset,
-  buildFormat,
-  buildPath,
-  buildName,
+  flags,
+  outputBuild,
   alias,
   idx,
+  babel: babelConfig,
+  pkgPath,
 }) {
+  const { isSilent, isProd, isMultiEntries, isTypeScript } = flags;
+
+  const { buildFormat, buildPath, buildName } = outputBuild;
+
   const essentialPlugins = [
     /**
      * Beeps when a build ends with errors.
      */
     beep(),
 
-    babel({
-      runtimeHelpers: true,
-      ...presets,
-      // babelrc: true,
-    }),
+    babelPlugin({ ...babelConfig, cwd: pkgPath }),
 
     isMultiEntries ? multiEntry() : null,
 
@@ -70,6 +67,8 @@ function getPlugins({
       preferBuiltins: true,
       extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
+
+    isTypeScript ? typescript() : null,
 
     /**
      * Converts .json files to ES6 modules.

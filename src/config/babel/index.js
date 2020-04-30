@@ -1,1 +1,1 @@
-export { default } from "./babelBasic";
+export { default } from "./rollupBabelPlugin";

@@ -85,6 +85,7 @@ function getBundleOpt(customFormats, isMinify) {
 
   return gen;
 }
+
 export {
   isValidArr,
   NotEmptyArr,

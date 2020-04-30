@@ -1,0 +1,6 @@
+{
+  "name": "plugin-alias",
+  "scripts": {
+    "build": "--no-sourcemap --no-minify --alias=./constants=./constants-debug --formats=cjs"
+  }
+}

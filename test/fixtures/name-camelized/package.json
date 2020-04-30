@@ -1,0 +1,9 @@
+{
+  "name": "name-camelized",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false
+  }
+}

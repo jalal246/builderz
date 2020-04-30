@@ -1,0 +1,13 @@
+{
+  "name": "babel-basic",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false,
+    "babel": {
+      "enablePreset": false,
+      "enablePlugins": false
+    }
+  }
+}

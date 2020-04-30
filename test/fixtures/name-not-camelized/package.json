@@ -1,0 +1,9 @@
+{
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false,
+    "camelCase": false
+  }
+}

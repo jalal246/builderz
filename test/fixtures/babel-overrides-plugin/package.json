@@ -1,0 +1,9 @@
+{
+  "name": "babel-overrides-plugin",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false
+  }
+}

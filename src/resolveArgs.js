@@ -87,6 +87,12 @@ function resolveArgs(args) {
       describe: "Enable Strict Mode",
       type: "boolean",
       // default: [],
+    })
+    .option("babel", {
+      describe:
+        "properties: enablePreset / enablePlugins / extensions / exclude",
+      // type: "boolean",
+      // default: [],
     });
 
   return args ? yargs.parse(args) : yargs.argv;

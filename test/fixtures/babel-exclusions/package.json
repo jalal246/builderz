@@ -1,0 +1,14 @@
+{
+  "name": "babel-exclusions",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "babel": {
+      "enablePreset": false,
+      "enablePlugins": false,
+      "exclude": "**/foo.js"
+    },
+    "minify": false
+  }
+}

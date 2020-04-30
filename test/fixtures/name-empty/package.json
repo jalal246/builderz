@@ -1,0 +1,8 @@
+{
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false
+  }
+}
