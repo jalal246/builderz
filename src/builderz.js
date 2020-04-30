@@ -44,8 +44,8 @@ async function build(inputOptions, outputOptions) {
   }
 }
 
-async function builderz(opts, { isInitOpts = true } = {}) {
-  const state = new StateHandler(opts, isInitOpts);
+async function builderz(opts) {
+  const state = new StateHandler(opts);
 
   const { pkgPaths = [], pkgNames } = state.generalOpts;
 
