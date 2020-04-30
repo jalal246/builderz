@@ -71,7 +71,6 @@
     "del": "^5.1.0",
     "get-info": "^2.4.0",
     "lodash.isboolean": "^3.0.3",
-    "lodash.isempty": "^4.4.0",
     "lodash.union": "^4.6.0",
     "move-position": "^1.0.0",
     "package-sorter": "^1.1.1",

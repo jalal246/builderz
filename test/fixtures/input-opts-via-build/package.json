@@ -1,0 +1,6 @@
+{
+  "name": "input-opts-via-build",
+  "scripts": {
+    "build": "--formats=cjs  --no-minify --no-camel-case --strict"
+  }
+}

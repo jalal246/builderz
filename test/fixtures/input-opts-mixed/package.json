@@ -1,0 +1,11 @@
+{
+  "name": "input-opts-mixed",
+  "scripts": {
+    "build": "--no-minify --no-camel-case --strict"
+  },
+  "builderz": {
+    "formats": [
+      "cjs"
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests input-opts-mixed for testing: inputs in build script & builderz property passes 1`] = `1`;
+
+exports[`tests input-opts-mixed for testing: inputs in build script & builderz property passes 2`] = `
+"'use strict';
+
+var foo = function foo() {
+  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+    bar[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(\\"foo \\".concat(bar));
+};
+
+module.exports = foo;
+"
+`;
+
+exports[`tests input-opts-via-build for testing: inputs from build script passes 1`] = `1`;
+
+exports[`tests input-opts-via-build for testing: inputs from build script passes 2`] = `
+"'use strict';
+
+var foo = function foo() {
+  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+    bar[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(\\"foo \\".concat(bar));
+};
+
+module.exports = foo;
+"
+`;
+
+exports[`tests input-opts-via-builderz for testing: inputs form builderz property passes 1`] = `1`;
+
+exports[`tests input-opts-via-builderz for testing: inputs form builderz property passes 2`] = `
+"'use strict';
+
+var foo = function foo() {
+  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+    bar[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(\\"foo \\".concat(bar));
+};
+
+module.exports = foo;
+"
+`;

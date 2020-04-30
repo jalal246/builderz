@@ -1,11 +1,9 @@
 /* eslint-disable no-nested-ternary */
-import isEmptyObj from "lodash.isempty";
 import { relative } from "path";
 
-import yargs from "yargs";
 import resolveArgs from "../resolveArgs";
 import { FORMATS, MINIFY, defaultOpts } from "../constants";
-import { isValidArr, getBundleOpt } from "../utils";
+import { getBundleOpt } from "../utils";
 
 /**
  *  State build options.
@@ -61,13 +59,13 @@ class State {
     /**
      * Extracting other options if there are any.
      */
-    if (!isEmptyObj(build)) {
+    if (build && build.length > 0) {
       const parsedArgv = resolveArgs(build);
 
       this.mergeOpts(parsedArgv);
     }
 
-    if (!isEmptyObj(builderz)) {
+    if (builderz && Object.keys(builderz).length > 0) {
       this.mergeOpts(builderz);
     }
 
