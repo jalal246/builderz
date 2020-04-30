@@ -5,13 +5,16 @@ import builderz from "../src";
 
 jest.setTimeout(30000);
 
-async function perFile(pathPure, distPath) {
+async function perFile(pathPure, distPath, isCheckSnapshot = true) {
   await builderz({
     cleanBuild: true,
     pkgPaths: [resolve(__dirname, pathPure)],
   });
 
   const files = readdirSync(distPath);
+
+  // if (!isCheckSnapshot) return;
+
   expect(files.length).toMatchSnapshot();
 
   files

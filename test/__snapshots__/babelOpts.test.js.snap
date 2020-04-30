@@ -35,6 +35,54 @@ module.exports = Foo;
 "
 `;
 
+exports[`tests babel-overrides-plugin for testing: overrides plugins & adds the rest of injected ones passes 1`] = `1`;
+
+exports[`tests babel-overrides-plugin for testing: overrides plugins & adds the rest of injected ones passes 2`] = `
+"function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(\\"Cannot call a class as a function\\"); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var FooBar = function FooBar() {
+  _classCallCheck(this, FooBar);
+
+  _defineProperty(this, \\"x\\", \\"bar\\");
+
+  _defineProperty(this, \\"y\\", void 0);
+};
+
+_defineProperty(FooBar, \\"a\\", \\"foo\\");
+
+_defineProperty(FooBar, \\"b\\", void 0);
+
+var index = (function () {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(args);
+});
+
+module.exports = index;
+"
+`;
+
+exports[`tests babel-overrides-preset for testing: overrides presets only passes 1`] = `1`;
+
+exports[`tests babel-overrides-preset for testing: overrides presets only passes 2`] = `
+"var Foo = /*#__PURE__*/function () {
+  function Foo() {}
+
+  var _proto = Foo.prototype;
+
+  _proto.bar = function bar() {};
+
+  return Foo;
+}();
+
+module.exports = Foo;
+"
+`;
+
 exports[`tests babel-per-file for testing: files has different config passes 1`] = `1`;
 
 exports[`tests babel-per-file for testing: files has different config passes 2`] = `
