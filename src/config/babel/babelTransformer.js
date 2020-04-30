@@ -4,6 +4,9 @@ import path from "path";
 import { getPlugins, getPresets } from "./babelPresets";
 import { isValidArr } from "../../utils";
 
+const PLUGIN = "plugin";
+const PRESET = "preset";
+
 /**
  * Creates config items for babel.
  * @see {@link https://babeljs.io/docs/en/babel-core#createconfigitem}
@@ -24,9 +27,13 @@ function createConfigItems(type, items) {
  * @param {string} type - "preset" | "plugin"
  * @param {Array} injectedPresets injected presets or plugins
  * @param {Array} presets - presets or plugins got from babelrc
+ * @returns {Array} resolved presets
  */
 function conflictResolver(type, injectedPresets, presets) {
-  const indexes = {};
+  /**
+   * to store all injectedPresets indexes that's being handled.
+   */
+  const processedIndexes = {};
 
   const merged = presets.map((preset, i) => {
     const {
@@ -34,7 +41,7 @@ function conflictResolver(type, injectedPresets, presets) {
     } = preset;
 
     const indx = injectedPresets.findIndex(
-      ({ file: { resolved: id } }) => path.relative(id, resolved) === 0
+      ({ file: { resolved: id } }) => path.relative(id, resolved).length === 0
     );
 
     /**
@@ -42,9 +49,12 @@ function conflictResolver(type, injectedPresets, presets) {
      * duplication. Otherwise, just ignore it.
      */
     if (indx !== -1) {
-      indexes[indx] = true;
+      processedIndexes[indx] = true;
 
       if (injectedPresets[indx].options) {
+        /**
+         * We can't assign freezed options, we need config a whole new preset.
+         */
         return babel.createConfigItem(
           [
             require.resolve(injectedPresets[indx].file.resolved),
@@ -58,10 +68,10 @@ function conflictResolver(type, injectedPresets, presets) {
     return preset;
   });
 
-  if (indexes.length === injectedPresets.length) return merged;
+  if (processedIndexes.length === injectedPresets.length) return merged;
 
   injectedPresets.forEach((injectedPreset, i) => {
-    if (indexes[i]) {
+    if (!processedIndexes[i]) {
       merged.push(injectedPreset);
     }
   });
@@ -70,26 +80,26 @@ function conflictResolver(type, injectedPresets, presets) {
 }
 
 /**
+ * handling presets.
  *
- *
- * @param {*} type
- * @param {*} presets
- * @param {*} isESM
- * @returns
+ * @param {string} type - "preset" | "plugin"
+ * @param {Array} presets - presets or plugins got from babelrc
+ * @param {boolean} isESM
+ * @returns {Array} resolved presets
  */
 function presetsHandler(type, presets, isESM) {
-  const getter = type === "preset" ? getPlugins : getPresets;
+  const getter = type === PRESET ? getPresets : getPlugins;
 
-  const injectedPresets = createConfigItems(type, getter.call(this, isESM));
+  const injected = createConfigItems(type, getter.call(this, isESM));
 
   /**
    * If presets is empty, there's no need for resolving any conflict.
    */
   if (!isValidArr(presets)) {
-    return injectedPresets;
+    return injected;
   }
 
-  return conflictResolver(type, injectedPresets, presets);
+  return conflictResolver(type, injected, presets);
 }
 
 /**
@@ -111,12 +121,12 @@ async function babelTransformer(inputCode, babelOptions) {
   const { options } = babel.loadPartialConfig(rest);
 
   if (enablePreset) {
-    options.presets = presetsHandler("preset", options.presets, isESM);
+    options.presets = presetsHandler(PRESET, options.presets, isESM);
   }
 
-  // if (enablePlugins) {
-  //   options.plugins = presetsHandler("plugin", options.plugins, isESM);
-  // }
+  if (enablePlugins) {
+    options.plugins = presetsHandler(PLUGIN, options.plugins, isESM);
+  }
 
   /**
    * file is ignored by babel
