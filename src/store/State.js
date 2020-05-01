@@ -27,20 +27,6 @@ class State {
   }
 
   /**
-   * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
-   * already set.
-   *
-   * @returns {Array}
-   * @memberof State
-   */
-  extractBundleOpt() {
-    const formats = this.opts[FORMATS];
-    const isMinify = this.opts[MINIFY];
-
-    this.bundleOpt = getBundleOpt(formats, isMinify);
-  }
-
-  /**
    * Sets package local option according to its package.json
    *
    * @param {Object} pkgJson
@@ -74,6 +60,20 @@ class State {
         this.opts[key] = defaultOpts[key];
       }
     });
+  }
+
+  /**
+   * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
+   * already set.
+   *
+   * @returns {Array}
+   * @memberof State
+   */
+  extractBundleOpt() {
+    const formats = this.opts[FORMATS];
+    const isMinify = this.opts[MINIFY];
+
+    this.bundleOpt = getBundleOpt(formats, isMinify);
   }
 
   setPkgPath(pkgPath) {
