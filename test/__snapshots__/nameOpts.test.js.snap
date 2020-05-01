@@ -44,3 +44,18 @@ exports[`tests name-not-camelized for testing: output isn't camelized passes 2`]
 module.exports = foo;
 "
 `;
+
+exports[`tests name-specific for testing: specific output name passes 1`] = `1`;
+
+exports[`tests name-specific for testing: specific output name passes 2`] = `
+"var foo = function foo() {
+  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+    bar[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(\\"foo \\".concat(bar));
+};
+
+module.exports = foo;
+"
+`;

@@ -1,0 +1,11 @@
+{
+  "name": "name-specific",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "output": "custom-output-bundle",
+    "minify": false,
+    "camelCase": false
+  }
+}
