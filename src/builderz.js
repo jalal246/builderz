@@ -1,13 +1,13 @@
+/* eslint-disable no-console */
 import { resolve } from "path";
 import { rollup } from "rollup";
-import { error } from "@mytools/print";
 import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
 
 import { getInput, getOutput } from "./config/index";
 
-import { NotEmptyArr, isValidArr } from "./utils";
+import { isValidArr } from "./utils";
 
 import {
   CLEAN_BUILD,
@@ -15,6 +15,9 @@ import {
   SILENT,
   BUILD_NAME,
   SOURCE_MAP,
+  SORT_PACKAGES,
+  PKG_PATHS,
+  PKG_NAMES,
   STRICT,
   ES_MODEL,
   BABEL,
@@ -40,37 +43,42 @@ async function build(inputOptions, outputOptions) {
      */
     await bundle.write(outputOptions);
   } catch (err) {
-    error(err);
+    console.error(err);
   }
 }
 
 async function builderz(opts) {
   const state = new StateHandler(opts);
 
-  const { pkgPaths = [], pkgNames, sortPackages } = state.generalOpts;
+  const {
+    [PKG_NAMES]: pkgNames,
+    [PKG_PATHS]: pkgPaths,
+    [SORT_PACKAGES]: sortPackages = true,
+  } = state.generalOpts;
 
-  const { json: pkgJson, pkgInfo, unfoundJson } = isValidArr(pkgNames)
+  const { json: pkgJson, pkgInfo = {}, unfoundJson } = isValidArr(pkgNames)
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
-
-  if (isValidArr(unfoundJson)) {
-    pkgJson.push(...unfoundJson);
-  }
 
   /**
    * Sort packages before bump to production.
    */
   const { sorted, unSorted } =
-    isValidArr(pkgJson) && sortPackages
+    isValidArr(pkgJson) && !isValidArr(unfoundJson) && sortPackages
       ? packageSorter(pkgJson)
       : { sorted: pkgJson };
 
   if (isValidArr(unSorted)) {
-    error(`Unable to sort packages: ${unSorted}`);
+    console.error(`Unable to sort packages: ${unSorted}`);
+    return;
+  }
+
+  if (isValidArr(unfoundJson)) {
+    sorted.push(...unfoundJson);
   }
 
   try {
-    await sorted.reduce(async (sortedPromise, json = {}) => {
+    await sorted.reduce(async (sortedPromise, json, i) => {
       await sortedPromise;
 
       state.setPkgJsonOpts(json);
@@ -80,9 +88,20 @@ async function builderz(opts) {
        */
       state.extractBundleOpt();
 
-      const { name, peerDependencies = {}, dependencies = {} } = json;
+      let pkgPath;
+      let peerDependencies = {};
+      let dependencies = {};
 
-      const { path: pkgPath } = pkgInfo[name];
+      if (typeof json !== "string") {
+        ({ peerDependencies = {}, dependencies = {} } = json);
+
+        /**
+         * When name isn't valid, get-info assign index-order instead of name.
+         */
+        ({ path: pkgPath } = pkgInfo[json.name || i]);
+      } else {
+        pkgPath = json;
+      }
 
       state.setPkgPath(pkgPath);
 
