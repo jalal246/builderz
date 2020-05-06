@@ -17,6 +17,7 @@
 		"sdecs",
 		"sname",
 		"toplevel",
+		"unfound",
 		"unsortable",
 		"withcontext"
 	],

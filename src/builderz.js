@@ -47,27 +47,30 @@ async function build(inputOptions, outputOptions) {
 async function builderz(opts) {
   const state = new StateHandler(opts);
 
-  const { pkgPaths = [], pkgNames } = state.generalOpts;
+  const { pkgPaths = [], pkgNames, sortPackages } = state.generalOpts;
 
-  const { json: allPkgJson, pkgInfo: allPkgInfo } = isValidArr(pkgNames)
+  const { json: pkgJson, pkgInfo, unfoundJson } = isValidArr(pkgNames)
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
-  if (allPkgJson.length === 0) {
-    error(`Builderz has not found any valid package.json`);
+  if (isValidArr(unfoundJson)) {
+    pkgJson.push(...unfoundJson);
   }
 
   /**
    * Sort packages before bump to production.
    */
-  const { sorted, unSorted } = packageSorter(allPkgJson);
+  const { sorted, unSorted } =
+    isValidArr(pkgJson) && sortPackages
+      ? packageSorter(pkgJson)
+      : { sorted: pkgJson };
 
-  if (NotEmptyArr(unSorted)) {
+  if (isValidArr(unSorted)) {
     error(`Unable to sort packages: ${unSorted}`);
   }
 
   try {
-    await sorted.reduce(async (sortedPromise, json) => {
+    await sorted.reduce(async (sortedPromise, json = {}) => {
       await sortedPromise;
 
       state.setPkgJsonOpts(json);
@@ -79,9 +82,7 @@ async function builderz(opts) {
 
       const { name, peerDependencies = {}, dependencies = {} } = json;
 
-      const pkgInfo = allPkgInfo[name];
-
-      const { path: pkgPath } = pkgInfo;
+      const { path: pkgPath } = pkgInfo[name];
 
       state.setPkgPath(pkgPath);
 

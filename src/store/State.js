@@ -20,6 +20,16 @@ class State {
    */
   constructor(generalOpts) {
     this.generalOpts = generalOpts;
+
+    /**
+     * active working options
+     */
+    this.opts = {};
+
+    /**
+     * plugins options
+     */
+    // this.plugins = {};
   }
 
   mergeOpts(newOpts) {
