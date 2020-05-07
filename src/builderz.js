@@ -51,8 +51,8 @@ async function builderz(opts) {
   const state = new StateHandler(opts);
 
   const {
-    [PKG_NAMES]: pkgNames,
-    [PKG_PATHS]: pkgPaths,
+    [PKG_NAMES]: pkgNames = [],
+    [PKG_PATHS]: pkgPaths = [],
     [SORT_PACKAGES]: sortPackages = true,
   } = state.generalOpts;
 
@@ -70,7 +70,6 @@ async function builderz(opts) {
 
   if (isValidArr(unSorted)) {
     console.error(`Unable to sort packages: ${unSorted}`);
-    return;
   }
 
   if (isValidArr(unfoundJson)) {
