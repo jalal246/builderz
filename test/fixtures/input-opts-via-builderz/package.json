@@ -1,0 +1,11 @@
+{
+  "name": "input-opts-via-builderz",
+  "builderz": {
+    "formats": [
+      "cjs"
+    ],
+    "minify": false,
+    "camelCase": false,
+    "strict": true
+  }
+}

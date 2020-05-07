@@ -1,5 +1,72 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 1`] = `10`;
+
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 2`] = `
+"var foo = function foo() {
+  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+    bar[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(\\"foo \\".concat(bar));
+};
+
+module.exports = foo;
+"
+`;
+
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 3`] = `
+"var foo = function foo() {
+  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+    bar[_key] = arguments[_key];
+  }
+
+  return Promise.resolve(\\"foo \\".concat(bar));
+};
+
+export default foo;
+"
+`;
+
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 4`] = `
+"module.exports=function(){for(var o=arguments.length,r=new Array(o),e=0;e<o;e++)r[e]=arguments[e];return Promise.resolve(\\"foo \\".concat(r))};
+//# sourceMappingURL=pkgNoJson.min.cjs.js.map
+"
+`;
+
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 5`] = `
+"export default function(){for(var r=arguments.length,e=new Array(r),o=0;o<r;o++)e[o]=arguments[o];return Promise.resolve(\\"foo \\".concat(e))}
+//# sourceMappingURL=pkgNoJson.min.esm.js.map
+"
+`;
+
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 6`] = `
+"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):(e=e||self).pkgNoJson=o()}(this,function(){return function(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];return Promise.resolve(\\"foo \\".concat(o))}});
+//# sourceMappingURL=pkgNoJson.min.umd.js.map
+"
+`;
+
+exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 7`] = `
+"(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = global || self, global.pkgNoJson = factory());
+}(this, (function () {
+	var foo = function foo() {
+	  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
+	    bar[_key] = arguments[_key];
+	  }
+
+	  return Promise.resolve(\\"foo \\".concat(bar));
+	};
+
+	return foo;
+
+})));
+//# sourceMappingURL=pkgNoJson.umd.js.map
+"
+`;
+
 exports[`tests shebang for testing: adding shebang to output file passes 1`] = `2`;
 
 exports[`tests shebang for testing: adding shebang to output file passes 2`] = `

@@ -43,15 +43,14 @@ class StateHandler extends State {
   extractEntries() {
     const entriesOpt = this.opts[ENTRIES];
 
-    const { isValid, isSrc, ext } = validateAccess({
+    const { isEntryValid, isSrc, entryExt } = validateAccess({
       dir: this.pkgPath,
-      isValidateEntry: true,
+      isValidateJson: false,
       entry: "index",
-      srcName: "src",
     });
 
     this.isSrc = isSrc;
-    this.isTypeScript = ext === "ts";
+    this.isTypeScript = entryExt === "ts";
 
     if (isValidArr(entriesOpt)) {
       return entriesOpt.map((entry) => this.resolvePath(entry));
@@ -62,11 +61,11 @@ class StateHandler extends State {
     }
 
     // eslint-disable-next-line no-nested-ternary
-    return !isValid
+    return !isEntryValid
       ? null
       : isSrc
-      ? this.resolvePath("src", `index.${ext}`)
-      : this.resolvePath(`index.${ext}`);
+      ? this.resolvePath("src", `index.${entryExt}`)
+      : this.resolvePath(`index.${entryExt}`);
   }
 
   /**

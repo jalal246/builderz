@@ -1,4 +1,4 @@
-import error from "@mytools/print";
+/* eslint-disable no-console */
 import builderz from "./builderz";
 import resolveArgs from "./resolveArgs";
 
@@ -8,7 +8,7 @@ function run() {
   try {
     builderz(globalArgs, { isInitOpts: false });
   } catch (err) {
-    error(err);
+    console.error(err);
   }
 }
 

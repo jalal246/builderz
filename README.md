@@ -70,6 +70,7 @@ builderz(options);
   -r, --banner <string>        Add banner to output
   -d, --es-module <string>     Define Property exports (default: false)
   -t, --strict <string>        Enable Strict Mode (default: false)
+  --sort-pkg <boolean>         Enable sorting packages for monorepo (default: true)
   -h, --help                   display help for command
 ```
 

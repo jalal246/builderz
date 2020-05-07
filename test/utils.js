@@ -5,7 +5,7 @@ import builderz from "../src";
 
 jest.setTimeout(30000);
 
-async function perFile(pathPure, distPath, isCheckSnapshot = true) {
+async function perFile(pathPure, distPath) {
   await builderz({
     cleanBuild: true,
     pkgPaths: [resolve(__dirname, pathPure)],

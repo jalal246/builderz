@@ -1,11 +1,9 @@
 /* eslint-disable no-nested-ternary */
-import { parse } from "shell-quote";
-import isEmptyObj from "lodash.isempty";
 import { relative } from "path";
 
 import resolveArgs from "../resolveArgs";
 import { FORMATS, MINIFY, defaultOpts } from "../constants";
-import { isValidArr, getBundleOpt } from "../utils";
+import { getBundleOpt } from "../utils";
 
 /**
  *  State build options.
@@ -21,41 +19,57 @@ class State {
    * @memberof State
    */
   constructor(generalOpts) {
-    /**
-     * package build options in build script.
-     */
-    this.pkgBuildOpts = {};
-
-    /**
-     * package Json options in packages.json as properties.
-     */
-    this.pkgJsonOpts = {};
-
     this.generalOpts = generalOpts;
+
+    /**
+     * active working options
+     */
+    this.opts = {};
+
+    /**
+     * plugins options
+     */
+    // this.plugins = {};
+  }
+
+  mergeOpts(newOpts) {
+    Object.assign(this.opts, newOpts);
   }
 
   /**
-   * Assign global opts to current. This step is done for every cycle.
+   * Sets package local option according to its package.json
    *
+   * @param {Object} pkgJson
    * @memberof State
    */
-  initOpts() {
-    this.opts = { ...this.generalOpts };
-  }
+  setPkgJsonOpts(pkgJson) {
+    const { name: pkgName, scripts: { build } = {}, builderz } = pkgJson;
 
-  setOptsFrom(obj) {
+    this.pkgName = pkgName;
+
     /**
-     * Parsing empty object throws an error/
+     * Resets opts for each new package.
      */
-    if (!isEmptyObj(obj)) {
-      const parsedBuildArgs = parse(obj);
+    this.opts = { ...this.generalOpts };
 
-      if (isValidArr(parsedBuildArgs)) {
-        const parsedArgv = resolveArgs(parsedBuildArgs);
+    /**
+     * Extracting other options if there are any.
+     */
+    if (build && build.length > 0) {
+      const parsedArgv = resolveArgs(build);
 
-        Object.assign(this.opts, parsedArgv);
-      }
+      this.mergeOpts(parsedArgv);
     }
+
+    if (builderz && Object.keys(builderz).length > 0) {
+      this.mergeOpts(builderz);
+    }
+
+    Object.keys(defaultOpts).forEach((key) => {
+      if (this.opts[key] === undefined) {
+        this.opts[key] = defaultOpts[key];
+      }
+    });
   }
 
   /**
@@ -70,40 +84,6 @@ class State {
     const isMinify = this.opts[MINIFY];
 
     this.bundleOpt = getBundleOpt(formats, isMinify);
-  }
-
-  /**
-   * Sets package local option
-   *
-   * @param {Object} pkgBuildOpts
-   * @memberof State
-   */
-  setPkgJsonOpts(pkgJson) {
-    const { name: pkgName, scripts: { build } = {}, builderz } = pkgJson;
-
-    this.pkgName = pkgName;
-
-    this.initOpts();
-
-    /**
-     * Extracting other options if there are any.
-     */
-    this.setOptsFrom(build);
-
-    if (!isEmptyObj(builderz)) {
-      Object.assign(this.opts, builderz);
-    }
-
-    Object.keys(defaultOpts).forEach((key) => {
-      if (this.opts[key] === undefined) {
-        this.opts[key] = defaultOpts[key];
-      }
-    });
-
-    /**
-     * As soon as we get local options we can extract bundle options.
-     */
-    this.extractBundleOpt();
   }
 
   setPkgPath(pkgPath) {

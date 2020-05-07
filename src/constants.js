@@ -12,6 +12,7 @@ export const SOURCE_MAP = "sourcemap";
 export const CLEAN_BUILD = "cleanBuild";
 export const CAMEL_CASE = "camelCase";
 export const BUILD_NAME = "buildName";
+export const SORT_PACKAGES = "sortPkg";
 export const OUTPUT = "output";
 export const PKG_PATHS = "pkgPaths";
 export const PKG_NAMES = "pkgNames";
@@ -43,6 +44,7 @@ export const defaultOpts = {
   [MINIFY]: undefined,
   [SOURCE_MAP]: true,
   [CLEAN_BUILD]: false,
+  [SORT_PACKAGES]: true,
   [CAMEL_CASE]: true,
   [BUILD_NAME]: "dist",
   [OUTPUT]: undefined,
