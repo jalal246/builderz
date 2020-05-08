@@ -127,9 +127,6 @@ class StateHandler extends State {
       }
 
       if (this.shouldPathResolved) {
-        /**
-         * Assuming we're working in `src` by default.
-         */
         replacement = this.resolvePathSrc(replacement);
       }
 

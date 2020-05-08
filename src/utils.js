@@ -86,6 +86,13 @@ function getBundleOpt(customFormats, isMinify) {
   return gen;
 }
 
+/**
+ * binding primitive arg to a given function
+ *
+ * @param {function} func
+ * @param {Any} argsBound
+ * @returns {function}
+ */
 function bindFunc(func, ...argsBound) {
   // eslint-disable-next-line func-names
   return function (...args) {
