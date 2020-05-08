@@ -3,7 +3,7 @@ import { resolve, basename } from "path";
 import { validateAccess } from "validate-access";
 import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS } from "../constants";
 
-import { isValidArr, camelizeOutputBuild } from "../utils";
+import { camelizeOutputBuild, bindFunc } from "../utils";
 import State from "./State";
 
 class StateHandler extends State {
@@ -41,31 +41,61 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   extractEntries() {
-    const entriesOpt = this.opts[ENTRIES];
-
-    const { isEntryValid, isSrc, entryExt } = validateAccess({
-      dir: this.pkgPath,
-      isValidateJson: false,
-      entry: "index",
+    /**
+     * Reset associated properties
+     */
+    ["entries", "isSrc", "isTypeScript"].forEach((prop) => {
+      if (this.plugins[prop]) this.plugins[prop] = null;
     });
 
-    this.isSrc = isSrc;
-    this.isTypeScript = entryExt === "ts";
+    const entriesOpt = this.opts[ENTRIES];
 
-    if (isValidArr(entriesOpt)) {
-      return entriesOpt.map((entry) => this.resolvePath(entry));
+    const { length } = entriesOpt;
+
+    const input = length >= 1 ? entriesOpt : "index";
+
+    const { isJsonValid, isSrc, isEntryValid, ...rest } = validateAccess({
+      dir: this.pkgPath,
+      isValidateJson: false,
+      entry: input,
+    });
+
+    this.resolvePathSrc = bindFunc(this.resolvePath, isSrc ? "src" : null);
+
+    this.plugins.isSrc = isSrc;
+
+    if (Array.isArray(isEntryValid)) {
+      this.plugins.entries = isEntryValid
+        .map(({ isValid, entry, entryExt }) => {
+          if (isValid) {
+            if (!this.isTypeScript && entryExt === "ts") {
+              this.isTypeScript = true;
+            }
+
+            return this.resolvePathSrc(`${entry}.${entryExt}`);
+          }
+
+          console.warn(
+            `It seems you've entered incorrect entry.`,
+            `${entry} is invalid`
+          );
+
+          return null;
+        })
+        .filter(Boolean);
+    } else if (isEntryValid) {
+      const { entry, entryExt } = rest;
+
+      this.plugins.isTypeScript = entryExt === "ts";
+
+      this.plugins.entries = this.resolvePathSrc(`${entry}.${entryExt}`);
     }
 
-    if (entriesOpt.length > 0) {
-      return this.resolvePath(entriesOpt);
+    if (!this.plugins.entries || this.plugins.entries.length === 0) {
+      throw new Error(`Cannot bundle invalid entry ${input}`);
     }
 
-    // eslint-disable-next-line no-nested-ternary
-    return !isEntryValid
-      ? null
-      : isSrc
-      ? this.resolvePath("src", `index.${entryExt}`)
-      : this.resolvePath(`index.${entryExt}`);
+    return this.plugins.entries;
   }
 
   /**
@@ -97,10 +127,7 @@ class StateHandler extends State {
       }
 
       if (this.shouldPathResolved) {
-        /**
-         * Assuming we're working in `src` by default.
-         */
-        replacement = this.resolvePath(this.isSrc ? "src" : null, replacement);
+        replacement = this.resolvePathSrc(replacement);
       }
 
       return { find, replacement };

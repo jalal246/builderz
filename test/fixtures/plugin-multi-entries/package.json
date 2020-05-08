@@ -6,7 +6,7 @@
   "builderz": {
     "entries": [
       "src/a.js",
-      "src/b.js"
+      "b.js"
     ]
   }
 }

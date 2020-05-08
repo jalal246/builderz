@@ -10,26 +10,34 @@ import { UMD } from "../../constants";
  *
  * @returns {function} - function resolver
  */
-function getExternal({ peerDependencies, dependencies, buildFormat }) {
-  const external = [];
+function getExternal({
+  external,
+  peerDependencies,
+  dependencies,
+  buildFormat,
+}) {
+  const externalArr =
+    external && external.length > 0
+      ? external
+      : ["fs", "path", "events", "url", "util", "stream"];
 
   /**
    * Always exclude peer deps.
    */
   if (peerDependencies) {
-    external.push(...Object.keys(peerDependencies));
+    externalArr.push(...Object.keys(peerDependencies));
   }
 
   /**
    * Add dependencies to bundle when umd
    */
   if (buildFormat !== UMD) {
-    external.push(...Object.keys(dependencies));
+    externalArr.push(...Object.keys(dependencies));
   }
 
-  return external.length === 0
+  return externalArr.length === 0
     ? () => false
-    : (id) => new RegExp(`^(${external.join("|")})($|/)`).test(id);
+    : (id) => new RegExp(`^(${externalArr.join("|")})($|/)`).test(id);
 }
 
 export default getExternal;

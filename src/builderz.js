@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { resolve } from "path";
 import { rollup } from "rollup";
 import del from "del";
@@ -21,6 +20,7 @@ import {
   STRICT,
   ES_MODEL,
   BABEL,
+  EXTERNAL,
 } from "./constants";
 
 import StateHandler from "./store";
@@ -136,7 +136,7 @@ async function builderz(opts) {
         [ES_MODEL]: esModule,
         [STRICT]: strict,
         [BABEL]: babel,
-        isTypeScript,
+        [EXTERNAL]: external,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -152,7 +152,7 @@ async function builderz(opts) {
           const flags = {
             isSilent,
             isProd,
-            isTypeScript,
+            isTypeScript: state.plugins.isTypeScript,
             isMultiEntries: Array.isArray(entries),
           };
 
@@ -168,6 +168,7 @@ async function builderz(opts) {
             alias,
             babel,
             idx,
+            external,
           });
 
           const output = await getOutput({
