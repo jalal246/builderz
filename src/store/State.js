@@ -29,7 +29,7 @@ class State {
     /**
      * plugins options
      */
-    // this.plugins = {};
+    this.plugins = {};
   }
 
   mergeOpts(newOpts) {

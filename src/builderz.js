@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { resolve } from "path";
 import { rollup } from "rollup";
 import del from "del";
@@ -136,7 +135,6 @@ async function builderz(opts) {
         [ES_MODEL]: esModule,
         [STRICT]: strict,
         [BABEL]: babel,
-        isTypeScript,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -152,7 +150,7 @@ async function builderz(opts) {
           const flags = {
             isSilent,
             isProd,
-            isTypeScript,
+            isTypeScript: state.plugins.isTypeScript,
             isMultiEntries: Array.isArray(entries),
           };
 
