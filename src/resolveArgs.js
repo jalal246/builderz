@@ -93,6 +93,16 @@ function resolveArgs(args) {
         "properties: enablePreset / enablePlugins / extensions / exclude",
       // type: "boolean",
       // default: [],
+    })
+    .option("external", {
+      describe: "Passing external libraries not to bundle",
+      // type: "boolean",
+      // default: [],
+    })
+    .option("sort-pkg", {
+      describe: "Enable sorting packages for monorepo",
+      // type: "boolean",
+      // default: [],
     });
 
   return args ? yargs.parse(args) : yargs.argv;

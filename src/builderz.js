@@ -20,6 +20,7 @@ import {
   STRICT,
   ES_MODEL,
   BABEL,
+  EXTERNAL,
 } from "./constants";
 
 import StateHandler from "./store";
@@ -135,6 +136,7 @@ async function builderz(opts) {
         [ES_MODEL]: esModule,
         [STRICT]: strict,
         [BABEL]: babel,
+        [EXTERNAL]: external,
       } = state.opts;
 
       await state.bundleOpt.reduce(
@@ -166,6 +168,7 @@ async function builderz(opts) {
             alias,
             babel,
             idx,
+            external,
           });
 
           const output = await getOutput({

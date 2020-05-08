@@ -25,9 +25,11 @@ function genInput({
   babel,
   entries,
   alias,
+  external,
   idx,
 }) {
-  const external = getExternal({
+  const externalFunc = getExternal({
+    external,
     peerDependencies,
     dependencies,
     buildFormat: outputBuild.buildFormat,
@@ -44,7 +46,7 @@ function genInput({
 
   return {
     input: entries,
-    external,
+    external: externalFunc,
     plugins,
   };
 }

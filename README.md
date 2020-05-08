@@ -71,6 +71,7 @@ builderz(options);
   -d, --es-module <string>     Define Property exports (default: false)
   -t, --strict <string>        Enable Strict Mode (default: false)
   --sort-pkg <boolean>         Enable sorting packages for monorepo (default: true)
+  --external <list>         Passing external libraries not to bundle
   -h, --help                   display help for command
 ```
 
