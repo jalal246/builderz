@@ -58,7 +58,6 @@ builderz(options);
   -s, --silent <boolean>       Silent mode, mutes build massages (default: true)
   -f, --formats <list>         Specific build format (default: [])
   -m, --minify <boolean>       Minify bundle works only if format is provided (default: false)
-   --sourcemap <boolean>       Enable sourcemap in output
   -c, --camel-case <boolean>   Add camel-cased output file (default: true)
   -l, --clean-build <boolean>  Clean previous build folder (default: false)
   -b, --build-name <string>    Specific folder build name (default: "dist")
@@ -70,8 +69,9 @@ builderz(options);
   -r, --banner <string>        Add banner to output
   -d, --es-module <string>     Define Property exports (default: false)
   -t, --strict <string>        Enable Strict Mode (default: false)
+  --sourcemap <boolean>        Enable sourcemap in output
   --sort-pkg <boolean>         Enable sorting packages for monorepo (default: true)
-  --external <list>         Passing external libraries not to bundle
+  --external <list>            Passing external libraries not to bundle
   -h, --help                   display help for command
 ```
 
