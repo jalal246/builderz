@@ -3,7 +3,7 @@ import { resolve, basename } from "path";
 import { validateAccess } from "validate-access";
 import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS } from "../constants";
 
-import { isValidArr, camelizeOutputBuild } from "../utils";
+import { camelizeOutputBuild, bindFunc } from "../utils";
 import State from "./State";
 
 class StateHandler extends State {
@@ -33,12 +33,6 @@ class StateHandler extends State {
     return resolve(this.pkgPath, ...args);
   }
 
-  resolveSrcPath(isSrc, file, ext) {
-    return isSrc
-      ? this.resolvePath("src", ext ? `${file}.${ext}` : file)
-      : this.resolvePath(ext ? `${file}.${ext}` : file);
-  }
-
   /**
    * Extracts entries based on valid options if found. Otherwise, it returns
    * default path: src/index.extension.
@@ -66,6 +60,8 @@ class StateHandler extends State {
       entry: input,
     });
 
+    this.resolvePathSrc = bindFunc(this.resolvePath, isSrc ? "src" : null);
+
     this.plugins.isSrc = isSrc;
 
     if (Array.isArray(isEntryValid)) {
@@ -76,12 +72,12 @@ class StateHandler extends State {
               this.isTypeScript = true;
             }
 
-            return this.resolveSrcPath(isSrc, entry, entryExt);
+            return this.resolvePathSrc(`${entry}.${entryExt}`);
           }
 
           console.warn(
             `It seems you've entered incorrect entry.`,
-            `${entry}.${entryExt} is invalid`
+            `${entry} is invalid`
           );
 
           return null;
@@ -92,7 +88,7 @@ class StateHandler extends State {
 
       this.plugins.isTypeScript = entryExt === "ts";
 
-      this.plugins.entries = this.resolveSrcPath(isSrc, entry, entryExt);
+      this.plugins.entries = this.resolvePathSrc(`${entry}.${entryExt}`);
     }
 
     if (!this.plugins.entries || this.plugins.entries.length === 0) {
@@ -134,7 +130,7 @@ class StateHandler extends State {
         /**
          * Assuming we're working in `src` by default.
          */
-        replacement = this.resolveSrcPath(this.plugins.isSrc, replacement);
+        replacement = this.resolvePathSrc(replacement);
       }
 
       return { find, replacement };

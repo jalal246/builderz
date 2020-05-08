@@ -86,10 +86,18 @@ function getBundleOpt(customFormats, isMinify) {
   return gen;
 }
 
+function bindFunc(func, ...argsBound) {
+  // eslint-disable-next-line func-names
+  return function (...args) {
+    return func.call(this, ...argsBound, ...args);
+  };
+}
+
 export {
   isValidArr,
   NotEmptyArr,
   camelizeOutputBuild,
   getBundleOpt,
   parseAlias,
+  bindFunc,
 };
