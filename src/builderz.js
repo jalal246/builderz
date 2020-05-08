@@ -4,6 +4,9 @@ import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
 
+import updateNotifier from "update-notifier";
+import pkg from "../package.json";
+
 import { getInput, getOutput } from "./config/index";
 
 import { isValidArr } from "./utils";
@@ -192,6 +195,8 @@ async function builderz(opts) {
     }, Promise.resolve());
   } catch (err) {
     console.error(err);
+  } finally {
+    updateNotifier({ pkg }).notify();
   }
 }
 
