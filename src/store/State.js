@@ -56,8 +56,8 @@ class State {
       name,
       scripts: { build } = {},
       builderz,
-      peerDependencies,
-      dependencies,
+      peerDependencies = {},
+      dependencies = {},
     } = pkgJson;
 
     this.pkg = {

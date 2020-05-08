@@ -7,7 +7,7 @@ import pkg from "../package.json";
 
 import { getInput, getOutput } from "./config/index";
 
-import { isValidArr } from "./utils";
+import { isValidArr, bindFunc } from "./utils";
 
 import { SORT_PACKAGES, PKG_PATHS, PKG_NAMES } from "./constants";
 
@@ -85,13 +85,23 @@ async function builderz(opts) {
       state.extractEntries();
       state.extractAlias();
 
+      const getInputBindState = bindFunc(getInput, state);
+      const getOutputBindState = bindFunc(getOutput, state);
+
       await state.bundleOpt.reduce(
         async (bundleOptPromise, { isProd, buildFormat }, idx) => {
           await bundleOptPromise;
 
-          const input = await getInput(state, { isProd, buildFormat, idx });
+          const input = await getInputBindState({
+            isProd,
+            buildFormat,
+            idx,
+          });
 
-          const output = await getOutput(state, { isProd, buildFormat });
+          const output = await getOutputBindState({
+            isProd,
+            buildFormat,
+          });
 
           await build(input, output);
         },

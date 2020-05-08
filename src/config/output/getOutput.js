@@ -1,7 +1,15 @@
 import { join } from "path";
 import getGlobal from "./getGlobalOutput";
 
-import { UMD, CJS, ES } from "../../constants";
+import {
+  UMD,
+  CJS,
+  ES,
+  STRICT,
+  ES_MODEL,
+  BANNER,
+  SOURCE_MAP,
+} from "../../constants";
 import { NotEmptyArr } from "../../utils";
 
 /**
@@ -50,7 +58,12 @@ function getBundleName({ name, buildFormat, isProd }) {
 function getOutput(
   {
     output: { buildPath, name },
-    opts: { isSourcemap, banner, esModule, strict },
+    opts: {
+      [SOURCE_MAP]: isSourcemap,
+      [BANNER]: banner,
+      [ES_MODEL]: esModule,
+      [STRICT]: strict,
+    },
     pkg: { peerDependencies },
   },
   { isProd, buildFormat }
