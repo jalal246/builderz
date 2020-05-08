@@ -1,4 +1,4 @@
-import { UMD } from "../../constants";
+import { UMD, EXTERNAL } from "../../constants";
 
 /**
  * Resolves external dependencies and peerDependencies for package input
@@ -10,12 +10,10 @@ import { UMD } from "../../constants";
  *
  * @returns {function} - function resolver
  */
-function getExternal({
-  external,
-  peerDependencies,
-  dependencies,
-  buildFormat,
-}) {
+function getExternal(
+  { opts: { [EXTERNAL]: external }, pkg: { peerDependencies, dependencies } },
+  buildFormat
+) {
   const externalArr =
     external && external.length > 0
       ? external

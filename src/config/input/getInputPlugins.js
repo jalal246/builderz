@@ -12,7 +12,7 @@ import { terser } from "rollup-plugin-terser";
 
 import babelPlugin from "../babel";
 
-import { CJS, ES } from "../../constants";
+import { CJS, ES, BABEL } from "../../constants";
 
 /**
  * Returns plugins according to passed flags.
@@ -21,20 +21,19 @@ import { CJS, ES } from "../../constants";
  * @param {string} buildFormat
  * @returns {Array} plugins
  */
-function getPlugins({
-  flags,
-  outputBuild,
-  alias,
+function getPlugins(
+  {
+    plugins: { alias, isMultiEntries, isTypeScript },
+    output: { buildPath, name },
+    pkg: { cwd },
+    opts: { [BABEL]: babelConfig },
+  },
   idx,
-  babel: babelConfig,
-  pkgPath,
-}) {
-  const { isProd, isMultiEntries, isTypeScript } = flags;
-
-  const { buildFormat, buildPath, buildName } = outputBuild;
-
+  isProd,
+  buildFormat
+) {
   const essentialPlugins = [
-    babelPlugin({ ...babelConfig, cwd: pkgPath }),
+    babelPlugin({ ...babelConfig, cwd }),
 
     isMultiEntries ? multiEntry() : null,
 
@@ -69,7 +68,7 @@ function getPlugins({
 
     postcss({
       inject: false,
-      extract: idx === 0 && join(buildPath, `${buildName}.css`),
+      extract: idx === 0 && join(buildPath, `${name}.css`),
     }),
 
     /**

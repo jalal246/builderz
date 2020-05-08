@@ -7,7 +7,7 @@ import camelize from "camelize";
  * @param {Object} peerDependencies
  * @returns Array of external deps not included in bundle.
  */
-function getGlobal(peerDependencies = {}) {
+function getGlobal(peerDependencies) {
   return Object.keys(peerDependencies).reduce((deps, dep) => {
     // eslint-disable-next-line
     deps[dep] = camelize(dep);

@@ -1,8 +1,15 @@
 /* eslint-disable no-nested-ternary */
-import { relative } from "path";
+import { resolve, relative } from "path";
 
+import del from "del";
 import resolveArgs from "../resolveArgs";
-import { FORMATS, MINIFY, defaultOpts } from "../constants";
+import {
+  FORMATS,
+  MINIFY,
+  defaultOpts,
+  BUILD_NAME,
+  CLEAN_BUILD,
+} from "../constants";
 import { getBundleOpt } from "../utils";
 
 /**
@@ -25,11 +32,6 @@ class State {
      * active working options
      */
     this.opts = {};
-
-    /**
-     * plugins options
-     */
-    this.plugins = {};
   }
 
   mergeOpts(newOpts) {
@@ -42,10 +44,27 @@ class State {
    * @param {Object} pkgJson
    * @memberof State
    */
-  setPkgJsonOpts(pkgJson) {
-    const { name: pkgName, scripts: { build } = {}, builderz } = pkgJson;
+  setNewPkg(pkgJson) {
+    /**
+     * reset old info
+     */
+    this.plugins = {};
+    this.pkg = {};
+    this.output = {};
 
-    this.pkgName = pkgName;
+    const {
+      name,
+      scripts: { build } = {},
+      builderz,
+      peerDependencies,
+      dependencies,
+    } = pkgJson;
+
+    this.pkg = {
+      name,
+      peerDependencies,
+      dependencies,
+    };
 
     /**
      * Resets opts for each new package.
@@ -70,30 +89,34 @@ class State {
         this.opts[key] = defaultOpts[key];
       }
     });
-  }
 
-  /**
-   * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
-   * already set.
-   *
-   * @returns {Array}
-   * @memberof State
-   */
-  extractBundleOpt() {
+    /**
+     * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
+     * already set.
+     */
     const formats = this.opts[FORMATS];
     const isMinify = this.opts[MINIFY];
 
     this.bundleOpt = getBundleOpt(formats, isMinify);
+
+    return this;
   }
 
-  setPkgPath(pkgPath) {
+  async setPkgPath(pkgPath) {
     const relativePath = relative(process.cwd(), pkgPath);
 
     /**
      * If working directory is the same as package path, don't resolve path.
      */
     this.shouldPathResolved = relativePath.length !== 0;
-    this.pkgPath = pkgPath;
+
+    this.pkg.cwd = pkgPath;
+
+    this.output.buildPath = resolve(pkgPath, this.opts[BUILD_NAME]);
+
+    if (this.opts[CLEAN_BUILD]) {
+      await del(this.output.buildPath);
+    }
   }
 }
 
