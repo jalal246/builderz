@@ -1,6 +1,5 @@
 import { join } from "path";
 
-import beep from "@rollup/plugin-beep";
 import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -10,7 +9,6 @@ import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
 import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
-import analyze from "rollup-plugin-analyzer";
 
 import babelPlugin from "../babel";
 
@@ -19,7 +17,6 @@ import { CJS, ES } from "../../constants";
 /**
  * Returns plugins according to passed flags.
  *
- * @param {boolean} [isSilent=true]
  * @param {boolean} [isProd=true]
  * @param {string} buildFormat
  * @returns {Array} plugins
@@ -32,16 +29,11 @@ function getPlugins({
   babel: babelConfig,
   pkgPath,
 }) {
-  const { isSilent, isProd, isMultiEntries, isTypeScript } = flags;
+  const { isProd, isMultiEntries, isTypeScript } = flags;
 
   const { buildFormat, buildPath, buildName } = outputBuild;
 
   const essentialPlugins = [
-    /**
-     * Beeps when a build ends with errors.
-     */
-    beep(),
-
     babelPlugin({ ...babelConfig, cwd: pkgPath }),
 
     isMultiEntries ? multiEntry() : null,
@@ -134,10 +126,6 @@ function getPlugins({
         })
       : null,
   ].filter(Boolean);
-
-  if (!isSilent) {
-    essentialPlugins.push(analyze({ summaryOnly: true }));
-  }
 
   return essentialPlugins;
 }
