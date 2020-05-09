@@ -29,7 +29,7 @@ function getExternal(
   /**
    * Add dependencies to bundle when umd
    */
-  if (buildFormat !== UMD) {
+  if (buildFormat !== UMD && dependencies) {
     externalArr.push(...Object.keys(dependencies));
   }
 
