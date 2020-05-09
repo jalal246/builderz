@@ -46,6 +46,35 @@ async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   }
 }
 
+let index = 0;
+
+async function bundlePkg(state, pkgInfo, json = {}) {
+  let pkgPath;
+
+  if (typeof json !== "string") {
+    /**
+     * When name isn't valid, get-info assign index-order instead of name.
+     */
+    ({ path: pkgPath } = pkgInfo[json.name || index]);
+  } else {
+    pkgPath = json;
+  }
+
+  index += 1;
+
+  await state.setNewPkg(json).setPkgPath(pkgPath);
+
+  state.extractName();
+  state.extractEntries();
+  state.extractAlias();
+
+  const inputFunc = bindFunc(getInput, state);
+  const outputFunc = bindFunc(getOutput, state);
+  const buildFunc = bindFunc(build, inputFunc, outputFunc);
+
+  await Promise.all(state.bundleOpt.map(buildFunc));
+}
+
 async function builderz(opts) {
   const state = new StateHandler(opts);
 
@@ -59,13 +88,15 @@ async function builderz(opts) {
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
+  const isSequence =
+    pkgJson.length > 1 && !isValidArr(unfoundJson) && sortPackages;
+
   /**
    * Sort packages before bump to production.
    */
-  const { sorted, unSorted } =
-    isValidArr(pkgJson) && !isValidArr(unfoundJson) && sortPackages
-      ? packageSorter(pkgJson)
-      : { sorted: pkgJson };
+  const { sorted, unSorted } = isSequence
+    ? packageSorter(pkgJson)
+    : { sorted: pkgJson };
 
   if (isValidArr(unSorted)) {
     console.error(`Unable to sort packages: ${unSorted}`);
@@ -75,33 +106,18 @@ async function builderz(opts) {
     sorted.push(...unfoundJson);
   }
 
+  const bundlePkgFunc = bindFunc(bundlePkg, state, pkgInfo);
+
   try {
-    await sorted.reduce(async (sortedPromise, json = {}, i) => {
-      await sortedPromise;
+    if (isSequence) {
+      await sorted.reduce(async (sortedPromise, json) => {
+        await sortedPromise;
 
-      let pkgPath;
-
-      if (typeof json !== "string") {
-        /**
-         * When name isn't valid, get-info assign index-order instead of name.
-         */
-        ({ path: pkgPath } = pkgInfo[json.name || i]);
-      } else {
-        pkgPath = json;
-      }
-
-      await state.setNewPkg(json).setPkgPath(pkgPath);
-
-      state.extractName();
-      state.extractEntries();
-      state.extractAlias();
-
-      const inputFunc = bindFunc(getInput, state);
-      const outputFunc = bindFunc(getOutput, state);
-      const buildFunc = bindFunc(build, inputFunc, outputFunc);
-
-      await Promise.all(state.bundleOpt.map(buildFunc));
-    }, Promise.resolve());
+        await bundlePkgFunc(json);
+      }, Promise.resolve());
+    } else {
+      await Promise.all(sorted.map(bundlePkgFunc));
+    }
   } catch (err) {
     console.error(err);
   } finally {
