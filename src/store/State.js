@@ -58,14 +58,16 @@ class State {
     this.opts = { ...this.generalOpts };
   }
 
+  checkOpts() {
+    Object.keys(defaultOpts).forEach((key) => {
+      if (this.opts[key] === undefined) {
+        this.opts[key] = defaultOpts[key];
+      }
+    });
+  }
+
   assignJson(pkgJson) {
-    const {
-      name,
-      scripts: { build } = {},
-      builderz,
-      peerDependencies = {},
-      dependencies = {},
-    } = pkgJson;
+    const { name, scripts, builderz, peerDependencies, dependencies } = pkgJson;
 
     this.pkg = {
       name,
@@ -76,34 +78,31 @@ class State {
     /**
      * Extracting other options if there are any.
      */
-    if (build && build.length > 0) {
-      const parsedArgv = resolveArgs(build);
+    if (scripts) {
+      const { build } = scripts;
+      if (build && build.length > 0) {
+        const parsedArgv = resolveArgs(build);
 
-      this.mergeOpts(parsedArgv);
+        this.mergeOpts(parsedArgv);
+      }
     }
 
     if (builderz && Object.keys(builderz).length > 0) {
       this.mergeOpts(builderz);
     }
-
-    Object.keys(defaultOpts).forEach((key) => {
-      if (this.opts[key] === undefined) {
-        this.opts[key] = defaultOpts[key];
-      }
-    });
   }
 
-  async setPkgPath(pkgPath) {
-    const relativePath = relative(process.cwd(), pkgPath);
+  async setPkgPath(cwd) {
+    const relativePath = relative(process.cwd(), cwd);
 
     /**
      * If working directory is the same as package path, don't resolve path.
      */
     this.shouldPathResolved = relativePath.length !== 0;
 
-    this.pkg.cwd = pkgPath;
+    this.pkg.cwd = cwd;
 
-    this.output.buildPath = resolve(pkgPath, this.opts[BUILD_NAME]);
+    this.output.buildPath = resolve(cwd, this.opts[BUILD_NAME]);
 
     if (this.opts[CLEAN_BUILD]) {
       await del(this.output.buildPath);

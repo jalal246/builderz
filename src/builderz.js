@@ -61,6 +61,8 @@ async function bundlePkg(state, pkgInfo, json) {
     state.assignJson(json);
   }
 
+  state.checkOpts();
+
   index += 1;
 
   await state.setPkgPath(pkgPath);
