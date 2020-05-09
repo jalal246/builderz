@@ -43,9 +43,7 @@ async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   }
 }
 
-let index = 0;
-
-async function bundlePkg(state, pkgInfo, json) {
+async function bundlePkg(state, pkgInfo, json, index) {
   let pkgPath;
 
   state.setNewPkg();
@@ -62,8 +60,6 @@ async function bundlePkg(state, pkgInfo, json) {
   }
 
   state.checkOpts();
-
-  index += 1;
 
   await state.setPkgPath(pkgPath);
   const bundleOpt = state.unpackBundleOpts();
@@ -110,7 +106,7 @@ async function builderz(opts) {
 
   try {
     if (isValidArr(unfoundJson)) {
-      await Promise.all(unfoundJson.map(bundlePkgFunc));
+      await Promise.all(unfoundJson.map((path, i) => bundlePkgFunc(path, i)));
     } else if (isValidArr(pkgJson)) {
       const isSequence =
         pkgJson.length > 1 && !isValidArr(unfoundJson) && sortPackages;
