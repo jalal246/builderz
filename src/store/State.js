@@ -44,7 +44,7 @@ class State {
    * @param {Object} pkgJson
    * @memberof State
    */
-  setNewPkg(pkgJson) {
+  setNewPkg() {
     /**
      * reset old info
      */
@@ -52,6 +52,13 @@ class State {
     this.pkg = {};
     this.output = {};
 
+    /**
+     * Resets opts for each new package.
+     */
+    this.opts = { ...this.generalOpts };
+  }
+
+  assignJson(pkgJson) {
     const {
       name,
       scripts: { build } = {},
@@ -65,11 +72,6 @@ class State {
       peerDependencies,
       dependencies,
     };
-
-    /**
-     * Resets opts for each new package.
-     */
-    this.opts = { ...this.generalOpts };
 
     /**
      * Extracting other options if there are any.
@@ -89,17 +91,6 @@ class State {
         this.opts[key] = defaultOpts[key];
       }
     });
-
-    /**
-     * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
-     * already set.
-     */
-    const formats = this.opts[FORMATS];
-    const isMinify = this.opts[MINIFY];
-
-    this.bundleOpt = getBundleOpt(formats, isMinify);
-
-    return this;
   }
 
   async setPkgPath(pkgPath) {
@@ -117,6 +108,17 @@ class State {
     if (this.opts[CLEAN_BUILD]) {
       await del(this.output.buildPath);
     }
+  }
+
+  unpackBundleOpts() {
+    /**
+     * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
+     * already set.
+     */
+    const formats = this.opts[FORMATS];
+    const isMinify = this.opts[MINIFY];
+
+    return getBundleOpt(formats, isMinify);
   }
 }
 

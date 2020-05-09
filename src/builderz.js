@@ -2,9 +2,6 @@ import { rollup } from "rollup";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
 
-import updateNotifier from "update-notifier";
-import pkg from "../package.json";
-
 import { getInput, getOutput } from "./config/index";
 
 import { isValidArr, bindFunc } from "./utils";
@@ -48,21 +45,26 @@ async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
 
 let index = 0;
 
-async function bundlePkg(state, pkgInfo, json = {}) {
+async function bundlePkg(state, pkgInfo, json) {
   let pkgPath;
 
-  if (typeof json !== "string") {
+  state.setNewPkg();
+
+  if (typeof json === "string") {
+    pkgPath = json;
+  } else {
     /**
      * When name isn't valid, get-info assign index-order instead of name.
      */
     ({ path: pkgPath } = pkgInfo[json.name || index]);
-  } else {
-    pkgPath = json;
+
+    state.assignJson(json);
   }
 
   index += 1;
 
-  await state.setNewPkg(json).setPkgPath(pkgPath);
+  await state.setPkgPath(pkgPath);
+  const bundleOpt = state.unpackBundleOpts();
 
   state.extractName();
   state.extractEntries();
@@ -72,7 +74,21 @@ async function bundlePkg(state, pkgInfo, json = {}) {
   const outputFunc = bindFunc(getOutput, state);
   const buildFunc = bindFunc(build, inputFunc, outputFunc);
 
-  await Promise.all(state.bundleOpt.map(buildFunc));
+  await Promise.all(bundleOpt.map(buildFunc));
+}
+
+async function sortAndBump(pkgJson, bundlePkgFunc) {
+  const { sorted, unSorted } = packageSorter(pkgJson);
+
+  if (isValidArr(unSorted)) {
+    console.error(`Unable to sort packages: ${unSorted}`);
+  }
+
+  await sorted.reduce(async (sortedPromise, json) => {
+    await sortedPromise;
+
+    await bundlePkgFunc(json);
+  }, Promise.resolve());
 }
 
 async function builderz(opts) {
@@ -88,40 +104,23 @@ async function builderz(opts) {
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
-  const isSequence =
-    pkgJson.length > 1 && !isValidArr(unfoundJson) && sortPackages;
-
-  /**
-   * Sort packages before bump to production.
-   */
-  const { sorted, unSorted } = isSequence
-    ? packageSorter(pkgJson)
-    : { sorted: pkgJson };
-
-  if (isValidArr(unSorted)) {
-    console.error(`Unable to sort packages: ${unSorted}`);
-  }
-
-  if (isValidArr(unfoundJson)) {
-    sorted.push(...unfoundJson);
-  }
-
   const bundlePkgFunc = bindFunc(bundlePkg, state, pkgInfo);
 
   try {
-    if (isSequence) {
-      await sorted.reduce(async (sortedPromise, json) => {
-        await sortedPromise;
+    if (isValidArr(unfoundJson)) {
+      await Promise.all(unfoundJson.map(bundlePkgFunc));
+    } else if (isValidArr(pkgJson)) {
+      const isSequence =
+        pkgJson.length > 1 && !isValidArr(unfoundJson) && sortPackages;
 
-        await bundlePkgFunc(json);
-      }, Promise.resolve());
-    } else {
-      await Promise.all(sorted.map(bundlePkgFunc));
+      if (isSequence) {
+        await sortAndBump(pkgJson, bundlePkgFunc);
+      } else {
+        await Promise.all(pkgJson.map(bundlePkgFunc));
+      }
     }
   } catch (err) {
     console.error(err);
-  } finally {
-    updateNotifier({ pkg }).notify();
   }
 }
 
