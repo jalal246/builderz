@@ -78,8 +78,8 @@ function getBundleOpt(customFormats, isMinify) {
       : [true, false];
 
   buildFormat.forEach((format) => {
-    minifyingProcess.forEach((bool) => {
-      gen.push({ buildFormat: format, isProd: bool });
+    minifyingProcess.forEach((bool, i) => {
+      gen.push({ buildFormat: format, isProd: bool, order: i });
     });
   });
 

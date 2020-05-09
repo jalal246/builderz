@@ -19,17 +19,28 @@ import StateHandler from "./store";
  * @param {Object} inputOptions
  * @param {Object} outputOptions
  */
-async function build(inputOptions, outputOptions) {
+async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   try {
+    const input = await inputFunc({
+      isProd,
+      buildFormat,
+      idx: order,
+    });
+
+    const output = await outputFunc({
+      isProd,
+      buildFormat,
+    });
+
     /**
      * create a bundle
      */
-    const bundle = await rollup(inputOptions);
+    const bundle = await rollup(input);
 
     /**
      * write the bundle to disk
      */
-    await bundle.write(outputOptions);
+    await bundle.write(output);
   } catch (err) {
     console.error(err);
   }
@@ -85,28 +96,11 @@ async function builderz(opts) {
       state.extractEntries();
       state.extractAlias();
 
-      const getInputBindState = bindFunc(getInput, state);
-      const getOutputBindState = bindFunc(getOutput, state);
+      const inputFunc = bindFunc(getInput, state);
+      const outputFunc = bindFunc(getOutput, state);
+      const buildFunc = bindFunc(build, inputFunc, outputFunc);
 
-      await state.bundleOpt.reduce(
-        async (bundleOptPromise, { isProd, buildFormat }, idx) => {
-          await bundleOptPromise;
-
-          const input = await getInputBindState({
-            isProd,
-            buildFormat,
-            idx,
-          });
-
-          const output = await getOutputBindState({
-            isProd,
-            buildFormat,
-          });
-
-          await build(input, output);
-        },
-        Promise.resolve()
-      );
+      await Promise.all(state.bundleOpt.map(buildFunc));
     }, Promise.resolve());
   } catch (err) {
     console.error(err);
