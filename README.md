@@ -53,7 +53,6 @@ builderz(options);
 ## Options
 
 ```bash
-  -s, --silent <boolean>       Silent mode, mutes build massages (default: true)
   -m, --minify <boolean>       Minify bundle works only if format is provided (default: false)
   -p, --sourcemap <boolean>    Enable sourcemap in output
   -c, --camel-case <boolean>   Add camel-cased output file (default: true)

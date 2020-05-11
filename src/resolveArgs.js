@@ -1,5 +1,4 @@
 import {
-  SILENT,
   FORMATS,
   MINIFY,
   SOURCE_MAP,
@@ -16,11 +15,6 @@ const yargs = require("yargs");
 
 function resolveArgs(args) {
   yargs
-    .option(SILENT, {
-      alias: "s",
-      describe: "Silent mode, mutes build massages",
-      type: "boolean",
-    })
     .option(MINIFY, {
       alias: "m",
       describe: "Minify bundle works only if format is provided",
