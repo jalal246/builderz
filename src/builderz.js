@@ -146,6 +146,8 @@ async function builderz(opts) {
     }
   } catch (err) {
     console.error(err);
+  } finally {
+    cash({ isDestroy: true });
   }
 }
 
