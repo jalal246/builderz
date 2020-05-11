@@ -1,5 +1,4 @@
 import { join } from "path";
-import getGlobal from "./getGlobalOutput";
 
 import {
   UMD,
@@ -10,17 +9,32 @@ import {
   BANNER,
   SOURCE_MAP,
 } from "../../constants";
-import { NotEmptyArr } from "../../utils";
+
+import { NotEmptyArr, camelize } from "../../utils";
+
+/**
+ * Don't include peerDependencies in a bundle.
+ * Called when umd.
+ *
+ * @param {Object} peerDependencies
+ * @returns {Object} of external deps not included in bundle.
+ */
+function getGlobal(peerDependencies) {
+  return peerDependencies
+    ? Object.keys(peerDependencies).reduce((deps, dep) => {
+        // eslint-disable-next-line
+        deps[dep] = camelize(dep);
+        return deps;
+      }, {})
+    : {};
+}
 
 /**
  * Gets full bundle name camelized with extension
  *
- * @param {Object} flags
- * @param {boolean} flags.isProd
- *
- * @param {string} camelizedName - camelized package name
+ * @param {boolean} isProd -
+ * @param {string} name - camelized package name
  * @param {string} buildFormat - type of build (cjs|umd|etc)
- *
  * @returns {string} name with full extension
  */
 function getBundleName({ name, buildFormat, isProd }) {
@@ -40,19 +54,20 @@ function getBundleName({ name, buildFormat, isProd }) {
 }
 
 /**
- * Gets build
+ * Generates output build
  *
- * @param {Object} flags
- * @param {boolean} flags.isProd
- *
- * @param {string} outputName -  package output name
- *
- * @param {Object} json
- * @param {Object} json.peerDependencies
- *
- * @param {string} distPath - where bundle will be located
- * @param {string} buildFormat - type of build (cjs|umd|etc)
- *
+ * @param {Object}  {
+ *     output: { buildPath, name },
+ *     opts: {
+ *       [SOURCE_MAP]: isSourcemap,
+ *       [BANNER]: banner,
+ *       [ES_MODEL]: esModule,
+ *       [STRICT]: strict,
+ *     },
+ *     pkg: { peerDependencies },
+ *   }
+ * @param {Object} { isProd, buildFormat }
+
  * @returns {Object} contains input option for the package.
  */
 function getOutput(
