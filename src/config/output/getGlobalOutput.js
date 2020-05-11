@@ -1,4 +1,4 @@
-import camelize from "../../utils";
+import { camelize } from "../../utils";
 
 /**
  * Don't include peerDependencies in a bundle.

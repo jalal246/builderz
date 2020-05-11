@@ -1,5 +1,11 @@
 import { UMD, CJS, ES } from "./constants";
 
+/**
+ * True, when length is above zero.
+ *
+ * @param {Array} arr
+ * @returns
+ */
 function NotEmptyArr(arr) {
   return arr.length > 0;
 }
