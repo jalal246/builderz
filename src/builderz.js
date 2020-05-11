@@ -53,7 +53,8 @@ async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
  * @param {number} index - index to call path if invalid package.json
  */
 async function bundlePkg(state, pkgInfo, json, index) {
-  cash({ types: "babel", isDestroy: true });
+  cash({ type: "babel", isDestroy: true });
+  cash({ type: "input", isDestroy: true });
 
   let pkgPath;
 

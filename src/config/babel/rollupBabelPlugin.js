@@ -49,7 +49,9 @@ function babelPlugin(options) {
         return null;
       }
 
-      const result = cash({ types: "babel", key: filename });
+      const cashOj = { type: "babel", key: filename };
+
+      const result = cash(cashOj);
 
       if (result) {
         return result;
@@ -62,7 +64,7 @@ function babelPlugin(options) {
 
       const res = babelTransformer(code, babelOptions);
 
-      cash({ types: "babel", key: filename }, res);
+      cash(cashOj, res);
 
       return res;
     },

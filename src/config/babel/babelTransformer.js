@@ -121,24 +121,28 @@ async function babelTransformer(inputCode, babelOptions) {
   const { options } = babel.loadPartialConfig(rest);
 
   if (enablePreset) {
-    let result = cash({ types: "babel", key: "presets" });
+    const cashOj = { type: "babel", key: "presets" };
+
+    let result = cash(cashOj);
 
     if (!result) {
       result = presetsHandler(PRESET, options.presets, isESM);
 
-      cash({ types: "babel", key: "presets" }, result);
+      cash(cashOj, result);
     }
 
     options.presets = result;
   }
 
   if (enablePlugins) {
-    let result = cash({ types: "babel", key: "plugins" });
+    const cashOj = { type: "babel", key: "plugins" };
+
+    let result = cash(cashOj);
 
     if (!result) {
       result = presetsHandler(PLUGIN, options.plugins, isESM);
 
-      cash({ types: "babel", key: "plugins" }, result);
+      cash(cashOj, result);
     }
 
     options.plugins = result;
