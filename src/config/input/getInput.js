@@ -16,9 +16,7 @@ function genInput(
 
   const extractedPlugins = getPlugins(
     { plugins, output, pkg, opts },
-    idx,
-    isProd,
-    buildFormat
+    { idx, isProd, buildFormat }
   );
 
   return {

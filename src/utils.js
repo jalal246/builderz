@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 import { UMD, CJS, ES } from "./constants";
 
 /**
