@@ -28,13 +28,11 @@ bundle just pass the required arguments.
 "build": "builderz --formats=cjs --minify"
 ```
 
-Or even:
+Or in a `package.json` file
 
 ```json
-"scripts": {
-   "build":"...",
-   "test": "..."
-},
+"name": "my-package",
+"version": "0.0.1",
 "builderz":{
    "formats": ["cjs"],
    "minify": true,
