@@ -12,7 +12,7 @@ const cached = new Map();
  * @param {boolean} isDestroy
  * @returns
  */
-function cache({ type, key, isDestroy }, result, isNoCache) {
+function cache({ type, key, isDestroy }, result) {
   let bank;
 
   if (type) {
