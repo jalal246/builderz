@@ -24,21 +24,6 @@ export const EXTERNAL = "external";
 export const BABEL = "babel";
 export const BANNER = "banner";
 
-// export const optsTypes = {
-//   [SILENT]: "boolean",
-//   [FORMATS]: "array",
-//   [MINIFY]: "boolean",
-//   [CLEAN_BUILD]: "boolean",
-//   [CAMEL_CASE]: "boolean",
-//   [BUILD_NAME]: "string",
-//   [OUTPUT]: "string",
-//   [PKG_PATHS]: "array",
-//   [PKG_NAMES]: "array",
-//   [ALIAS]: "array",
-//   [ENTRIES]: "array",
-//   [BANNER]: "string",
-// };
-
 export const defaultOpts = {
   [SILENT]: true,
   [FORMATS]: [],
