@@ -1,6 +1,7 @@
 import { createFilter } from "@rollup/pluginutils";
 import babelTransformer from "./babelTransformer";
 import extRegExp from "./utils";
+import { cash } from "../../utils";
 
 const unpackOptions = ({
   // rollup uses sourcemap, babel uses sourceMaps
@@ -48,12 +49,22 @@ function babelPlugin(options) {
         return null;
       }
 
+      const result = cash({ types: "babel", key: filename });
+
+      if (result) {
+        return result;
+      }
+
       const babelOptions = {
         ...rest,
         filename,
       };
 
-      return babelTransformer(code, babelOptions);
+      const res = babelTransformer(code, babelOptions);
+
+      cash({ types: "babel", key: filename }, res);
+
+      return res;
     },
   };
 }
