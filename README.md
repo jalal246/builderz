@@ -57,9 +57,9 @@ builderz(options);
   -p, --sourcemap <boolean>    Enable sourcemap in output
   -c, --camel-case <boolean>   Add camel-cased output file (default: true)
   -l, --clean-build <boolean>  Clean previous build folder (default: false)
-  -t, --strict <boolean>        Enable Strict Mode (default: false)
+  -t, --strict <boolean>       Enable Strict Mode (default: false)
   -r, --sort-pkg <boolean>     Enable sorting packages for monorepo (default: true)
-  -d, --es-module <boolean>     Define Property exports- es_model (default: false)
+  -d, --es-module <boolean>    Define Property exports- es_model (default: false)
   --formats <list>             Specific build format (default: [])
   --build-name <string>        Specific folder build name (default: "dist")
   --output <string>            Custom output name

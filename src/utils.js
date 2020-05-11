@@ -2,6 +2,54 @@
 
 import { UMD, CJS, ES } from "./constants";
 
+const cached = new Map();
+
+/**
+ * Silly cache
+ *
+ * @param {string} key
+ * @param {any} result
+ * @param {boolean} isDestroy
+ * @returns
+ */
+function cache({ type, key, isDestroy }, result) {
+  let bank;
+
+  if (type) {
+    if (cached.has(type)) {
+      bank = cached.get(type);
+    } else {
+      const newBank = new Map();
+      bank = cached.set(type, newBank);
+    }
+  }
+
+  if (isDestroy) {
+    if (type) {
+      bank.clear();
+    } else {
+      /**
+       * clear all
+       */
+      cached.clear();
+    }
+
+    return -1;
+  }
+
+  if (result) {
+    bank.set(key, result);
+
+    return null;
+  }
+
+  if (bank.has(key)) {
+    return bank.get(key);
+  }
+
+  return null;
+}
+
 /**
  * True, when length is above zero.
  *
@@ -96,4 +144,5 @@ export {
   camelizeOutputBuild,
   getBundleOpt,
   bindFunc,
+  cache,
 };

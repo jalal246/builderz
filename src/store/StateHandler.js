@@ -3,7 +3,7 @@ import { resolve, basename } from "path";
 import { validateAccess } from "validate-access";
 import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS, BUILD_NAME } from "../constants";
 
-import { camelizeOutputBuild, bindFunc } from "../utils";
+import { camelizeOutputBuild, bindFunc, isValidArr } from "../utils";
 import State from "./State";
 
 class StateHandler extends State {
@@ -109,7 +109,7 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   extractAlias() {
-    let alias = this.opts[ALIAS];
+    const alias = this.opts[ALIAS];
 
     // const alias = [
     //   { find: "utils", replacement: "localPkgPath/../../../utils" },
@@ -119,25 +119,26 @@ class StateHandler extends State {
     /**
      * If there's local alias passed in package, let's resolve the pass.
      */
-    alias = alias.map((str) => {
-      let find;
-      let replacement;
 
-      if (typeof str === "string") {
-        // eslint-disable-next-line prefer-const
-        [find, replacement] = str.split("=");
-      } else {
-        ({ find, replacement } = str);
-      }
+    this.plugins.alias = isValidArr(alias)
+      ? alias.map((str) => {
+          let find;
+          let replacement;
 
-      if (this.shouldPathResolved) {
-        replacement = this.resolvePathSrc(replacement);
-      }
+          if (typeof str === "string") {
+            // eslint-disable-next-line prefer-const
+            [find, replacement] = str.split("=");
+          } else {
+            ({ find, replacement } = str);
+          }
 
-      return { find, replacement };
-    });
+          if (this.shouldPathResolved) {
+            replacement = this.resolvePathSrc(replacement);
+          }
 
-    this.plugins.alias = alias;
+          return { find, replacement };
+        })
+      : [];
   }
 }
 
