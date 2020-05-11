@@ -1,6 +1,5 @@
 import { join } from "path";
 
-import beep from "@rollup/plugin-beep";
 import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -10,39 +9,31 @@ import multiEntry from "@rollup/plugin-multi-entry";
 import postcss from "rollup-plugin-postcss";
 import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
-import analyze from "rollup-plugin-analyzer";
 
 import babelPlugin from "../babel";
 
-import { CJS, ES } from "../../constants";
+import { CJS, ES, BABEL } from "../../constants";
 
 /**
  * Returns plugins according to passed flags.
  *
- * @param {boolean} [isSilent=true]
  * @param {boolean} [isProd=true]
  * @param {string} buildFormat
  * @returns {Array} plugins
  */
-function getPlugins({
-  flags,
-  outputBuild,
-  alias,
+function getPlugins(
+  {
+    plugins: { alias, isMultiEntries, isTypeScript },
+    output: { buildPath, name },
+    pkg: { cwd },
+    opts: { [BABEL]: babelConfig },
+  },
   idx,
-  babel: babelConfig,
-  pkgPath,
-}) {
-  const { isSilent, isProd, isMultiEntries, isTypeScript } = flags;
-
-  const { buildFormat, buildPath, buildName } = outputBuild;
-
+  isProd,
+  buildFormat
+) {
   const essentialPlugins = [
-    /**
-     * Beeps when a build ends with errors.
-     */
-    beep(),
-
-    babelPlugin({ ...babelConfig, cwd: pkgPath }),
+    babelPlugin({ ...babelConfig, cwd }),
 
     isMultiEntries ? multiEntry() : null,
 
@@ -77,7 +68,7 @@ function getPlugins({
 
     postcss({
       inject: false,
-      extract: idx === 0 && join(buildPath, `${buildName}.css`),
+      extract: idx === 0 && join(buildPath, `${name}.css`),
     }),
 
     /**
@@ -134,10 +125,6 @@ function getPlugins({
         })
       : null,
   ].filter(Boolean);
-
-  if (!isSilent) {
-    essentialPlugins.push(analyze({ summaryOnly: true }));
-  }
 
   return essentialPlugins;
 }

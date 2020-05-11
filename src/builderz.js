@@ -1,27 +1,12 @@
-import { resolve } from "path";
 import { rollup } from "rollup";
-import del from "del";
 import packageSorter from "package-sorter";
 import { getJsonByName, getJsonByPath } from "get-info";
 
 import { getInput, getOutput } from "./config/index";
 
-import { isValidArr } from "./utils";
+import { isValidArr, bindFunc } from "./utils";
 
-import {
-  CLEAN_BUILD,
-  BANNER,
-  SILENT,
-  BUILD_NAME,
-  SOURCE_MAP,
-  SORT_PACKAGES,
-  PKG_PATHS,
-  PKG_NAMES,
-  STRICT,
-  ES_MODEL,
-  BABEL,
-  EXTERNAL,
-} from "./constants";
+import { SORT_PACKAGES, PKG_PATHS, PKG_NAMES } from "./constants";
 
 import StateHandler from "./store";
 
@@ -31,20 +16,77 @@ import StateHandler from "./store";
  * @param {Object} inputOptions
  * @param {Object} outputOptions
  */
-async function build(inputOptions, outputOptions) {
+async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   try {
+    const input = await inputFunc({
+      isProd,
+      buildFormat,
+      idx: order,
+    });
+
+    const output = await outputFunc({
+      isProd,
+      buildFormat,
+    });
+
     /**
      * create a bundle
      */
-    const bundle = await rollup(inputOptions);
+    const bundle = await rollup(input);
 
     /**
      * write the bundle to disk
      */
-    await bundle.write(outputOptions);
+    await bundle.write(output);
   } catch (err) {
     console.error(err);
   }
+}
+
+async function bundlePkg(state, pkgInfo, json, index) {
+  let pkgPath;
+
+  state.setNewPkg();
+
+  if (typeof json === "string") {
+    pkgPath = json;
+  } else {
+    /**
+     * When name isn't valid, get-info assign index-order instead of name.
+     */
+    ({ path: pkgPath } = pkgInfo[json.name || index]);
+
+    state.assignJson(json);
+  }
+
+  state.checkOpts();
+
+  await state.setPkgPath(pkgPath);
+  const bundleOpt = state.unpackBundleOpts();
+
+  state.extractName();
+  state.extractEntries();
+  state.extractAlias();
+
+  const inputFunc = bindFunc(getInput, state);
+  const outputFunc = bindFunc(getOutput, state);
+  const buildFunc = bindFunc(build, inputFunc, outputFunc);
+
+  await Promise.all(bundleOpt.map(buildFunc));
+}
+
+async function sortAndBump(pkgJson, bundlePkgFunc) {
+  const { sorted, unSorted } = packageSorter(pkgJson);
+
+  if (isValidArr(unSorted)) {
+    console.error(`Unable to sort packages: ${unSorted}`);
+  }
+
+  await sorted.reduce(async (sortedPromise, json) => {
+    await sortedPromise;
+
+    await bundlePkgFunc(json);
+  }, Promise.resolve());
 }
 
 async function builderz(opts) {
@@ -60,136 +102,21 @@ async function builderz(opts) {
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
-  /**
-   * Sort packages before bump to production.
-   */
-  const { sorted, unSorted } =
-    isValidArr(pkgJson) && !isValidArr(unfoundJson) && sortPackages
-      ? packageSorter(pkgJson)
-      : { sorted: pkgJson };
-
-  if (isValidArr(unSorted)) {
-    console.error(`Unable to sort packages: ${unSorted}`);
-  }
-
-  if (isValidArr(unfoundJson)) {
-    sorted.push(...unfoundJson);
-  }
+  const bundlePkgFunc = bindFunc(bundlePkg, state, pkgInfo);
 
   try {
-    await sorted.reduce(async (sortedPromise, json, i) => {
-      await sortedPromise;
+    if (isValidArr(unfoundJson)) {
+      await Promise.all(unfoundJson.map((path, i) => bundlePkgFunc(path, i)));
+    } else if (isValidArr(pkgJson)) {
+      const isSequence =
+        pkgJson.length > 1 && !isValidArr(unfoundJson) && sortPackages;
 
-      state.setPkgJsonOpts(json);
-
-      /**
-       * As soon as we get local options we can extract bundle options.
-       */
-      state.extractBundleOpt();
-
-      let pkgPath;
-      let peerDependencies = {};
-      let dependencies = {};
-
-      if (typeof json !== "string") {
-        ({ peerDependencies = {}, dependencies = {} } = json);
-
-        /**
-         * When name isn't valid, get-info assign index-order instead of name.
-         */
-        ({ path: pkgPath } = pkgInfo[json.name || i]);
+      if (isSequence) {
+        await sortAndBump(pkgJson, bundlePkgFunc);
       } else {
-        pkgPath = json;
+        await Promise.all(pkgJson.map(bundlePkgFunc));
       }
-
-      state.setPkgPath(pkgPath);
-
-      const buildPath = resolve(pkgPath, state.opts[BUILD_NAME]);
-
-      if (state.opts[CLEAN_BUILD]) {
-        await del(buildPath);
-      }
-
-      const entries = state.extractEntries();
-
-      const alias = state.extractAlias();
-
-      const buildName = state.extractName();
-
-      const {
-        /**
-         * banner is also used for adding shebang
-         */
-        [BANNER]: banner,
-
-        [SOURCE_MAP]: isSourcemap,
-        [SILENT]: isSilent,
-
-        /**
-         * strict & esModule are false by default to save some size for partial production.
-         *
-         * Instead of adding:
-         * Object.defineProperty(exports, "__esModule", {value: true }) && "strict_mode"
-         * for each package. We can produce bundled code without them and
-         * enables it only when it is necessary.
-         */
-        [ES_MODEL]: esModule,
-        [STRICT]: strict,
-        [BABEL]: babel,
-        [EXTERNAL]: external,
-      } = state.opts;
-
-      await state.bundleOpt.reduce(
-        async (bundleOptPromise, { isProd, buildFormat }, idx) => {
-          await bundleOptPromise;
-
-          const outputBuild = {
-            buildPath,
-            buildName,
-            buildFormat,
-          };
-
-          const flags = {
-            isSilent,
-            isProd,
-            isTypeScript: state.plugins.isTypeScript,
-            isMultiEntries: Array.isArray(entries),
-          };
-
-          const input = await getInput({
-            flags,
-            json: {
-              peerDependencies,
-              dependencies,
-            },
-            outputBuild,
-            pkgPath,
-            entries,
-            alias,
-            babel,
-            idx,
-            external,
-          });
-
-          const output = await getOutput({
-            flags: {
-              isProd,
-            },
-            json: {
-              peerDependencies,
-            },
-            outputBuild,
-            isSourcemap,
-            banner,
-            esModule,
-            strict,
-          });
-
-          await build(input, output);
-        },
-        Promise.resolve()
-      );
-    }, Promise.resolve());
+    }
   } catch (err) {
     console.error(err);
   }

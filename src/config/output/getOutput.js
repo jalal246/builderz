@@ -1,7 +1,15 @@
 import { join } from "path";
 import getGlobal from "./getGlobalOutput";
 
-import { UMD, CJS, ES } from "../../constants";
+import {
+  UMD,
+  CJS,
+  ES,
+  STRICT,
+  ES_MODEL,
+  BANNER,
+  SOURCE_MAP,
+} from "../../constants";
 import { NotEmptyArr } from "../../utils";
 
 /**
@@ -15,7 +23,7 @@ import { NotEmptyArr } from "../../utils";
  *
  * @returns {string} name with full extension
  */
-function getBundleName({ buildName, buildFormat, flags: { isProd } }) {
+function getBundleName({ name, buildFormat, isProd }) {
   let ext;
 
   if (buildFormat === UMD) {
@@ -26,7 +34,7 @@ function getBundleName({ buildName, buildFormat, flags: { isProd } }) {
     ext = "esm.js";
   }
 
-  const fname = `${buildName}.${isProd ? `min.${ext}` : `${ext}`}`;
+  const fname = `${name}.${isProd ? `min.${ext}` : `${ext}`}`;
 
   return fname;
 }
@@ -47,25 +55,27 @@ function getBundleName({ buildName, buildFormat, flags: { isProd } }) {
  *
  * @returns {Object} contains input option for the package.
  */
-function getOutput({
-  flags,
-  outputBuild: { buildPath, buildName, buildFormat },
-  json: { peerDependencies },
-  isSourcemap,
-  banner,
-  esModule,
-  strict,
-}) {
-  const { isProd } = flags;
-
-  const name = getBundleName({
-    buildName,
+function getOutput(
+  {
+    output: { buildPath, name },
+    opts: {
+      [SOURCE_MAP]: isSourcemap,
+      [BANNER]: banner,
+      [ES_MODEL]: esModule,
+      [STRICT]: strict,
+    },
+    pkg: { peerDependencies },
+  },
+  { isProd, buildFormat }
+) {
+  const bundleName = getBundleName({
+    name,
     buildFormat,
-    flags: { isProd },
+    isProd,
   });
 
   const output = {
-    file: join(buildPath, name),
+    file: join(buildPath, bundleName),
     format: buildFormat,
     esModule,
     strict,
@@ -73,7 +83,7 @@ function getOutput({
   };
 
   if (buildFormat === UMD) {
-    output.name = buildName;
+    output.name = name;
     output.globals = getGlobal(peerDependencies);
   }
 

@@ -17,37 +17,23 @@ import getExternal from "./getInputExternal";
  *
  * @returns {Object} contains input option for the package.
  */
-function genInput({
-  flags,
-  json: { peerDependencies, dependencies },
-  outputBuild,
-  pkgPath,
-  babel,
-  entries,
-  alias,
-  external,
-  idx,
-}) {
-  const externalFunc = getExternal({
-    external,
-    peerDependencies,
-    dependencies,
-    buildFormat: outputBuild.buildFormat,
-  });
+function genInput(
+  { plugins, output, opts, pkg },
+  { idx, isProd, buildFormat }
+) {
+  const externalFunc = getExternal({ opts, pkg }, buildFormat);
 
-  const plugins = getPlugins({
-    flags,
-    outputBuild,
-    alias,
+  const extractedPlugins = getPlugins(
+    { plugins, output, pkg, opts },
     idx,
-    babel,
-    pkgPath,
-  });
+    isProd,
+    buildFormat
+  );
 
   return {
-    input: entries,
+    input: plugins.entries,
     external: externalFunc,
-    plugins,
+    plugins: extractedPlugins,
   };
 }
 

@@ -1,8 +1,15 @@
 /* eslint-disable no-nested-ternary */
-import { relative } from "path";
+import { resolve, relative } from "path";
 
+import del from "del";
 import resolveArgs from "../resolveArgs";
-import { FORMATS, MINIFY, defaultOpts } from "../constants";
+import {
+  FORMATS,
+  MINIFY,
+  defaultOpts,
+  BUILD_NAME,
+  CLEAN_BUILD,
+} from "../constants";
 import { getBundleOpt } from "../utils";
 
 /**
@@ -25,11 +32,6 @@ class State {
      * active working options
      */
     this.opts = {};
-
-    /**
-     * plugins options
-     */
-    this.plugins = {};
   }
 
   mergeOpts(newOpts) {
@@ -42,29 +44,21 @@ class State {
    * @param {Object} pkgJson
    * @memberof State
    */
-  setPkgJsonOpts(pkgJson) {
-    const { name: pkgName, scripts: { build } = {}, builderz } = pkgJson;
-
-    this.pkgName = pkgName;
+  setNewPkg() {
+    /**
+     * reset old info
+     */
+    this.plugins = {};
+    this.pkg = {};
+    this.output = {};
 
     /**
      * Resets opts for each new package.
      */
     this.opts = { ...this.generalOpts };
+  }
 
-    /**
-     * Extracting other options if there are any.
-     */
-    if (build && build.length > 0) {
-      const parsedArgv = resolveArgs(build);
-
-      this.mergeOpts(parsedArgv);
-    }
-
-    if (builderz && Object.keys(builderz).length > 0) {
-      this.mergeOpts(builderz);
-    }
-
+  checkOpts() {
     Object.keys(defaultOpts).forEach((key) => {
       if (this.opts[key] === undefined) {
         this.opts[key] = defaultOpts[key];
@@ -72,28 +66,58 @@ class State {
     });
   }
 
-  /**
-   * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
-   * already set.
-   *
-   * @returns {Array}
-   * @memberof State
-   */
-  extractBundleOpt() {
-    const formats = this.opts[FORMATS];
-    const isMinify = this.opts[MINIFY];
+  assignJson(pkgJson) {
+    const { name, scripts, builderz, peerDependencies, dependencies } = pkgJson;
 
-    this.bundleOpt = getBundleOpt(formats, isMinify);
+    this.pkg = {
+      name,
+      peerDependencies,
+      dependencies,
+    };
+
+    /**
+     * Extracting other options if there are any.
+     */
+    if (scripts) {
+      const { build } = scripts;
+      if (build && build.length > 0) {
+        const parsedArgv = resolveArgs(build);
+
+        this.mergeOpts(parsedArgv);
+      }
+    }
+
+    if (builderz && Object.keys(builderz).length > 0) {
+      this.mergeOpts(builderz);
+    }
   }
 
-  setPkgPath(pkgPath) {
-    const relativePath = relative(process.cwd(), pkgPath);
+  async setPkgPath(cwd) {
+    const relativePath = relative(process.cwd(), cwd);
 
     /**
      * If working directory is the same as package path, don't resolve path.
      */
     this.shouldPathResolved = relativePath.length !== 0;
-    this.pkgPath = pkgPath;
+
+    this.pkg.cwd = cwd;
+
+    this.output.buildPath = resolve(cwd, this.opts[BUILD_NAME]);
+
+    if (this.opts[CLEAN_BUILD]) {
+      await del(this.output.buildPath);
+    }
+  }
+
+  unpackBundleOpts() {
+    /**
+     * Extracts bundle options depending on pkgBuildOpts and generalOpts that should be
+     * already set.
+     */
+    const formats = this.opts[FORMATS];
+    const isMinify = this.opts[MINIFY];
+
+    return getBundleOpt(formats, isMinify);
   }
 }
 

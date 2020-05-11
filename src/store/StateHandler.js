@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { resolve, basename } from "path";
 import { validateAccess } from "validate-access";
-import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS } from "../constants";
+import { CAMEL_CASE, OUTPUT, ENTRIES, ALIAS, BUILD_NAME } from "../constants";
 
 import { camelizeOutputBuild, bindFunc } from "../utils";
 import State from "./State";
@@ -17,9 +17,15 @@ class StateHandler extends State {
   extractName() {
     const outputOpt = this.opts[OUTPUT];
 
-    const chosen = outputOpt || this.pkgName || basename(this.pkgPath);
+    const { name, cwd } = this.pkg;
 
-    return this.opts[CAMEL_CASE] ? camelizeOutputBuild(chosen) : chosen;
+    const chosen = outputOpt || name || basename(cwd);
+
+    this.output.name = this.opts[CAMEL_CASE]
+      ? camelizeOutputBuild(chosen)
+      : chosen;
+
+    this.output.buildPath = resolve(cwd, this.opts[BUILD_NAME]);
   }
 
   /**
@@ -30,7 +36,7 @@ class StateHandler extends State {
    * @memberof StateHandler
    */
   resolvePath(...args) {
-    return resolve(this.pkgPath, ...args);
+    return resolve(this.pkg.cwd, ...args);
   }
 
   /**
@@ -42,11 +48,9 @@ class StateHandler extends State {
    */
   extractEntries() {
     /**
-     * Reset associated properties
+     * Reset
      */
-    ["entries", "isSrc", "isTypeScript"].forEach((prop) => {
-      if (this.plugins[prop]) this.plugins[prop] = null;
-    });
+    this.plugins = {};
 
     const entriesOpt = this.opts[ENTRIES];
 
@@ -55,7 +59,7 @@ class StateHandler extends State {
     const input = length >= 1 ? entriesOpt : "index";
 
     const { isJsonValid, isSrc, isEntryValid, ...rest } = validateAccess({
-      dir: this.pkgPath,
+      dir: this.pkg.cwd,
       isValidateJson: false,
       entry: input,
     });
@@ -65,6 +69,8 @@ class StateHandler extends State {
     this.plugins.isSrc = isSrc;
 
     if (Array.isArray(isEntryValid)) {
+      this.plugins.isMultiEntries = true;
+
       this.plugins.entries = isEntryValid
         .map(({ isValid, entry, entryExt }) => {
           if (isValid) {
@@ -94,8 +100,6 @@ class StateHandler extends State {
     if (!this.plugins.entries || this.plugins.entries.length === 0) {
       throw new Error(`Cannot bundle invalid entry ${input}`);
     }
-
-    return this.plugins.entries;
   }
 
   /**
@@ -133,7 +137,7 @@ class StateHandler extends State {
       return { find, replacement };
     });
 
-    return alias;
+    this.plugins.alias = alias;
   }
 }
 
