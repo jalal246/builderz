@@ -1,34 +1,13 @@
-import camelize from "camelize";
-import isBoolean from "lodash.isboolean";
+/* eslint-disable no-nested-ternary */
 
 import { UMD, CJS, ES } from "./constants";
 
 /**
- * Converts string to Array.
+ * True, when length is above zero.
  *
- * @param {string} value
- * @returns {Array}
+ * @param {Array} arr
+ * @returns
  */
-function string2Arr(value) {
-  return value.split(",");
-}
-
-/**
- * Extracts string to suit plugins entries
- * {@link https://www.npmjs.com/package/@rollup/plugin-alias}
- *
- * @param {string[]} alias - batman=../../../batman
- * @returns {Object[]} - {find, replacement}
- */
-function parseAlias(aliasStr) {
-  const alias = string2Arr(aliasStr).map((str) => {
-    const [key, value] = str.split("=");
-    return { find: key, replacement: value };
-  });
-
-  return alias;
-}
-
 function NotEmptyArr(arr) {
   return arr.length > 0;
 }
@@ -41,6 +20,16 @@ function NotEmptyArr(arr) {
  */
 function isValidArr(arr) {
   return Array.isArray(arr) && NotEmptyArr(arr);
+}
+
+/**
+ * Transforms key strings to camel-case
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+function camelize(str) {
+  return str.replace(/[_.-](\w|$)/g, (ignore, x) => x.toUpperCase());
 }
 
 /**
@@ -73,7 +62,7 @@ function getBundleOpt(customFormats, isMinify) {
     : DEFAULT_FORMATS;
 
   const minifyingProcess =
-    NotEmptyArr(customFormats) && isBoolean(isMinify)
+    NotEmptyArr(customFormats) && typeof isMinify === "boolean"
       ? [isMinify]
       : [true, false];
 
@@ -103,8 +92,8 @@ function bindFunc(func, ...argsBound) {
 export {
   isValidArr,
   NotEmptyArr,
+  camelize,
   camelizeOutputBuild,
   getBundleOpt,
-  parseAlias,
   bindFunc,
 };

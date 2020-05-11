@@ -13,8 +13,9 @@ import StateHandler from "./store";
 /**
  * Write bundle.
  *
- * @param {Object} inputOptions
- * @param {Object} outputOptions
+ * @param {function} inputFunc
+ * @param {function} outputFunc
+ * @param {Object} { isProd, buildFormat, order }
  */
 async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   try {
@@ -43,6 +44,14 @@ async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   }
 }
 
+/**
+ * Bundling for each package
+ *
+ * @param {Object} state
+ * @param {Object} pkgInfo - contains path for each json
+ * @param {Object|string} json - string when no json is found
+ * @param {number} index - index to call path if invalid package.json
+ */
 async function bundlePkg(state, pkgInfo, json, index) {
   let pkgPath;
 
@@ -59,22 +68,33 @@ async function bundlePkg(state, pkgInfo, json, index) {
     state.assignJson(json);
   }
 
-  state.checkOpts();
+  state.initOpts();
 
   await state.setPkgPath(pkgPath);
+
   const bundleOpt = state.unpackBundleOpts();
 
+  /**
+   * related to plugins.
+   */
   state.extractName();
   state.extractEntries();
   state.extractAlias();
 
   const inputFunc = bindFunc(getInput, state);
   const outputFunc = bindFunc(getOutput, state);
+
   const buildFunc = bindFunc(build, inputFunc, outputFunc);
 
   await Promise.all(bundleOpt.map(buildFunc));
 }
 
+/**
+ * Only for sorting packages in monorepo
+ *
+ * @param {Object} pkgJson
+ * @param {function} bundlePkgFunc
+ */
 async function sortAndBump(pkgJson, bundlePkgFunc) {
   const { sorted, unSorted } = packageSorter(pkgJson);
 
@@ -89,6 +109,11 @@ async function sortAndBump(pkgJson, bundlePkgFunc) {
   }, Promise.resolve());
 }
 
+/**
+ * Main function
+ *
+ * @param {Object} opts
+ */
 async function builderz(opts) {
   const state = new StateHandler(opts);
 
@@ -98,7 +123,7 @@ async function builderz(opts) {
     [SORT_PACKAGES]: sortPackages = true,
   } = state.generalOpts;
 
-  const { json: pkgJson, pkgInfo = {}, unfoundJson } = isValidArr(pkgNames)
+  const { json: pkgJsonArr, pkgInfo = {}, unfoundJson } = isValidArr(pkgNames)
     ? getJsonByName(...pkgNames)
     : getJsonByPath(...pkgPaths);
 
@@ -107,14 +132,14 @@ async function builderz(opts) {
   try {
     if (isValidArr(unfoundJson)) {
       await Promise.all(unfoundJson.map((path, i) => bundlePkgFunc(path, i)));
-    } else if (isValidArr(pkgJson)) {
+    } else if (isValidArr(pkgJsonArr)) {
       const isSequence =
-        pkgJson.length > 1 && !isValidArr(unfoundJson) && sortPackages;
+        pkgJsonArr.length > 1 && !isValidArr(unfoundJson) && sortPackages;
 
       if (isSequence) {
-        await sortAndBump(pkgJson, bundlePkgFunc);
+        await sortAndBump(pkgJsonArr, bundlePkgFunc);
       } else {
-        await Promise.all(pkgJson.map(bundlePkgFunc));
+        await Promise.all(pkgJsonArr.map(bundlePkgFunc));
       }
     }
   } catch (err) {

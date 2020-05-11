@@ -1,6 +1,5 @@
 import { join } from "path";
 
-import auto from "@rollup/plugin-auto-install";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
@@ -17,8 +16,13 @@ import { CJS, ES, BABEL } from "../../constants";
 /**
  * Returns plugins according to passed flags.
  *
- * @param {boolean} [isProd=true]
- * @param {string} buildFormat
+ * @param {Object} {
+ *     plugins: { alias, isMultiEntries, isTypeScript },
+ *     output: { buildPath, name },
+ *     pkg: { cwd },
+ *     opts: { [BABEL]: babelConfig },
+ *   }
+ * @param {Object} { idx, isProd, buildFormat }
  * @returns {Array} plugins
  */
 function getPlugins(
@@ -28,9 +32,7 @@ function getPlugins(
     pkg: { cwd },
     opts: { [BABEL]: babelConfig },
   },
-  idx,
-  isProd,
-  buildFormat
+  { idx, isProd, buildFormat }
 ) {
   const essentialPlugins = [
     babelPlugin({ ...babelConfig, cwd }),
@@ -40,16 +42,11 @@ function getPlugins(
     alias.length > 0 ? aliasPlugin({ entries: alias }) : null,
 
     /**
-     * Automatically installs dependencies that are imported by a bundle, even
-     * if not yet in package.json.
-     */
-    auto(),
-
-    /**
      * Convert CommonJS modules to ES6, so they can be included in a Rollup
      * bundle.
      */
     commonjs(),
+
     /**
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.

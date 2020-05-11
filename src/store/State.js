@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
-import { resolve, relative } from "path";
+import path from "path";
+import utils from "util";
+import rimraf from "rimraf";
 
-import del from "del";
 import resolveArgs from "../resolveArgs";
 import {
   FORMATS,
@@ -10,7 +11,10 @@ import {
   BUILD_NAME,
   CLEAN_BUILD,
 } from "../constants";
+
 import { getBundleOpt } from "../utils";
+
+const rimrafAsync = utils.promisify(rimraf);
 
 /**
  *  State build options.
@@ -58,7 +62,7 @@ class State {
     this.opts = { ...this.generalOpts };
   }
 
-  checkOpts() {
+  initOpts() {
     Object.keys(defaultOpts).forEach((key) => {
       if (this.opts[key] === undefined) {
         this.opts[key] = defaultOpts[key];
@@ -93,7 +97,7 @@ class State {
   }
 
   async setPkgPath(cwd) {
-    const relativePath = relative(process.cwd(), cwd);
+    const relativePath = path.relative(process.cwd(), cwd);
 
     /**
      * If working directory is the same as package path, don't resolve path.
@@ -102,10 +106,10 @@ class State {
 
     this.pkg.cwd = cwd;
 
-    this.output.buildPath = resolve(cwd, this.opts[BUILD_NAME]);
+    this.output.buildPath = path.resolve(cwd, this.opts[BUILD_NAME]);
 
     if (this.opts[CLEAN_BUILD]) {
-      await del(this.output.buildPath);
+      await rimrafAsync(this.output.buildPath);
     }
   }
 

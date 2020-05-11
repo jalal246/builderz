@@ -2,19 +2,10 @@ import getPlugins from "./getInputPlugins";
 import getExternal from "./getInputExternal";
 
 /**
- * Gets build input
+ * Generates output build
  *
- * @param {Object} flags
- * @param {boolean} flags.isSilent
- * @param {boolean} flags.isProd
- *
- * @param {Object} json
- * @param {Object} json.peerDependencies
- * @param {Object} json.dependencies
- *
- * @param {string} sourcePath - where package is located
- * @param {string} buildFormat - type of build (cjs|umd|etc)
- *
+ * @param {Object} { plugins, output, opts, pkg }
+ * @param {Object} { idx, isProd, buildFormat }
  * @returns {Object} contains input option for the package.
  */
 function genInput(
@@ -25,9 +16,7 @@ function genInput(
 
   const extractedPlugins = getPlugins(
     { plugins, output, pkg, opts },
-    idx,
-    isProd,
-    buildFormat
+    { idx, isProd, buildFormat }
   );
 
   return {

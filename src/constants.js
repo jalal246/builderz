@@ -4,8 +4,6 @@ export const ES = "es";
 
 export const DEV = "development";
 export const PROD = "production";
-
-export const SILENT = "silent";
 export const FORMATS = "formats";
 export const MINIFY = "minify";
 export const SOURCE_MAP = "sourcemap";
@@ -24,23 +22,7 @@ export const EXTERNAL = "external";
 export const BABEL = "babel";
 export const BANNER = "banner";
 
-// export const optsTypes = {
-//   [SILENT]: "boolean",
-//   [FORMATS]: "array",
-//   [MINIFY]: "boolean",
-//   [CLEAN_BUILD]: "boolean",
-//   [CAMEL_CASE]: "boolean",
-//   [BUILD_NAME]: "string",
-//   [OUTPUT]: "string",
-//   [PKG_PATHS]: "array",
-//   [PKG_NAMES]: "array",
-//   [ALIAS]: "array",
-//   [ENTRIES]: "array",
-//   [BANNER]: "string",
-// };
-
 export const defaultOpts = {
-  [SILENT]: true,
   [FORMATS]: [],
   [MINIFY]: undefined,
   [SOURCE_MAP]: true,
