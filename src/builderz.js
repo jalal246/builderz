@@ -4,7 +4,7 @@ import { getJsonByName, getJsonByPath } from "get-info";
 
 import { getInput, getOutput } from "./config/index";
 
-import { isValidArr, bindFunc, cash } from "./utils";
+import { isValidArr, bindFunc, cache } from "./utils";
 
 import { SORT_PACKAGES, PKG_PATHS, PKG_NAMES } from "./constants";
 
@@ -53,8 +53,8 @@ async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
  * @param {number} index - index to call path if invalid package.json
  */
 async function bundlePkg(state, pkgInfo, json, index) {
-  cash({ type: "babel", isDestroy: true });
-  cash({ type: "input", isDestroy: true });
+  cache({ type: "babel", isDestroy: true });
+  cache({ type: "input", isDestroy: true });
 
   let pkgPath;
 
@@ -148,7 +148,7 @@ async function builderz(opts) {
   } catch (err) {
     console.error(err);
   } finally {
-    cash({ isDestroy: true });
+    cache({ isDestroy: true });
   }
 }
 

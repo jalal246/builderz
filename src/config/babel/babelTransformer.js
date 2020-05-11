@@ -2,7 +2,7 @@
 import * as babel from "@babel/core";
 import path from "path";
 import { getPlugins, getPresets } from "./babelPresets";
-import { isValidArr, cash } from "../../utils";
+import { isValidArr, cache } from "../../utils";
 
 const PLUGIN = "plugin";
 const PRESET = "preset";
@@ -121,28 +121,28 @@ async function babelTransformer(inputCode, babelOptions) {
   const { options } = babel.loadPartialConfig(rest);
 
   if (enablePreset) {
-    const cashOj = { type: "babel", key: "presets" };
+    const cacheObj = { type: "babel", key: "presets" };
 
-    let result = cash(cashOj);
+    let result = cache(cacheObj);
 
     if (!result) {
       result = presetsHandler(PRESET, options.presets, isESM);
 
-      cash(cashOj, result);
+      cache(cacheObj, result);
     }
 
     options.presets = result;
   }
 
   if (enablePlugins) {
-    const cashOj = { type: "babel", key: "plugins" };
+    const cacheObj = { type: "babel", key: "plugins" };
 
-    let result = cash(cashOj);
+    let result = cache(cacheObj);
 
     if (!result) {
       result = presetsHandler(PLUGIN, options.plugins, isESM);
 
-      cash(cashOj, result);
+      cache(cacheObj, result);
     }
 
     options.plugins = result;

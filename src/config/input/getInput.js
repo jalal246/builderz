@@ -1,6 +1,6 @@
 import getPlugins from "./getInputPlugins";
 import getExternal from "./getInputExternal";
-import { cash } from "../../utils";
+import { cache } from "../../utils";
 
 /**
  * Generates output build
@@ -13,13 +13,13 @@ function genInput(
   { plugins, output, opts, pkg },
   { idx, isProd, buildFormat }
 ) {
-  const cashOj = { type: "input", key: buildFormat };
-  let externalFunc = cash(cashOj);
+  const cacheObj = { type: "input", key: buildFormat };
+  let externalFunc = cache(cacheObj);
 
   if (!externalFunc) {
     externalFunc = getExternal({ opts, pkg }, buildFormat);
 
-    cash(cashOj, externalFunc);
+    cache(cacheObj, externalFunc);
   }
 
   const extractedPlugins = getPlugins(

@@ -5,14 +5,14 @@ import { UMD, CJS, ES } from "./constants";
 const cached = new Map();
 
 /**
- * Silly cash
+ * Silly cache
  *
  * @param {string} key
  * @param {any} result
  * @param {boolean} isDestroy
  * @returns
  */
-function cash({ type, key, isDestroy }, result) {
+function cache({ type, key, isDestroy }, result, isNoCache) {
   let bank;
 
   if (type) {
@@ -144,5 +144,5 @@ export {
   camelizeOutputBuild,
   getBundleOpt,
   bindFunc,
-  cash,
+  cache,
 };
