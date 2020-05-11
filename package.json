@@ -64,7 +64,6 @@
     "babel-plugin-transform-async-to-promises": "^0.8.15",
     "del": "^5.1.0",
     "get-info": "^2.4.4",
-    "lodash.isboolean": "^3.0.3",
     "move-position": "^1.0.0",
     "package-sorter": "^1.1.1",
     "rollup": "^1.29.1",
