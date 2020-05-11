@@ -1,4 +1,3 @@
-import camelize from "camelize";
 import isBoolean from "lodash.isboolean";
 
 import { UMD, CJS, ES } from "./constants";
@@ -41,6 +40,16 @@ function NotEmptyArr(arr) {
  */
 function isValidArr(arr) {
   return Array.isArray(arr) && NotEmptyArr(arr);
+}
+
+/**
+ * Transforms key strings to camel-case
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+function camelize(str) {
+  return str.replace(/[_.-](\w|$)/g, (ignore, x) => x.toUpperCase());
 }
 
 /**
@@ -103,6 +112,7 @@ function bindFunc(func, ...argsBound) {
 export {
   isValidArr,
   NotEmptyArr,
+  camelize,
   camelizeOutputBuild,
   getBundleOpt,
   parseAlias,

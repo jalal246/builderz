@@ -62,7 +62,6 @@
     "@rollup/pluginutils": "^3.0.9",
     "babel-plugin-macros": "^2.8.0",
     "babel-plugin-transform-async-to-promises": "^0.8.15",
-    "camelize": "^1.0.0",
     "del": "^5.1.0",
     "get-info": "^2.4.4",
     "lodash.isboolean": "^3.0.3",
