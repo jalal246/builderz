@@ -68,7 +68,7 @@ function getBundleName({ name, buildFormat, isProd }) {
  *   }
  * @param {Object} { isProd, buildFormat }
 
- * @returns {Object} contains input option for the package.
+ * @returns {Object} contains output option for the package.
  */
 function getOutput(
   {

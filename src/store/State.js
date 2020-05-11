@@ -58,7 +58,7 @@ class State {
     this.opts = { ...this.generalOpts };
   }
 
-  checkOpts() {
+  initOpts() {
     Object.keys(defaultOpts).forEach((key) => {
       if (this.opts[key] === undefined) {
         this.opts[key] = defaultOpts[key];

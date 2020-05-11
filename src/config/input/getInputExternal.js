@@ -4,10 +4,8 @@ import { UMD, EXTERNAL } from "../../constants";
  * Resolves external dependencies and peerDependencies for package input
  * according to build format.
  *
- * @param {Object} json.peerDependencies
- * @param {Object} json.dependencies
+ * @param {Object} { opts: { [EXTERNAL]: external }, pkg: { peerDependencies, dependencies } }
  * @param {string} buildFormat
- *
  * @returns {function} - function resolver
  */
 function getExternal(
