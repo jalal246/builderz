@@ -13,6 +13,8 @@ let cached = {};
  * @returns
  */
 function cache({ type, key, isDestroy }, result) {
+  if (!cached) cached = {};
+
   let bank;
 
   if (type) {
@@ -26,12 +28,12 @@ function cache({ type, key, isDestroy }, result) {
 
   if (isDestroy) {
     if (type) {
-      bank = {};
+      cached[type] = undefined;
     } else {
       /**
        * clear all
        */
-      cached = {};
+      cached = undefined;
     }
 
     return -1;
