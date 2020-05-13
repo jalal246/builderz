@@ -28,7 +28,7 @@ function cache({ type, key, isDestroy }, result) {
 
   if (isDestroy) {
     if (type) {
-      cached[type] = undefined;
+      cached[type] = {};
     } else {
       /**
        * clear all
@@ -46,7 +46,7 @@ function cache({ type, key, isDestroy }, result) {
   }
 
   if (bank[key]) {
-    return bank[key];
+    return bank.key;
   }
 
   return null;
