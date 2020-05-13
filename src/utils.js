@@ -2,7 +2,7 @@
 
 import { UMD, CJS, ES } from "./constants";
 
-const cached = new Map();
+let cached = {};
 
 /**
  * Silly cache
@@ -13,38 +13,36 @@ const cached = new Map();
  * @returns
  */
 function cache({ type, key, isDestroy }, result) {
+  if (!cached) cached = {};
+
   let bank;
 
   if (type) {
-    if (cached.has(type)) {
-      bank = cached.get(type);
-    } else {
-      const newBank = new Map();
-      bank = cached.set(type, newBank);
+    bank = cached[type];
+
+    if (!bank) {
+      cached[type] = {};
+      bank = cached[type];
     }
   }
 
   if (isDestroy) {
-    if (type) {
-      bank.clear();
-    } else {
-      /**
-       * clear all
-       */
-      cached.clear();
-    }
+    /**
+     * clear all
+     */
+    cached = undefined;
 
     return -1;
   }
 
   if (result) {
-    bank.set(key, result);
+    bank[key] = result;
 
     return null;
   }
 
-  if (bank.has(key)) {
-    return bank.get(key);
+  if (bank[key]) {
+    return bank.key;
   }
 
   return null;

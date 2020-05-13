@@ -37,7 +37,15 @@ function babelPlugin(options) {
 
   const filter = createFilter(include, exclude);
 
-  const extensionRegExp = extRegExp(extensions);
+  const cacheExt = { type: "babel", key: "extensions" };
+
+  let extensionRegExp = cache(cacheExt);
+
+  if (!extensionRegExp) {
+    extensionRegExp = extRegExp(extensions);
+
+    cache(cacheExt, extensionRegExp);
+  }
 
   return {
     transform(code, filename) {
@@ -45,16 +53,16 @@ function babelPlugin(options) {
         return null;
       }
 
-      if (!filter(filename)) {
+      if ((include || exclude) && !filter(filename)) {
         return null;
       }
 
-      const cacheObj = { type: "babel", key: filename };
+      const cacheTransform = { type: "babel", key: filename };
 
-      const result = cache(cacheObj);
+      let res = cache(cacheTransform);
 
-      if (result) {
-        return result;
+      if (res) {
+        return res;
       }
 
       const babelOptions = {
@@ -62,9 +70,9 @@ function babelPlugin(options) {
         filename,
       };
 
-      const res = babelTransformer(code, babelOptions);
+      res = babelTransformer(code, babelOptions);
 
-      cache(cacheObj, res);
+      cache(cacheTransform, res);
 
       return res;
     },

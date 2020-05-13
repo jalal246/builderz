@@ -13,14 +13,7 @@ function genInput(
   { plugins, output, opts, pkg },
   { idx, isProd, buildFormat }
 ) {
-  const cacheObj = { type: "input", key: buildFormat };
-  let externalFunc = cache(cacheObj);
-
-  if (!externalFunc) {
-    externalFunc = getExternal({ opts, pkg }, buildFormat);
-
-    cache(cacheObj, externalFunc);
-  }
+  const externalFunc = getExternal({ opts, pkg }, buildFormat);
 
   const extractedPlugins = getPlugins(
     { plugins, output, pkg, opts },
