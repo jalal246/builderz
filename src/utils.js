@@ -27,14 +27,10 @@ function cache({ type, key, isDestroy }, result) {
   }
 
   if (isDestroy) {
-    if (type) {
-      cached[type] = {};
-    } else {
-      /**
-       * clear all
-       */
-      cached = undefined;
-    }
+    /**
+     * clear all
+     */
+    cached = undefined;
 
     return -1;
   }
