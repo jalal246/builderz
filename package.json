@@ -1,6 +1,6 @@
 {
   "name": "builderz",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "main": "./dist/builderz.cjs",
   "bin": "./dist/cli.cjs.js",
   "repository": "https://github.com/jalal246/builderz.git",
