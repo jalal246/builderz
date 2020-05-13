@@ -121,7 +121,7 @@ async function babelTransformer(inputCode, babelOptions) {
   const { options } = babel.loadPartialConfig(rest);
 
   if (enablePreset) {
-    const cacheObj = { type: "babel", key: "presets" };
+    const cacheObj = { type: "babel", key: `${PRESET}${+isESM}` };
 
     let result = cache(cacheObj);
 
@@ -131,11 +131,11 @@ async function babelTransformer(inputCode, babelOptions) {
       cache(cacheObj, result);
     }
 
-    options.presets = result;
+    options.presets = presetsHandler(PRESET, options.presets, isESM);
   }
 
   if (enablePlugins) {
-    const cacheObj = { type: "babel", key: "plugins" };
+    const cacheObj = { type: "babel", key: `${PLUGIN}${+isESM}` };
 
     let result = cache(cacheObj);
 
@@ -145,7 +145,7 @@ async function babelTransformer(inputCode, babelOptions) {
       cache(cacheObj, result);
     }
 
-    options.plugins = result;
+    options.plugins = presetsHandler(PLUGIN, options.plugins, isESM);
   }
 
   /**
