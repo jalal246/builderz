@@ -111,7 +111,7 @@ function presetsHandler(type, presets, isESM) {
  * @returns {Objects} { code, map}
  */
 async function babelTransformer(inputCode, babelOptions) {
-  const { enablePreset, enablePlugins, isESM, ...rest } = babelOptions;
+  const { enablePreset, enablePlugins, isESM = false, ...rest } = babelOptions;
 
   /**
    * To manipulate and validate a user's config. it resolves the plugins and
