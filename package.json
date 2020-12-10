@@ -57,7 +57,7 @@
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-json": "^4.0.1",
     "@rollup/plugin-multi-entry": "^3.0.0",
-    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-node-resolve": "^8.1.0",
     "@rollup/pluginutils": "^3.0.9",
     "babel-plugin-macros": "^2.8.0",
     "babel-plugin-transform-async-to-promises": "^0.8.15",
