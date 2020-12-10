@@ -1,6 +1,6 @@
 import { join } from "path";
 
-import { resolve } from "@rollup/plugin-node-resolve";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
@@ -51,7 +51,7 @@ function getPlugins(
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.
      */
-    resolve({
+    nodeResolve({
       preferBuiltins: true,
       extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
