@@ -7,6 +7,10 @@ module.exports = {
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
+    describe: true,
+    it: true,
+    expect: true,
+    jest: true,
   },
   parserOptions: {
     ecmaVersion: 2018,
@@ -15,11 +19,5 @@ module.exports = {
   rules: {
     "no-console": ["error", { allow: ["warn", "error"] }],
   },
-  globals: {
-    describe: true,
-    it: true,
-    expect: true,
-    jest: true,
-  },
-  ignorePatterns: ["dist"],
+  ignorePatterns: ["dist", "test/fixtures"],
 };
