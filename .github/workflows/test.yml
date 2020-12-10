@@ -64,6 +64,6 @@ jobs:
         run: yarn build
 
       - name: Run Test
-        run: test:build
+        run: yarn test:build
 
         
