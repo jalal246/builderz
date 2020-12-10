@@ -1,6 +1,5 @@
 import getPlugins from "./getInputPlugins";
 import getExternal from "./getInputExternal";
-import { cache } from "../../utils";
 
 /**
  * Generates output build
