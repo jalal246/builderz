@@ -64,6 +64,6 @@ jobs:
         run: yarn build
 
       - name: Run Test
-        run: yarn test:build
+        run: cross-env USE_BUILD=DIST jest
 
         
