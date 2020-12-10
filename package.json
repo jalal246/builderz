@@ -9,7 +9,8 @@
   "scripts": {
     "build": "node --require @babel/register build.self.js",
     "prepublish": "yarn build",
-    "test": "jest"
+    "test:build": "yarn build && cross-env USE_BUILD=DIST  jest",
+    "test": "cross-env USE_BUILD=SRC jest"
   },
   "files": [
     "src",
@@ -81,6 +82,7 @@
     "@babel/register": "^7.9.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
+    "cross-env": "^7.0.3",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.9.0",
