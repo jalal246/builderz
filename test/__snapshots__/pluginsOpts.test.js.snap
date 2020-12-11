@@ -49,13 +49,13 @@ exports[`tests plugin-css-basic for testing: bundling basic css passes 5`] = `
 `;
 
 exports[`tests plugin-css-basic for testing: bundling basic css passes 6`] = `
-"export default function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}
+"function e(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}export default e;
 //# sourceMappingURL=pluginCssBasic.min.esm.js.map
 "
 `;
 
 exports[`tests plugin-css-basic for testing: bundling basic css passes 7`] = `
-"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=e||self).pluginCssBasic=n()}(this,function(){return function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}});
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=\\"undefined\\"!=typeof globalThis?globalThis:e||self).pluginCssBasic=n()}(this,function(){return function(){var e=document.createElement(\\"div\\");return e.className=\\"testing\\",e}});
 //# sourceMappingURL=pluginCssBasic.min.umd.js.map
 "
 `;
@@ -64,7 +64,7 @@ exports[`tests plugin-css-basic for testing: bundling basic css passes 8`] = `
 "(function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, global.pluginCssBasic = factory());
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.pluginCssBasic = factory());
 }(this, (function () {
 	function index () {
 	  var el = document.createElement('div');
@@ -122,7 +122,7 @@ exports[`tests plugin-json-basic for testing: bundling json passes 5`] = `
 `;
 
 exports[`tests plugin-json-basic for testing: bundling json passes 6`] = `
-"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=e||self).pluginJsonBasic=n()}(this,function(){var e={test:\\"true\\"};return function(){return Promise.resolve(e)}});
+"!function(e,n){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=n():\\"function\\"==typeof define&&define.amd?define(n):(e=\\"undefined\\"!=typeof globalThis?globalThis:e||self).pluginJsonBasic=n()}(this,function(){var e={test:\\"true\\"};return function(){return Promise.resolve(e)}});
 //# sourceMappingURL=pluginJsonBasic.min.umd.js.map
 "
 `;
@@ -131,7 +131,7 @@ exports[`tests plugin-json-basic for testing: bundling json passes 7`] = `
 "(function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, global.pluginJsonBasic = factory());
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.pluginJsonBasic = factory());
 }(this, (function () {
 	var test = \\"true\\";
 	var two = {

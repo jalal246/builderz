@@ -78,9 +78,6 @@ function getPlugins(
         // default undefined
         ecma: 5,
 
-        // default false
-        sourcemap: true,
-
         // display warnings when dropping unreachable code or unused declarations etc
         warnings: true,
 
