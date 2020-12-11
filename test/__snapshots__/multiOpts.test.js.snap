@@ -41,7 +41,7 @@ exports[`tests pkg-no-json for testing: bundle package doesn't have valid packag
 `;
 
 exports[`tests pkg-no-json for testing: bundle package doesn't have valid package.json passes 6`] = `
-"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):(e=e||self).pkgNoJson=o()}(this,function(){return function(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];return Promise.resolve(\\"foo \\".concat(o))}});
+"!function(e,o){\\"object\\"==typeof exports&&\\"undefined\\"!=typeof module?module.exports=o():\\"function\\"==typeof define&&define.amd?define(o):(e=\\"undefined\\"!=typeof globalThis?globalThis:e||self).pkgNoJson=o()}(this,function(){return function(){for(var e=arguments.length,o=new Array(e),n=0;n<e;n++)o[n]=arguments[n];return Promise.resolve(\\"foo \\".concat(o))}});
 //# sourceMappingURL=pkgNoJson.min.umd.js.map
 "
 `;
@@ -50,7 +50,7 @@ exports[`tests pkg-no-json for testing: bundle package doesn't have valid packag
 "(function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global = global || self, global.pkgNoJson = factory());
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.pkgNoJson = factory());
 }(this, (function () {
 	var foo = function foo() {
 	  for (var _len = arguments.length, bar = new Array(_len), _key = 0; _key < _len; _key++) {
