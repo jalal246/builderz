@@ -64,6 +64,6 @@ jobs:
         run: yarn build
 
       - name: Run Test
-        run: USE_BUILD=DIST jest
+        run: USE_BUILD=DIST yarn jest
 
         
