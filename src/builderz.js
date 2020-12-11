@@ -19,26 +19,26 @@ import StateHandler from "./store";
  */
 async function build(inputFunc, outputFunc, { isProd, buildFormat, order }) {
   try {
-    const input = await inputFunc({
+    const inputOpts = await inputFunc({
       isProd,
       buildFormat,
       idx: order,
     });
 
-    const output = await outputFunc({
+    /**
+     * create a bundle
+     */
+    const bundle = await rollup(inputOpts);
+
+    const outputOpts = await outputFunc({
       isProd,
       buildFormat,
     });
 
     /**
-     * create a bundle
-     */
-    const bundle = await rollup(input);
-
-    /**
      * write the bundle to disk
      */
-    await bundle.write(output);
+    await bundle.write(outputOpts);
   } catch (err) {
     console.error(err);
   }
