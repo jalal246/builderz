@@ -92,6 +92,7 @@ function getOutput(
   const output = {
     file: join(buildPath, bundleName),
     format: buildFormat,
+    exports: "auto", // Prevent warning for rollup@^2.22.0
     esModule,
     strict,
     interop: false,

@@ -1,7 +1,10 @@
 /* eslint-disable no-console */
 import { resolve } from "path";
 import { readdirSync, readFileSync } from "fs";
-import builderz from "../src";
+import builderzSrc from "../src";
+import builderzDist from "../dist/builderz.cjs";
+
+const builderz = process.env.USE_BUILD === "DIST" ? builderzDist : builderzSrc;
 
 jest.setTimeout(30000);
 

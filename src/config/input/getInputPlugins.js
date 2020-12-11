@@ -1,6 +1,6 @@
 import { join } from "path";
 
-import resolve from "@rollup/plugin-node-resolve";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import aliasPlugin from "@rollup/plugin-alias";
@@ -45,13 +45,13 @@ function getPlugins(
      * Convert CommonJS modules to ES6, so they can be included in a Rollup
      * bundle.
      */
-    commonjs(),
+    commonjs({ dynamicRequireTargets: [] }),
 
     /**
      * Locates modules using the Node resolution algorithm, for using third
      * party modules in node_modules.
      */
-    resolve({
+    nodeResolve({
       preferBuiltins: true,
       extensions: [".mjs", ".js", ".jsx", ".json", ".node"],
     }),
@@ -77,9 +77,6 @@ function getPlugins(
       terser({
         // default undefined
         ecma: 5,
-
-        // default false
-        sourcemap: true,
 
         // display warnings when dropping unreachable code or unused declarations etc
         warnings: true,
