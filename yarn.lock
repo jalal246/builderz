@@ -3013,10 +3013,10 @@ get-caller-file@^2.0.1, get-caller-file@^2.0.5:
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
 
-get-info@^2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/get-info/-/get-info-2.4.4.tgz#fc5eff84c846dcd5798a7f2dbfe443727f01d9a6"
-  integrity sha512-cxHNMfCkWyVlBz1H1K1tXZeGL2lb6JQxzU0cmcxrkVSctl6vklJJ6aA81OpsqDtwF6haYzskf7U/8ZDEn9AZEg==
+get-info@^2.4.5:
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/get-info/-/get-info-2.4.5.tgz#b10851d6dfe6cf5085f378acb64d5535e5c3c875"
+  integrity sha512-URlxa/G6HcrAeBnNN38U9/u2DFK4ge6si1TFrnyIW6ls6xXaXwADarRCql2T5ppgjEDYaNVHifvN4kdcHucBdw==
 
 get-intrinsic@^1.0.0, get-intrinsic@^1.0.1:
   version "1.0.1"
