@@ -6607,10 +6607,10 @@ v8-to-istanbul@^4.1.3:
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
 
-validate-access@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/validate-access/-/validate-access-0.3.0.tgz#63cbc971bf0698f77eea227671eebc0ca21f46fb"
-  integrity sha512-HxrdKRpku5s2f8zOBJc+XcL2gCgCVw7cSpCqhrYCFH0cokZt6lStvuqpwpLMdSBG9BPOsnMby3pAV8RBSUMLEA==
+validate-access@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/validate-access/-/validate-access-0.3.1.tgz#1bcfcfee66635ae5d11dd47f18d04b3186285a8a"
+  integrity sha512-xCv5g4l6swFVmaP1foVONqKaHxhZKYQLkWoWv5qKjcKLoaBvpJokxoz4DFJsNLDwYRMerhIjiPw0imqDZVo7NQ==
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
