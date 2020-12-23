@@ -62,7 +62,7 @@
     "@rollup/pluginutils": "^4.1.0",
     "babel-plugin-macros": "^3.0.0",
     "babel-plugin-transform-async-to-promises": "^0.8.15",
-    "get-info": "^2.4.4",
+    "get-info": "^2.4.5",
     "move-position": "^1.0.0",
     "package-sorter": "^1.1.1",
     "postcss": "^8.2.1",
