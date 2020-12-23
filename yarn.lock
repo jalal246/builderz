@@ -4497,10 +4497,10 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
-move-position@^1.0.0:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/move-position/-/move-position-1.0.3.tgz#62bdf668fbee130202cd08042a0e7a03f491ed0c"
-  integrity sha512-vsfwQA5rgOm3A6nCULFcceZo4EZnkA92sN1Zf2xCfm+M5Pl4rsw5JzYBs8EooXmZXgZrpVekTUouyqgcxRyndA==
+move-position@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/move-position/-/move-position-1.0.4.tgz#0e828ff7f9fa68355b036666d8a872f5d1e90c01"
+  integrity sha512-Wi8fSktcrwniotEVXxLvTtyOFe2uT/BAusp0AIOrhAIb4b4o9V3xVZl0oRVsczq6irm3wufuHJe2MeAPtADLVg==
 
 ms@2.0.0:
   version "2.0.0"
