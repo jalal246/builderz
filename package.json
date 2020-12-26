@@ -60,7 +60,7 @@
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/pluginutils": "^4.1.0",
-    "babel-plugin-macros": "^3.0.0",
+    "babel-plugin-macros": "^3.0.1",
     "babel-plugin-transform-async-to-promises": "^0.8.15",
     "get-info": "^2.4.5",
     "move-position": "^1.0.4",
