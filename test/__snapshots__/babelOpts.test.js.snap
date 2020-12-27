@@ -231,8 +231,20 @@ exports[`tests babel-reads-presets for testing: embedded presets passes 7`] = `
 exports[`tests babel-reads-ts for testing: ability to read external config and detect ts passes 1`] = `1`;
 
 exports[`tests babel-reads-ts for testing: ability to read external config and detect ts passes 2`] = `
-"var x = 0;
+"var Foo =
+/** @class */
+function () {
+  function Foo() {}
 
-module.exports = x;
+  Foo.prototype.add = function (random) {
+    return random;
+  };
+
+  return Foo;
+}();
+
+var foo = new Foo();
+
+module.exports = foo;
 "
 `;
