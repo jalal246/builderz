@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-param-reassign */
 import * as babel from "@babel/core";
 import path from "path";
