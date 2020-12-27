@@ -1,3 +1,5 @@
-const x: number = 0;
+import Foo from "./foo";
 
-export default x;
+let foo = new Foo();
+
+export default foo;
