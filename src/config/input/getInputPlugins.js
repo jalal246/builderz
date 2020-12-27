@@ -35,8 +35,6 @@ function getPlugins(
   { idx, isProd, buildFormat }
 ) {
   const essentialPlugins = [
-    babelPlugin({ ...babelConfig, cwd }),
-
     isMultiEntries ? multiEntry() : null,
 
     alias.length > 0 ? aliasPlugin({ entries: alias }) : null,
@@ -67,6 +65,8 @@ function getPlugins(
       inject: false,
       extract: idx === 0 && join(buildPath, `${name}.css`),
     }),
+
+    babelPlugin({ ...babelConfig, cwd }),
   ].filter(Boolean);
 
   /**
