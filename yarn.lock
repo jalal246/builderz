@@ -4593,10 +4593,10 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
-move-position@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/move-position/-/move-position-1.0.4.tgz#0e828ff7f9fa68355b036666d8a872f5d1e90c01"
-  integrity sha512-Wi8fSktcrwniotEVXxLvTtyOFe2uT/BAusp0AIOrhAIb4b4o9V3xVZl0oRVsczq6irm3wufuHJe2MeAPtADLVg==
+move-position@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/move-position/-/move-position-2.0.0.tgz#5ac7ca19542d553a636aec4eae795a6205f927b5"
+  integrity sha512-JrsofvWxYwnAKgOHd7lmAGHjiNpRZsSgyUzgik9LZY2z0Gn2dFxzBFkTvqqHTNmZQYUuArqKZJuAPpTlEJsiMg==
 
 ms@2.0.0:
   version "2.0.0"
