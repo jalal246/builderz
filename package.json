@@ -67,7 +67,7 @@
     "package-sorter": "^1.1.3",
     "postcss": "^8.2.8",
     "rimraf": "^3.0.2",
-    "rollup": "^2.38.5",
+    "rollup": "^2.67.2",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.29.0",
